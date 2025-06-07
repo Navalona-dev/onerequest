@@ -1,0 +1,252 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.hero-text {
+    bottom: 7rem !important;
+}
+
+.hero-text he, .hero-text .para {
+    text-shadow: 2px 2px 8px rgb(0, 0, 0);
+}
+
+[data-carousel-slide-to][aria-current="true"] {
+    background-color: #ef4444; /* equivalent to text-red-500 */
+}
+
+
+
+  
+@layer utilities {
+    .animate-fadeIn {
+      animation: fadeIn 1.2s ease-in-out both;
+    }
+  
+    .animate-fadeInUp {
+      animation: fadeInUp 1.2s ease-out both;
+    }
+  
+    .animate-fadeInDown {
+      animation: fadeInDown 1.2s ease-out both;
+    }
+  
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(100px); /* plus visible */
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-100px); /* plus visible */
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+}
+  
+.div-quote {
+  bottom: -1rem;
+}
+
+.swiper-pagination-bullet.swiper-pagination-bullet
+{
+  background-color: #fff !important;
+}
+
+.swiper-pagination-bullet.swiper-pagination-bullet-active
+{
+  background-color: #ef4444 !important;
+}
+
+.page-block {
+  position: relative;
+  margin-top: -2.5rem !important;
+  z-index: 1;
+  width: 150vh;
+  margin-left: 10rem !important;
+}
+
+
+.page-header {
+  height: 50vh !important;
+}
+
+.page-block-card {
+  border: solid 1px #ef4444;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.page-block-card:hover {
+  background-color: #ef4444;
+}
+
+.page-block-card:hover p {
+  color: #fff !important;
+}
+
+.newsletter {
+  position: relative;
+  z-index: 1;
+}
+
+.footer {
+  position: relative;
+  margin-top: -110px;
+  padding-top: 180px;
+}
+
+.footer .btn-social {
+  margin-right: 5px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--light);
+  border: 1px solid #FFFFFF;
+  border-radius: 35px;
+  transition: .3s;
+}
+
+.footer .btn-social:hover {
+  color: #ef4444;
+  background-color: #fff;
+}
+
+.footer .btn-link {
+  display: block;
+  margin-bottom: 5px;
+  padding: 0;
+  text-align: left;
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: normal;
+  text-transform: capitalize;
+  transition: .3s;
+}
+
+.footer .btn-link::before {
+  position: relative;
+  content: "\f105";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  margin-right: 10px;
+}
+
+.footer .btn-link:hover {
+  letter-spacing: 1px;
+  box-shadow: none;
+}
+
+.footer .copyright {
+  padding: 25px 0;
+  font-size: 15px;
+  border-top: 1px solid rgba(256, 256, 256, .1);
+}
+
+.footer .copyright a {
+  color: var(--color-);
+}
+
+.copyright .footer-menu a {
+  margin-right: 15px;
+  padding-right: 15px;
+  border-right: 1px solid rgba(255, 255, 255, .3);
+}
+
+.copyright .footer-menu a:last-child {
+  margin-right: 0;
+  padding-right: 0;
+  border-right: none;
+}
+
+.footer .section-title {
+  position: relative;
+  display: inline-block;
+}
+
+
+
+.footer .section-title::after {
+  position: absolute;
+  content: "";
+  width: 45px;
+  height: 2px;
+  top: 50%;
+  right: -55px;
+  margin-top: -1px;
+  background: #ef4444;
+}
+
+.footer .section-title.text-start::before,
+.footer .section-title.text-end::after {
+  display: none;
+}
+
+.testimonial {
+  background: linear-gradient(rgba(15, 23, 43, .7), rgba(15, 23, 43, .7)), url('../images/hero-bg-1.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-top: 4rem !important;
+  margin-bottom: 4rem !important;
+}
+
+.testimonial .testimonial-item {
+  margin-left: 4rem !important;
+  margin-right: 4rem !important;
+}
+
+.testimonial .quote {
+  font-size: 50px !important;
+}
+
+.tutoriel-card:hover {
+  background-color: #ef4444;
+}
+
+.tutoriel-card:hover i, .tutoriel-card:hover h3, .tutoriel-card:hover p {
+  color: #fff !important;
+}
+
+.tutoriel-card:hover .icon-tuto {
+  border: #fff solid 1px;
+}
+
+.tutoriel-card:hover .tutoriel-footer {
+  background-color: #fff !important;
+  color: #ef4444 !important;
+}
+
+
+@media (max-width: 768px){
+    .hero-text {
+      bottom: 17rem !important;
+    }
+
+    .pagination-slide {
+      bottom: 12rem !important;
+    }
+
+    .page-block {
+      display: none !important;
+    }
+    
+    
+}
+

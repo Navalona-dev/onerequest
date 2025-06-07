@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.admin-sidebar {
+    border: solid 0.5px #8b8a8a;
+}
+
+.admin-header-vertical {
+    border-bottom: solid 0.5px #8b8a8a;
+}
+
+.admin-header-horizontal {
+    border-bottom: none !important;
+}
+
+.admin-content {
+    border: solid 0.5px #8b8a8a;
+}
+
+.admin-folder-content {
+    border: solid 0.5px #8b8a8a;
+}
+
+.admin-folder-dropdown {
+    border: solid 0.5px #8b8a8a7e;
+    box-shadow: 10px;
+    border-radius: 10px;
+}
+
+.btn-primary-outline {
+    border: 1px solid #EF4444;
+}
+
+.folder-dropdown-btn {
+    border: solid 0.5px #8b8a8a7e;
+}
+
+.admin-footer {
+    border-top: solid 0.5px #8b8a8a;
+    height: 10vh;
+}
+
+@keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .animate-spin {
+    display: inline-block;
+    animation: spin 2s linear infinite;
+  }
+  
+
+  .card-layout, .card-color-scheme , .card-background{
+    border: solid 0.5px #8b8a8a7e;
+    height: 12vh;
+    width: 15vh;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .sidebar-horizontal {
+    z-index: 2; /* Plus haut que n'importe quel contenu */
+    position: sticky; /* Pour qu'elle reste en haut si nécessaire */
+    top: 0;
+    height: 12vh;
+  }
+
+.dashboard-content-horizontal {
+    margin-top: -0.5rem;
+    margin-left: 50px;
+    margin-right: 50px;
+    position: relative;
+}
+
+.admin-content-horizontal {
+    overflow-y: scroll;
+    padding: 20px;
+}
+
+
+.table-dashboard tr {
+    border-bottom: solid 0.5px #8b8a8a7e;
+}
+
+.table-dashboard {
+    width: 100% !important;
+}
+
+.header-dashboard {
+    border-bottom: 0.5px solid #8b8a8a7e;
+}
+
+
+.stat-card-content-horizontal {
+    margin-left: 50px !important;
+}
+
+.company-card {
+    border-bottom: solid 0.5px #8b8a8a7e;
+}
+
+.title-stat-card {
+    border-bottom: solid 0.5px #8b8a8a7e;
+}
+  
+.hide-icon {
+    display: none !important;
+}
+
+.content-table-file-manager {
+    overflow-x: auto !important;
+}
+
+.color-card {
+    border: solid 0.5px #8b8a8a7e;
+}
+
+@keyframes slideDown {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .slide-down {
+    animation: slideDown 0.4s ease forwards;
+  }
+  
+  
+@media (max-width: 768px) {
+    .theme-icon {
+      bottom: 3rem !important;
+    }
+
+    .stat-card-content {
+        margin-right: 1.5rem !important;
+    }
+
+    .content-table-file-manager {
+        width: 40vh !important;
+    }
+  }
+  
+  

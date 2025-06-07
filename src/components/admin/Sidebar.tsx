@@ -1,0 +1,190 @@
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  FaFolder,
+  FaRegChartBar,
+  FaLock,
+  FaHome,
+  FaChevronDown,
+  FaChevronUp,
+  FaPalette,
+} from "react-icons/fa";
+import { useTheme } from "../../contexts/admin/ThemeContext";
+import { useModule } from "../../contexts/admin/ModuleContext";
+import { useNavigate } from "react-router-dom";
+import { useLayoutContent } from "../../contexts/admin/LayoutContext";
+
+
+// Casting des icônes pour TypeScript
+const FaFolderIcon = FaFolder as React.FC<React.SVGProps<SVGSVGElement>>;
+const FaHomeIcon = FaHome as React.FC<React.SVGProps<SVGSVGElement>>;
+const FaLockIcon = FaLock as React.FC<React.SVGProps<SVGSVGElement>>;
+const FaRegChartBarIcon = FaRegChartBar as React.FC<React.SVGProps<SVGSVGElement>>;
+const FaChevronDownIcon = FaChevronDown as React.FC<React.SVGProps<SVGSVGElement>>;
+const FaChevronUpIcon = FaChevronUp as React.FC<React.SVGProps<SVGSVGElement>>;
+const FaPaletteIcon = FaPalette as React.FC<React.SVGProps<SVGSVGElement>>;
+
+type SidebarProps = {
+  onCloseMobileSidebar: () => void;
+};
+
+const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
+  const navigate = useNavigate();
+  const { theme } = useTheme();
+  const [demandeOpen, setDemandeOpen] = useState<boolean>(false);
+  const [isHoveringDemande, setIsHoveringDemande] = useState<boolean>(false);
+
+  const location = useLocation();
+
+  const [activeMenu, setActiveMenu] = useState<string>("dashboard");
+  const { currentModule, setCurrentModule } = useModule();
+  const { isSidebarCollapsed } = useLayoutContent();
+
+  const handleMenuClick = (menu: string) => {
+    setActiveMenu(menu);
+    setCurrentModule(menu as any);
+    setDemandeOpen(false);
+    
+    // ➕ Change l'URL en fonction du menu
+    if (menu === "dashboard") {
+      navigate("/admin"); // racine
+    } else {
+      navigate(`/${menu}`);
+    }
+     // Forcer le rechargement complet de la page
+     //window.location.reload();
+  };
+
+  //const bgColor = theme === "dark" ? "bg-[#0B1437] text-white" : "bg-white text-gray-900";
+  const bgColor = theme === "dark" ? "bg-[#0B1437] text-white" : theme === "light" ? "bg-white text-gray-900" : "bg-red-500 text-white";
+
+  const hoverColor = theme === "dark" ? "hover:bg-[#1c2d55]" : "hover:bg-[#1c2d55]";
+
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.includes("/admin")) {
+      setActiveMenu("dashboard");
+    } else if (path.includes("/document")) {
+      setActiveMenu("document");
+    } else if (path.includes("/code-couleur")) {
+      setActiveMenu("code-couleur");
+    } else if (path.includes("/demande")) {
+      setActiveMenu("demande");
+    }else if (path.includes("/site")) {
+      setActiveMenu("site");
+    }
+  }, [location.pathname]);
+
+  return (
+      <div className={`transition-all duration-300 ${isSidebarCollapsed ? 'w-20' : 'w-64'} ${bgColor} min-h-screen p-4 admin-sidebar`}>
+        {onCloseMobileSidebar && (
+          <button
+            className="md:hidden absolute top-4 right-4 text-white text-xl"
+            onClick={onCloseMobileSidebar}
+          >
+            <i className="bi bi-x-lg"></i>
+          </button>
+        )}
+
+        <h1 className={`text-2xl font-bold mb-5 ${isSidebarCollapsed ? 'hidden' : 'inline'}`}>ONEREQUEST</h1>
+        <nav className="mt-5">
+          <ul className="space-y-2 text-sm">
+            <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "dashboard" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "dashboard" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("dashboard")}
+            >
+              <span className="icon-sidebar">
+                <FaHomeIcon />
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Dashboards</span>
+            </li>
+
+            <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "document" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "document" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("document")}
+            >
+              <span className="icon-sidebar">
+                <FaFolderIcon />
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Documents</span>
+            </li>
+
+            {/* Dropdown */}
+            <li
+              className="flex flex-col relative"
+              onMouseEnter={() => isSidebarCollapsed && setIsHoveringDemande(true)}
+              onMouseLeave={() => isSidebarCollapsed && setIsHoveringDemande(false)}
+            >
+              <div
+                className={`flex items-center justify-between gap-2 px-3 py-2 rounded cursor-pointer ${hoverColor} ${
+                  activeMenu === "demande" ? "bg-[#1c2d55] text-white" : ""
+                } ${currentModule === "demande" ? "bg-[#1c2d55] text-white" : ""}`}
+                onClick={() => {
+                  setActiveMenu("demande");
+                  setCurrentModule("demande" as any);
+                  if (!isSidebarCollapsed) {
+                    setDemandeOpen(!demandeOpen);
+                  }
+                }}
+                
+              >
+                <div className="flex items-center gap-2">
+                  <span className="icon-sidebar">
+                    <FaLockIcon />
+                  </span>
+                  <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Demande</span>
+                </div>
+                {!isSidebarCollapsed && (
+                  demandeOpen ? <FaChevronUpIcon className="text-xs" /> : <FaChevronDownIcon className="text-xs" />
+                )}
+              </div>
+
+              {(demandeOpen || isHoveringDemande) && (
+                <ul
+                  className={`${
+                    isSidebarCollapsed ? 'absolute left-full top-0 ml-2 w-48 bg-[#0B1437] p-2 rounded shadow-lg z-50' : 'ml-8 mt-1'
+                  } space-y-1 text-sm`}
+                >
+                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>En cours</li>
+                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Annulée</li>
+                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Réfusée</li>
+                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>En attente</li>
+                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Acceptée</li>
+                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Validée</li>
+                </ul>
+              )}
+            </li>
+
+            <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "code-couleur" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "code-couleur" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("code-couleur")}
+            >
+              <span className="icon-sidebar">
+                <FaPaletteIcon />
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Code couleur</span>
+            </li>
+            <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "site" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "site" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("site")}
+            >
+              <span className="icon-sidebar">
+                <FaPaletteIcon />
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Sites</span>
+            </li>
+          </ul>
+        </nav>
+    </div>
+  );
+};
+
+export default Sidebar;
