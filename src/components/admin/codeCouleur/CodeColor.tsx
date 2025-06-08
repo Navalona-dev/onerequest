@@ -69,17 +69,20 @@ const CodeColor = () => {
         {/* Table des codes couleur */}
         <div className="color-card h-[75vh] overflow-y-auto">
           <div className="color-header p-4">
-            {siteCount > 0 ? (
-              <button
-              onClick={() => setShowModal(true)}
-              className="bg-red-500 px-5 py-2 text-white rounded"
-            >
-              {create.upperText}
-            </button>
-            ) : (
-              <p className="text-red-500">Ajouter au moins un site avant d'ajouter un code couleur</p>
-            )}
-            
+            <div className="color-header p-4 flex justify-between items-center mb-5">
+              <h4 className="font-bold text-white">Liste code couleur</h4>
+                {siteCount > 0 ? (
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="bg-red-500 px-5 py-2 text-white rounded"
+                  >
+                    {create.upperText}
+                  </button>
+                ) : (
+                  <p className="text-red-500">Ajouter au moins un site avant d'ajouter un code couleur</p>
+                )}
+                
+              </div>
           </div>
 
           <div className="overflow-x-auto w-[80vh] h-[70h] overflow-y-auto">

@@ -6,7 +6,6 @@ import { ThemeProvider } from "./contexts/admin/ThemeContext";
 import { LayoutContentProvider } from "./contexts/admin/LayoutContext";
 import { ModuleProvider } from "./contexts/admin/ModuleContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import 'flowbite';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Provider } from "react-redux";
@@ -32,6 +31,7 @@ function App() {
               <Route path="/demande" element={<ContentPage />} />
               <Route path="/code-couleur" element={<ContentPage />} />
               <Route path="/site" element={<ContentPage />} />
+              <Route path="/user" element={<ContentPage />} />
             </Routes>
           </ModuleProvider>
         </LayoutContentProvider>

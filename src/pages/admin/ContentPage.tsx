@@ -11,6 +11,7 @@ import { useModule } from '../../contexts/admin/ModuleContext';
 import { useLocation } from "react-router-dom";
 import CodeColorPage from "./CodeColorPage";
 import SitePage from "./SitePage";
+import UserPage from "./UserPage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -22,7 +23,15 @@ const ContentPage = () => {
 
     useEffect(() => {
         const path = location.pathname.replace("/", "");
-        if (["dashboard", "document", "report", "demande", "code-couleur", "site"].includes(path)) {
+        if ([
+            "dashboard", 
+            "document", 
+            "report", 
+            "demande", 
+            "code-couleur", 
+            "site", 
+            "user"
+        ].includes(path)) {
             setCurrentModule(path as any);
         } else {
             setCurrentModule("dashboard"); // fallback
@@ -40,6 +49,8 @@ const ContentPage = () => {
                 return null;
             case "site":
                 return <SitePage />;
+            case "user":
+                return <UserPage />;
             // case "demande":
             //     return <Demande />;
             default:
@@ -55,12 +66,17 @@ const ContentPage = () => {
                 </div>
             )}
 
-            <div className="flex-1 bg-[#0F1C3F]">
-                <Header onToggleMobileSidebar={() => setIsMobileSidebarVisible(true)} />
-                {layoutContent === 'horizontal' && <HorizontalNav />}
-                {renderContent()}
-                <Footer />
-            </div>
+<div className="flex-1 bg-[#0F1C3F] flex flex-col min-h-screen">
+    <Header onToggleMobileSidebar={() => setIsMobileSidebarVisible(true)} />
+    {layoutContent === 'horizontal' && <HorizontalNav />}
+    
+    <div className="flex-grow">
+        {renderContent()}
+    </div>
+
+    <Footer />
+</div>
+
 
             {!showCustomizer && (
                 <button

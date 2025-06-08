@@ -2,6 +2,8 @@ import Swal from "sweetalert2";
 import api from "./Api";
 import { store } from "../store";
 
+import { AxiosError } from "axios";
+
 const toggleActiveCodeCouleur = async (
   idCode: number,
   isActive: boolean,
@@ -26,6 +28,8 @@ const toggleActiveCodeCouleur = async (
 
   if (result.isConfirmed) {
     try {
+      console.log("ID envoyé:", idCode);
+
       const response = await api.post(`/api/code_couleurs/${idCode}/toggle-active`);
       console.log("Réponse API:", response.data);
 
@@ -40,18 +44,42 @@ const toggleActiveCodeCouleur = async (
 
       setShowModal(false);
       window.location.reload();
-    } catch (error) {
-      console.error("Erreur API:", error);
-
-      Swal.fire({
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>;
+    
+      let errorMessage = `Erreur lors de la ${actionWord} du code couleur.`;
+    
+      if (error.response) {
+        // Si une réponse est retournée par le backend
+        const status = error.response.status;
+        const backendMessage = error.response.data?.message;
+    
+        // Si le backend renvoie un message clair, on l’affiche
+        if (backendMessage) {
+          errorMessage = backendMessage;
+        } else if (status === 404) {
+          errorMessage = "Code couleur introuvable.";
+        } else if (status === 401) {
+          errorMessage = "Non autorisé. Veuillez vous reconnecter.";
+        } else if (status === 500) {
+          errorMessage = "Erreur serveur. Réessayez plus tard.";
+        }
+        // Tu peux rajouter d'autres cas ici si besoin
+      } else {
+        // Pas de réponse du serveur (ex: problème de réseau)
+        errorMessage = "Impossible de désactiver ce code couleur. Activez d'abord un autre code couleur pour ce site.";
+      }
+    
+      await Swal.fire({
         icon: "error",
         title: "Erreur",
-        text: `Erreur lors de la ${actionWord} du code couleur.`,
+        text: errorMessage,
         confirmButtonColor: "#ef4444",
         background: "#1c2d55",
         color: "#fff",
       });
     }
+    
   }
 };
 

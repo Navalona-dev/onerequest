@@ -6,6 +6,10 @@
     border: solid 0.5px #8b8a8a;
 }
 
+.user-content {
+    border: solid 0.5px #8b8a8a;
+}
+
 .admin-header-vertical {
     border-bottom: solid 0.5px #8b8a8a;
 }
@@ -148,4 +152,57 @@
     }
   }
   
+  .hero-swiper {
+    position: relative; 
+  }
   
+  /* Par défaut (mobile) : pagination centrée */
+  .hero-swiper .swiper-pagination {
+    position: absolute !important;
+    bottom: 2.5rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    right: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    width: auto !important;
+    z-index: 10;
+  }
+
+  .swiper-button-next, .swiper-button-prev {
+    color: #EF4444 !important;
+  }
+
+  .hero-swiper .swiper-pagination-bullet {
+    width: 16px !important; 
+    height: 16px !important;
+    margin: 0 6px !important;
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    opacity: 1 !important;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .hero-swiper .swiper-pagination-bullet-active {
+    background-color: #EF4444 !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .icon-priv {
+    font-size: 6px;
+    margin-right: 10px;
+  }
+  
+  
+  /* À partir de 640px (desktop) : pagination à droite */
+  @media (min-width: 640px) {
+    .hero-swiper .swiper-pagination {
+      left: auto !important;
+      right: 3rem !important; 
+      transform: none !important;
+      justify-content: flex-end !important;
+      width: auto !important;
+    }
+  }
+    

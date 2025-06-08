@@ -47,7 +47,7 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModalUpdate, 
   const listeSite = async () => {
     try {
       const response = await api.get("/api/sites");
-      return response.data.member;
+      return response.data;
     } catch (error) {
       console.error("Erreur lors de la récupération des sites");
       return [];

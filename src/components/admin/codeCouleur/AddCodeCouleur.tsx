@@ -31,7 +31,7 @@ const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
     const listeSite = async () => {
       try {
         const response = await api.get("/api/sites");
-        const sites = response.data.member;
+        const sites = response.data;
         return sites;
       } catch (error) {
         return 0;

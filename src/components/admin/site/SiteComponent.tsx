@@ -39,14 +39,16 @@ const SiteComponent = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Table des site */}
         <div className="color-card">
-          <div className="color-header p-4">
-            <button
-              onClick={() => setShowModal(true)}
-              className="bg-red-500 px-5 py-2 text-white rounded"
-            >
-              {create.upperText}
-            </button>
-          </div>
+        <div className="color-header p-4 flex justify-between items-center mb-5">
+          <h4 className="font-bold text-white">Liste site</h4>
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-red-500 px-5 py-2 text-white rounded"
+          >
+            {create.upperText}
+          </button>
+        </div>
+
 
           <div className="overflow-x-auto w-[80vh]">
             <table className="w-full text-sm text-left rtl:text-right text-gray-400 dark:text-gray-400">

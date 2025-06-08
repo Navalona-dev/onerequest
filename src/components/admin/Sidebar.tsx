@@ -15,15 +15,6 @@ import { useNavigate } from "react-router-dom";
 import { useLayoutContent } from "../../contexts/admin/LayoutContext";
 
 
-// Casting des icônes pour TypeScript
-const FaFolderIcon = FaFolder as React.FC<React.SVGProps<SVGSVGElement>>;
-const FaHomeIcon = FaHome as React.FC<React.SVGProps<SVGSVGElement>>;
-const FaLockIcon = FaLock as React.FC<React.SVGProps<SVGSVGElement>>;
-const FaRegChartBarIcon = FaRegChartBar as React.FC<React.SVGProps<SVGSVGElement>>;
-const FaChevronDownIcon = FaChevronDown as React.FC<React.SVGProps<SVGSVGElement>>;
-const FaChevronUpIcon = FaChevronUp as React.FC<React.SVGProps<SVGSVGElement>>;
-const FaPaletteIcon = FaPalette as React.FC<React.SVGProps<SVGSVGElement>>;
-
 type SidebarProps = {
   onCloseMobileSidebar: () => void;
 };
@@ -72,6 +63,8 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
       setActiveMenu("demande");
     }else if (path.includes("/site")) {
       setActiveMenu("site");
+    }else if (path.includes("/user")) {
+      setActiveMenu("user");
     }
   }, [location.pathname]);
 
@@ -96,7 +89,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               onClick={() => handleMenuClick("dashboard")}
             >
               <span className="icon-sidebar">
-                <FaHomeIcon />
+              <i className="bi bi-house-fill"></i>
               </span>
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Dashboards</span>
             </li>
@@ -108,7 +101,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               onClick={() => handleMenuClick("document")}
             >
               <span className="icon-sidebar">
-                <FaFolderIcon />
+              <i className="bi bi-folder-fill"></i>
               </span>
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Documents</span>
             </li>
@@ -134,12 +127,12 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               >
                 <div className="flex items-center gap-2">
                   <span className="icon-sidebar">
-                    <FaLockIcon />
+                  <i className="bi bi-lock-fill"></i>
                   </span>
                   <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Demande</span>
                 </div>
                 {!isSidebarCollapsed && (
-                  demandeOpen ? <FaChevronUpIcon className="text-xs" /> : <FaChevronDownIcon className="text-xs" />
+                  demandeOpen ? <i className="bi bi-chevron-up text-xs"></i> : <i className="bi bi-chevron-down text-xs"></i>
                 )}
               </div>
 
@@ -166,7 +159,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               onClick={() => handleMenuClick("code-couleur")}
             >
               <span className="icon-sidebar">
-                <FaPaletteIcon />
+              <i className="bi bi-palette-fill"></i>
               </span>
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Code couleur</span>
             </li>
@@ -177,9 +170,20 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               onClick={() => handleMenuClick("site")}
             >
               <span className="icon-sidebar">
-                <FaPaletteIcon />
+              <i className="bi bi-geo-alt-fill"></i>
               </span>
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Sites</span>
+            </li>
+            <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "user" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "user" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("user")}
+            >
+              <span className="icon-sidebar">
+              <i className="bi bi-people-fill"></i>
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Utilisateur</span>
             </li>
           </ul>
         </nav>
