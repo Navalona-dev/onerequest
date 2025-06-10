@@ -1,8 +1,10 @@
 // src/components/front/Spinner.tsx
 import React, { useState, useEffect } from "react";
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 
 export const Spinner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -26,6 +28,9 @@ export const Spinner: React.FC = () => {
       "
     >
       <div
+      style={{
+        
+      }}
         className="
           animate-spin
           rounded-full

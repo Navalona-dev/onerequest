@@ -216,21 +216,12 @@
   font-size: 50px !important;
 }
 
-.tutoriel-card:hover {
-  background-color: #ef4444;
-}
-
 .tutoriel-card:hover i, .tutoriel-card:hover h3, .tutoriel-card:hover p {
   color: #fff !important;
 }
 
 .tutoriel-card:hover .icon-tuto {
-  border: #fff solid 1px;
-}
-
-.tutoriel-card:hover .tutoriel-footer {
-  background-color: #fff !important;
-  color: #ef4444 !important;
+  border: #fff solid 1px !important;
 }
 
 

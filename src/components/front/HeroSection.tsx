@@ -13,18 +13,18 @@ const HeroSection = () => {
 
   return (
     <div className="relative w-full">
-       {codeCouleur?.btnColor && (
-      <style>
-        {`
-          .hero-swiper .swiper-pagination-bullet-active {
-            background-color: ${codeCouleur.btnColor} !important;
-          }
-           .swiper-button-next, .swiper-button-prev {
-            color: ${codeCouleur.btnColor} !important
-          }
-        `}
-      </style>
-    )}
+       {codeCouleur?.id && (
+        <style>
+          {`
+            .hero-swiper .swiper-pagination-bullet-active {
+              background-color: ${codeCouleur.btnColor} !important;
+            }
+            .swiper-button-next, .swiper-button-prev {
+              color: ${codeCouleur.btnColor} !important
+            }
+          `}
+        </style>
+      )}
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         navigation

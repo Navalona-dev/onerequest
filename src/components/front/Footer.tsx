@@ -1,12 +1,29 @@
 import React from "react";
 
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
+
 const Footer = () => {
+    const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+
     return(
         <footer className="bg-gray-900 text-gray-300 mt-10 pt-12 footer">
+            {codeCouleur?.id && (
+                <style>
+                    {`
+                       .footer .section-title::after {
+                        background: ${codeCouleur.textColor} !important
+                       }
+                    `}
+                </style>
+                )}
             <div className="container mx-auto px-4 pb-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {/* Branding */}
-                <div className="bg-red-600 rounded-lg p-5">
+                <div 
+                style={{
+                    backgroundColor: codeCouleur?.btnColor
+                }}
+                className="rounded-lg p-5">
                     <h1 className="text-white text-2xl font-bold mb-3 uppercase">ONEREQUEST</h1>
                     <p className="text-white text-sm">
                     Pour toute demande d’information, de partenariat ou d’assistance, n'hésitez pas à nous contacter. Notre équipe est à votre écoute.
@@ -15,7 +32,11 @@ const Footer = () => {
 
                 {/* Contact */}
                 <div>
-                    <h6 className="section-title text-xl text-red-500 uppercase mb-4 font-semibold">Contact</h6>
+                    <h6 
+                    style={{
+                        color: codeCouleur?.textColor
+                    }}
+                    className="section-title text-xl uppercase mb-4 font-semibold">Contact</h6>
                     <p className="mb-2"><i className="bi bi-geo-alt-fill mr-2"></i>123 Rue, Antananarivo, Madagascar</p>
                     <p className="mb-2"><i className="bi bi-telephone-fill mr-2"></i>+261 34 00 000 00</p>
                     <p className="mb-2"><i className="bi bi-envelope-fill mr-2"></i>contact@atdm.mg</p>
@@ -29,7 +50,11 @@ const Footer = () => {
 
                 {/* Liens utiles */}
                 <div>
-                    <h6 className="section-title text-xl text-red-500 uppercase mb-4 font-semibold">Informations</h6>
+                    <h6 
+                    style={{
+                        color: codeCouleur?.textColor
+                    }}
+                    className="section-title text-xl uppercase mb-4 font-semibold">Informations</h6>
                     <ul className="space-y-2">
                     <li><a href="#" className="hover:text-white transition">À propos</a></li>
                     <li><a href="#" className="hover:text-white transition">Contact</a></li>
@@ -41,7 +66,11 @@ const Footer = () => {
 
                 {/* Services */}
                 <div>
-                    <h6 className="section-title text-xl text-red-500 uppercase mb-4 font-semibold">Services</h6>
+                    <h6 
+                    style={{
+                        color: codeCouleur?.textColor
+                    }}
+                    className="section-title text-xl uppercase mb-4 font-semibold">Services</h6>
                     <ul className="space-y-2">
                     <li><a href="#" className="hover:text-white transition">Restauration</a></li>
                     <li><a href="#" className="hover:text-white transition">Bien-être</a></li>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../service/Api";
+import { publicApi } from "../service/publicApi";
 
 export interface CodeCouleur {
   id: number;
@@ -29,7 +30,6 @@ export const useGlobalActiveCodeCouleur = () => {
       .catch((error) => console.error("Erreur API:", error))
       .finally(() => setLoading(false));
   }, []);
-  
 
   return { codeCouleur, loading };
 };

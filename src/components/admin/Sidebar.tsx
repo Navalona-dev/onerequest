@@ -13,11 +13,32 @@ import { useTheme } from "../../contexts/admin/ThemeContext";
 import { useModule } from "../../contexts/admin/ModuleContext";
 import { useNavigate } from "react-router-dom";
 import { useLayoutContent } from "../../contexts/admin/LayoutContext";
+import UserAdminConnected from "../../hooks/UserAdminConnected";
 
 
 type SidebarProps = {
   onCloseMobileSidebar: () => void;
 };
+
+type Privilege = {
+  id: number;
+  title: string;
+};
+
+type Site = {
+  id: number;
+  nom: string;
+};
+
+type UserType = {
+  id: number;
+  nom: string;
+  prenom: string;
+  privileges: Privilege[];
+  site: Site;
+  message: string;
+};
+
 
 const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
   const navigate = useNavigate();
@@ -26,6 +47,8 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
   const [isHoveringDemande, setIsHoveringDemande] = useState<boolean>(false);
 
   const location = useLocation();
+
+  const user = UserAdminConnected() as UserType | null;
 
   const [activeMenu, setActiveMenu] = useState<string>("dashboard");
   const { currentModule, setCurrentModule } = useModule();
@@ -80,7 +103,13 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
         )}
 
         <h1 className={`text-2xl font-bold mb-5 ${isSidebarCollapsed ? 'hidden' : 'inline'}`}>ONEREQUEST</h1>
-        <nav className="mt-5">
+        {user ? (
+        <h4 className="my-3">{user.site.nom}</h4>
+      ) : (
+        null
+      )}
+      <hr />
+        <nav className="mt-8">
           <ul className="space-y-2 text-sm">
             <li
               className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${

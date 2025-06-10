@@ -1,12 +1,23 @@
+import React, {useState} from "react";
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
+
 const NewsletterBlock = () => {
+    const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+    const [hover, setHover] = useState(false);
     return(
         <div className="container mx-auto mt-12 newsletter">
+        
             <div className="flex justify-center">
                 <div className="w-full max-w-3xl border rounded-lg p-1">
                 <div className="border rounded-lg text-center p-1">
                     <div className="bg-white rounded-lg px-6 py-12">
                     <h4 className="text-xl font-semibold mb-4">
-                        Abonnez-vous à notre <span className="text-red-600 uppercase">Newsletter</span>
+                        Abonnez-vous à notre  
+                        <span 
+                        style={{
+                            color: codeCouleur?.textColor
+                        }}
+                        className="uppercase"> Newsletter</span>
                     </h4>
                     <div className="relative mx-auto max-w-md">
                         <input
@@ -16,7 +27,13 @@ const NewsletterBlock = () => {
                         />
                         <button
                         type="button"
-                        className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition"
+                        style={{
+                            backgroundColor: hover ? 
+                            codeCouleur?.btnColorHover : codeCouleur?.btnColor
+                        }}
+                        onMouseEnter={ () => setHover(true)}
+                        onMouseLeave={() => setHover(false)}
+                        className="absolute top-2 right-1 btn-news text-white px-4 py-2 rounded-lg text-sm transition"
                         >
                         S'inscrire
                         </button>
@@ -26,7 +43,6 @@ const NewsletterBlock = () => {
                 </div>
             </div>
         </div>
-
     )
 }
 

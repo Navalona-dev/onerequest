@@ -10,8 +10,11 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Provider } from "react-redux";
 import { store } from "./store";
+import PrivateRouteAdmin from './service/PrivateRouteAdmin';
 
 import ContentPageFront from './pages/front/ContentPage';
+import LoginPage from './pages/admin/LoginPage';
+import LogoutAdmin from './service/LogoutAdmin';
 
 function App() {
   return (
@@ -25,13 +28,17 @@ function App() {
               <Route path="/soumettre-demande" element={<ContentPageFront />} />
               <Route path="/contact" element={<ContentPageFront />} />
               <Route path="/rendez-vous" element={<ContentPageFront />} />
-              <Route path="/admin" element={<ContentPage />} />
-              <Route path="/document" element={<ContentPage />} />
-              <Route path="/report" element={<ContentPage />} />
-              <Route path="/demande" element={<ContentPage />} />
-              <Route path="/code-couleur" element={<ContentPage />} />
-              <Route path="/site" element={<ContentPage />} />
-              <Route path="/user" element={<ContentPage />} />
+              <Route path="/admin/login" element={<LoginPage />} />
+              <Route path="/admin/logout" element={<LogoutAdmin />} />
+              <Route element={<PrivateRouteAdmin />}>
+                <Route path="/admin" element={<ContentPage />} />
+                <Route path="/document" element={<ContentPage />} />
+                <Route path="/report" element={<ContentPage />} />
+                <Route path="/demande" element={<ContentPage />} />
+                <Route path="/code-couleur" element={<ContentPage />} />
+                <Route path="/site" element={<ContentPage />} />
+                <Route path="/user" element={<ContentPage />} />
+              </Route>
             </Routes>
           </ModuleProvider>
         </LayoutContentProvider>

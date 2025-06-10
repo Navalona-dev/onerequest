@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import CodeColorPage from "./CodeColorPage";
 import SitePage from "./SitePage";
 import UserPage from "./UserPage";
+import LoginPage from "./LoginPage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();

@@ -24,6 +24,11 @@ const SiteComponent = () => {
   const state = store.getState();
   const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
 
+  const [nombre, setNombre] = useState<number>(0); 
+
+  function isPair(n: number): boolean {
+      return n % 2 === 0;
+  }
 
   useEffect(() => {
     api.get("/api/sites")
@@ -38,20 +43,20 @@ const SiteComponent = () => {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Table des site */}
-        <div className="color-card">
-        <div className="color-header p-4 flex justify-between items-center mb-5">
-          <h4 className="font-bold text-white">Liste site</h4>
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-red-500 px-5 py-2 text-white rounded"
-          >
-            {create.upperText}
-          </button>
-        </div>
+        <div className="h-[75vh] overflow-y-auto">
+          <div className="color-header p-4 flex justify-between items-center mb-5">
+            <h4 className="font-bold text-white">Liste site</h4>
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-red-500 px-5 py-2 text-white rounded"
+            >
+              {create.upperText}
+            </button>
+          </div>
 
 
-          <div className="overflow-x-auto w-[80vh]">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-400 dark:text-gray-400">
+          <div className="overflow-x-auto w-[80vh] pl-4">
+            <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-400 dark:text-gray-400">
               <thead className="text-xs text-white uppercase">
                 <tr className="text-nowrap border-b border-gray-700">
                   <th className="px-6 py-3">Actions</th>
@@ -62,7 +67,7 @@ const SiteComponent = () => {
               <tbody>
               {sites.length > 0 ? (
                 sites.map((item) => (
-                  <tr key={item.id} className="border-b border-gray-200 text-nowrap">
+                  <tr key={item.id} className={`text-nowrap ${isPair(nombre + item.id) ? "bg-[#1c2d55]" : ""}`}>
                     <td className="px-6 py-4">
                       <a href="#"
                       onClick={(e) => {

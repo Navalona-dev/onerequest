@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import HorizontalNav from './HorizontalNav';
 import { useLayoutContent } from '../../contexts/admin/LayoutContext';
+import { Link } from "react-router-dom";
 
 type HeaderProps = {
   onToggleMobileSidebar: () => void;
@@ -10,7 +11,7 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
   const { layoutContent, isSidebarCollapsed, setIsSidebarCollapsed } = useLayoutContent();
 
   const bgColor = layoutContent === "vertical" ? "bg-[#0B1437] admin-header-vertical" : "bg-red-500 admin-header-horizontal";
-  
+
   return (
     <div className={`${bgColor} text-white p-4 flex justify-between items-center`}>
      <div>
@@ -75,6 +76,10 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
           alt="user"
           className="w-8 h-8 rounded-full"
         />
+        
+      <Link to="/admin/logout" title="Se déconnecter">
+            <span>🔓</span>
+        </Link>
       </div>
     </div>
   );

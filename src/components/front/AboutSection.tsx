@@ -46,30 +46,70 @@ const AboutSection = () => {
                 className="text-sm font-semibold uppercase"
 
                 >À propos de nous</p>
-                <h1 className="text-4xl md:text-5xl text-[#111C44] font-bold">We Are Leader In Industrial Market</h1>
+                <h1 
+                    style={{
+                        color: codeCouleur?.bgColor
+                    }}
+                    className="text-4xl md:text-5xl font-bold"
+                >
+                    We Are Leader In Industrial Market</h1>
                 <p className="text-gray-600">
                     Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos.
                     Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet.
                 </p>
 
                 <div className="flex items-center gap-6 bg-gray-50 p-6 rounded-lg shadow">
-                    <div className="bg-red-500 text-white text-center px-6 py-9">
-                        <h1 className="text-5xl font-bold text-[#111C44]">25</h1>
+                    <div 
+                        style={{
+                            backgroundColor: codeCouleur?.btnColor
+                        }}
+                        className="text-white text-center px-6 py-9"
+                    >
+                        <h1 
+                        style={{
+                            color: codeCouleur?.bgColor
+                        }}
+                        className="text-5xl font-bold"
+                        >25</h1>
                         <p className="text-lg">Years of</p>
                         <p className="text-lg">Experience</p>
                     </div>
                     <div className="space-y-2">
-                    <p><i className="bi bi-check-all mr-2 text-red-500 text-xl"></i>Power & Energy</p>
-                    <p><i className="bi bi-check-all mr-2 text-red-500 text-xl"></i>Civil Engineering</p>
-                    <p><i className="bi bi-check-all mr-2 text-red-500 text-xl"></i>Chemical Engineering</p>
-                    <p><i className="bi bi-check-all mr-2 text-red-500 text-xl"></i>Mechanical Engineering</p>
-                    <p><i className="bi bi-check-all mr-2 text-red-500 text-xl"></i>Oil & Gas Engineering</p>
+                    <p><i 
+                    style={{
+                        color: codeCouleur?.textColor
+                    }}
+                    className="bi bi-check-all mr-2 text-xl"></i>Power & Energy</p>
+                    <p><i 
+                    style={{
+                        color: codeCouleur?.textColor
+                    }}
+                    className="bi bi-check-all mr-2 text-xl"></i>Civil Engineering</p>
+                    <p><i 
+                    style={{
+                        color: codeCouleur?.textColor
+                    }}
+                    className="bi bi-check-all mr-2 text-xl"></i>Chemical Engineering</p>
+                    <p><i 
+                    style={{
+                        color: codeCouleur?.textColor
+                    }}
+                    className="bi bi-check-all mr-2 text-xl"></i>Mechanical Engineering</p>
+                    <p><i 
+                    style={{
+                        color: codeCouleur?.textColor
+                    }}
+                    className="bi bi-check-all mr-2 text-xl"></i>Oil & Gas Engineering</p>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
                     <div className="flex items-center gap-4">
-                    <div className="bg-red-500 rounded-full w-14 h-14 flex items-center justify-center">
+                    <div 
+                    style={{
+                        backgroundColor: codeCouleur?.btnColor
+                    }}
+                    className="rounded-full w-14 h-14 flex items-center justify-center">
                         <i className="bi bi-envelope-open-fill text-white text-xl"></i>
                     </div>
                     <div>
@@ -78,7 +118,11 @@ const AboutSection = () => {
                     </div>
                     </div>
                     <div className="flex items-center gap-4">
-                    <div className="bg-red-500 rounded-full w-14 h-14 flex items-center justify-center">
+                    <div 
+                    style={{
+                        backgroundColor: codeCouleur?.btnColor
+                    }}
+                    className="rounded-full w-14 h-14 flex items-center justify-center">
                         <i className="bi bi-telephone-fill text-white text-xl"></i>
                     </div>
                     <div>

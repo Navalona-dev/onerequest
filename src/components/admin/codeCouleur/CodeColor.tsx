@@ -50,6 +50,12 @@ const CodeColor = () => {
 
   const state = store.getState();
   const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
+
+  const [nombre, setNombre] = useState<number>(0); 
+
+  function isPair(n: number): boolean {
+      return n % 2 === 0;
+  }
   
   useEffect(() => {
     api.get("/api/code_couleurs")
@@ -71,7 +77,7 @@ const CodeColor = () => {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Table des codes couleur */}
-        <div className="color-card h-[75vh] overflow-y-auto">
+        <div className="h-[75vh] overflow-y-auto">
           <div className="color-header p-4">
             <div className="color-header p-4 flex justify-between items-center mb-5">
               <h4 className="font-bold text-white">Liste code couleur</h4>
@@ -90,7 +96,7 @@ const CodeColor = () => {
           </div>
 
           <div className="overflow-x-auto w-[80vh] h-[70h] overflow-y-auto">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-400 dark:text-gray-400">
+            <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-400 dark:text-gray-400">
               <thead className="text-xs text-white uppercase">
                 <tr className="text-nowrap border-b border-gray-700">
                   <th className="px-6 py-3">Actions</th>
@@ -107,7 +113,7 @@ const CodeColor = () => {
               <tbody>
               {codeCouleurs.length > 0 ? (
                 codeCouleurs.map((item) => (
-                  <tr key={item.id} className="border-b border-gray-200 text-nowrap">
+                  <tr key={item.id} className={`text-nowrap ${isPair(nombre + item.id) ? "bg-[#1c2d55]" : ""}`}>
                     <td className="px-6 py-4">
                       <a href="#" 
                       onClick={(e) => {

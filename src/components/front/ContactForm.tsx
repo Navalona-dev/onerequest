@@ -1,14 +1,26 @@
 // ContactMapAndForm.tsx
-import React from "react";
+import React, { useState } from "react";
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 
 export const ContactForm: React.FC = () => {
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+  const [hover, setHover] = useState(false);
+
   return (
     <div className="mx-auto max-w-screen-xl px-12">
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Texte + Infos */}
         <div className="space-y-4">
-          <p className="text-sm font-medium uppercase text-red-500">Contactez-nous</p>
-          <h2 className="text-3xl font-semibold text-[#111C44] mb-12">Vous avez une question, une demande ou besoin d’assistance ?</h2>
+          <p 
+          style={{
+            color: codeCouleur?.textColor
+          }}
+          className="text-sm font-medium uppercase">Contactez-nous</p>
+          <h2 
+          style={{
+            color: codeCouleur?.bgColor
+          }}
+          className="text-3xl font-semibold mb-12">Vous avez une question, une demande ou besoin d’assistance ?</h2>
           <p className="text-gray-600 mb-12">
           Notre équipe est à votre écoute pour vous apporter une réponse rapide et personnalisée. N’hésitez pas à remplir le formulaire ci-dessous ou à nous écrire directement — nous vous répondrons dans les plus brefs délais.
           </p>
@@ -16,7 +28,11 @@ export const ContactForm: React.FC = () => {
           <div className="grid gap-4 md:grid-cols-2">
             {/* Info 1 */}
             <div className="flex items-start space-x-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500 text-white">
+              <div 
+              style={{
+                backgroundColor: codeCouleur?.btnColor
+              }}
+              className="flex h-12 w-12 items-center justify-center rounded-full text-white">
                 <i className="bi bi-telephone-fill text-2xl"></i>
               </div>
               <div>
@@ -27,7 +43,11 @@ export const ContactForm: React.FC = () => {
 
             {/* Info 2 */}
             <div className="flex items-start space-x-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500 text-white">
+              <div 
+              style={{
+                backgroundColor: codeCouleur?.btnColor
+              }}
+              className="flex h-12 w-12 items-center justify-center rounded-full text-white">
                 <i className="bi bi-envelope-fill text-2xl"></i>
               </div>
               <div>
@@ -93,7 +113,12 @@ export const ContactForm: React.FC = () => {
             <div>
               <button
                 type="submit"
-                className="inline-flex items-center rounded bg-red-500 px-5 py-2 text-white hover:bg-red-600"
+                style={{
+                  backgroundColor: hover ? codeCouleur?.btnColorHover : codeCouleur?.btnColor
+                }}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+                className="inline-flex items-center rounded px-5 py-2 text-white hover:bg-red-600"
               >
                 Envoyer Message
               </button>

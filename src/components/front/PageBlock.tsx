@@ -1,6 +1,23 @@
+import React from "react";
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
+
 const PageBlock = () => {
+    const {codeCouleur,loading} = useGlobalActiveCodeCouleur();
+
     return(
         <div className="w-full py-12 bg-white page-block shadow-md animate-fade-in">
+            {codeCouleur?.id && (
+                <style>
+                    {`
+                        .page-block-card {
+                            border-color: ${codeCouleur.btnColor} !important
+                        }
+                        .page-block-card:hover {
+                            background-color: ${codeCouleur.btnColor} !important
+                        }
+                    `}
+                </style>
+                )}
             <div className="container mx-auto">
             <div className="w-full">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mx-6">
