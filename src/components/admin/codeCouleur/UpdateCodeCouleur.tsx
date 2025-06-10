@@ -15,22 +15,39 @@ interface AddCodeCouleurProps {
     btnColor: string;
     colorOne: string;
     colorTwo: string;
+    isGlobal: boolean;
+    isDefault: boolean;
+    isActive: boolean;
+    textColorHover: string;
+    btnColorHover: string;
+  };
+  codeCouleur?: {
+    isGlobal?: boolean | null;
+    isDefault?: boolean | null;
   };
 }
+
 
 interface Site {
   id: number;
   nom: string;
 }
-
-const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModalUpdate, codeId, initialData }) => {
+const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
+  setShowModalUpdate,
+  codeId,
+  initialData,
+  codeCouleur
+}) => {
   const [formData, setFormData] = useState({
     site: initialData.site ? `/api/sites/${initialData.site.id}` : "",
     bgColor: initialData.bgColor,
     textColor: initialData.textColor,
     btnColor: initialData.btnColor,
+    textColorHover: initialData.textColorHover,
+    btnColorHover: initialData.btnColorHover,
     colorOne: initialData.colorOne,
     colorTwo: initialData.colorTwo,
+   
   });
 
   const fieldLabels: { [key: string]: string } = {
@@ -40,6 +57,8 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModalUpdate, 
     btnColor: "Couleur du bouton",
     colorOne: "Couleur 1",
     colorTwo: "Couleur 2",
+    textColorHover: "Couleur du text en survol",
+    btnColorHover: "Couleur du bouton en survole"
   };
 
   const [siteListe, setSiteListe] = useState<Site[]>([]);
@@ -61,8 +80,28 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModalUpdate, 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const buildPayload = () => {
+      const basePayload = codeCouleur?.isGlobal || codeCouleur?.isDefault
+        ? (() => {
+            const { site, ...rest } = formData;
+            return rest;
+          })()
+        : formData;
+    
+      return {
+        ...basePayload,
+        isActive: initialData.isActive,
+        isGlobal: initialData.isGlobal,
+        isDefault: initialData.isDefault
+      };
+    };
+    
+    
+    const payload = buildPayload();
+
     try {
-      const response = await api.put(`/api/code_couleurs/${codeId}`, formData);
+      const response = await api.put(`/api/code_couleurs/${codeId}`, payload);
       Swal.fire({
         icon: "success",
         title: "Bon travail!",
@@ -98,6 +137,8 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModalUpdate, 
     fetchSiteListe();
   }, []);
 
+  console.log("codeCouleur props:", codeCouleur);
+
   return (
     <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
       <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down">
@@ -105,28 +146,46 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModalUpdate, 
         <form onSubmit={handleSubmit} className="space-y-4">
           {Object.keys(formData).map((field) => (
             <div key={field}>
-              <label className="block text-gray-400 mb-1">
-                {fieldLabels[field] || field}
-                {["site", "bgColor", "textColor", "btnColor"].includes(field) && (
-                  <sup className="text-red-500">*</sup>
-                )}
-              </label>
+             
+             <label className="block text-gray-400 mb-1">
+              {codeCouleur?.isGlobal !== true && codeCouleur?.isDefault !== true ? (
+                 <>
+                 {fieldLabels[field] || field}
+                 {["site", "bgColor", "textColor", "btnColor"].includes(field) && (
+                   <sup className="text-red-500">*</sup>
+                 )}
+               </>
+              ) : (
+                field === "site" ? null : (
+                  <>
+                    {fieldLabels[field] || field}
+                    {["bgColor", "textColor", "btnColor"].includes(field) && (
+                      <sup className="text-red-500">*</sup>
+                    )}
+                  </>
+                )
+              )}
+            </label>
 
               {field === "site" ? (
-                <select
-                  name="site"
-                  value={formData.site}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
-                  required
-                >
-                  <option value="" disabled>Selectionner un site</option>
+                (codeCouleur?.isGlobal != true && codeCouleur?.isDefault != true) ? (
+                  <select
+                    name="site"
+                    value={formData.site}
+                    onChange={handleChange}
+                    className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
+                    required
+                  >
+                  <option value="" disabled selected>Selectionner un site</option>
                   {siteListe.map((site) => (
                     <option key={site.id} value={`/api/sites/${site.id}`}>
                       {site.nom}
                     </option>
                   ))}
                 </select>
+                )  : (
+                 null
+                )
               ) : (
                 <input
                   type="color"

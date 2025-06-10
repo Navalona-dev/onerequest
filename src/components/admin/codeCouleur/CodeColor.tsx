@@ -19,6 +19,10 @@ export interface CodeCouleur {
   colorOne: string;
   colorTwo: string;
   isActive: boolean;
+  isGlobal: boolean;
+  isDefault: boolean;
+  textColorHover: string;
+  btnColorHover: string;
 }
 
 
@@ -91,9 +95,11 @@ const CodeColor = () => {
                 <tr className="text-nowrap border-b border-gray-700">
                   <th className="px-6 py-3">Actions</th>
                   <th className="px-6 py-3">Site</th>
-                  <th className="px-6 py-3">Couleur de fond</th>
-                  <th className="px-6 py-3">Couleur de texte</th>
+                  <th className="px-6 py-3">Fond</th>
+                  <th className="px-6 py-3">Texte</th>
+                  <th className="px-6 py-3">Texte en survol</th>
                   <th className="px-6 py-3">Bouton</th>
+                  <th className="px-6 py-3">Bouton en survol</th>
                   <th className="px-6 py-3">Couleur 1</th>
                   <th className="px-6 py-3">Couleur 2</th>
                 </tr>
@@ -148,10 +154,14 @@ const CodeColor = () => {
                         <i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl"></i>
                       </a>
                     </td>
-                    <td className="px-6 py-4">{item.site ? (item.site.nom) : null}</td>
+                    <td className="px-6 py-4">
+                      {item.site ? item.site.nom : (item.isGlobal === true ? "Couleur globale" : "Couleur par defaut")}
+                    </td>
                     <td className="px-6 py-4">{item.bgColor}</td>
                     <td className="px-6 py-4">{item.textColor}</td>
+                    <td className="px-6 py-4">{item.textColorHover}</td>
                     <td className="px-6 py-4">{item.btnColor}</td>
+                    <td className="px-6 py-4">{item.btnColorHover}</td>
                     <td className="px-6 py-4">{item.colorOne}</td>
                     <td className="px-6 py-4">{item.colorTwo}</td>
                   </tr>
@@ -194,6 +204,15 @@ const CodeColor = () => {
             btnColor: selectedCodeCouleur.btnColor,
             colorOne: selectedCodeCouleur.colorOne,
             colorTwo: selectedCodeCouleur.colorTwo,
+            isActive: selectedCodeCouleur.isActive,
+            isGlobal: selectedCodeCouleur.isGlobal,
+            isDefault: selectedCodeCouleur.isDefault,
+            textColorHover: selectedCodeCouleur.textColorHover,
+            btnColorHover: selectedCodeCouleur.btnColorHover
+          }}
+          codeCouleur={{
+            isGlobal: selectedCodeCouleur.isGlobal,
+            isDefault: selectedCodeCouleur.isDefault
           }}
           
         />

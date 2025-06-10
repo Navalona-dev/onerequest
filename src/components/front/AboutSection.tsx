@@ -5,9 +5,13 @@ import useInView from '../../hooks/useInView';
 import About1 from '../../assets/images/about-1.png';
 import About2 from '../../assets/images/about-2.png';
 
+import { useGlobalActiveCodeCouleur } from '../../hooks/UseGlobalActiveCodeCouleur';
+
 const AboutSection = () => {
     const [leftRef, leftVisible] = useInView();
     const [rightRef, rightVisible] = useInView();
+
+    const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
     
     return(
         <div className="py-20 px-4 max-w-7xl mx-auto">
@@ -35,7 +39,13 @@ const AboutSection = () => {
 
                 {/* Right Side - Content */}
                 <div className="flex-1 space-y-6 animate-fadeIn delay-500">
-                <p className="text-sm font-semibold uppercase text-red-500">À propos de nous</p>
+                <p 
+                style={{
+                    color: codeCouleur?.textColor
+                }}
+                className="text-sm font-semibold uppercase"
+
+                >À propos de nous</p>
                 <h1 className="text-4xl md:text-5xl text-[#111C44] font-bold">We Are Leader In Industrial Market</h1>
                 <p className="text-gray-600">
                     Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos.

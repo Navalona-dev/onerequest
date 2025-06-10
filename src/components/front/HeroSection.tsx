@@ -1,14 +1,30 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import HeroSectionData from '../../datas/HeroSectionData';
+import { useGlobalActiveCodeCouleur } from '../../hooks/UseGlobalActiveCodeCouleur';
 
 const HeroSection = () => {
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+  const [hover, setHover] = useState(false);
+
   return (
     <div className="relative w-full">
+       {codeCouleur?.btnColor && (
+      <style>
+        {`
+          .hero-swiper .swiper-pagination-bullet-active {
+            background-color: ${codeCouleur.btnColor} !important;
+          }
+           .swiper-button-next, .swiper-button-prev {
+            color: ${codeCouleur.btnColor} !important
+          }
+        `}
+      </style>
+    )}
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         navigation
@@ -31,9 +47,16 @@ const HeroSection = () => {
                 <p className="mt-6">
                   <a
                     href="#"
-                    className="rounded-lg bg-red-500 py-3 px-6 text-white hover:bg-red-600"
+                    className={`rounded-lg py-3 px-6 text-white`}
+                    style={{
+                      backgroundColor: hover
+                        ? codeCouleur?.btnColorHover
+                        : codeCouleur?.btnColor,
+                    }}
+                    onMouseEnter={() => setHover(true)}
+                    onMouseLeave={() => setHover(false)}
                   >
-                    Soumettre une demande
+                    Soumettre une demande 
                   </a>
                 </p>
               </div>
