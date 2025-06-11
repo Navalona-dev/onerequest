@@ -14,6 +14,7 @@ import { useModule } from "../../contexts/admin/ModuleContext";
 import { useNavigate } from "react-router-dom";
 import { useLayoutContent } from "../../contexts/admin/LayoutContext";
 import UserAdminConnected from "../../hooks/UserAdminConnected";
+import api from "../../service/Api";
 
 
 type SidebarProps = {
@@ -37,6 +38,7 @@ type UserType = {
   privileges: Privilege[];
   site: Site;
   message: string;
+  isSuperAdmin: boolean;
 };
 
 
@@ -45,6 +47,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
   const { theme } = useTheme();
   const [demandeOpen, setDemandeOpen] = useState<boolean>(false);
   const [isHoveringDemande, setIsHoveringDemande] = useState<boolean>(false);
+  const [currentSite, setCurrentSite] = useState<Site | null>(null);
 
   const location = useLocation();
 
@@ -91,6 +94,14 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
     }
   }, [location.pathname]);
 
+ useEffect(() => {
+    api.get('/api/sites/current')
+    .then((response) => {
+      setCurrentSite(response.data);
+    })
+    .catch((error) => console.error("Erreur API:", error));
+ }, [])
+
   return (
       <div className={`transition-all duration-300 ${isSidebarCollapsed ? 'w-20' : 'w-64'} ${bgColor} min-h-screen p-4 admin-sidebar`}>
         {onCloseMobileSidebar && (
@@ -104,7 +115,15 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
 
         <h1 className={`text-2xl font-bold mb-5 ${isSidebarCollapsed ? 'hidden' : 'inline'}`}>ONEREQUEST</h1>
         {user ? (
-        <h4 className="my-3">{user.site.nom}</h4>
+          user.site ? (
+            <h4 className="my-3">{user.site.nom}</h4>
+          ) : (
+            currentSite ? (
+              <h4 className="my-3">{currentSite.nom}</h4>
+            ) : (
+              null
+            )
+          )
       ) : (
         null
       )}
@@ -181,6 +200,9 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               )}
             </li>
 
+            
+            {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') && user.isSuperAdmin === true ? (
+            <>
             <li
               className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
                 activeMenu === "code-couleur" ? "bg-[#1c2d55] text-white" : ""
@@ -193,16 +215,22 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Code couleur</span>
             </li>
             <li
-              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
-                activeMenu === "site" ? "bg-[#1c2d55] text-white" : ""
-              } ${currentModule === "site" ? "bg-[#1c2d55] text-white" : ""}`}
-              onClick={() => handleMenuClick("site")}
-            >
-              <span className="icon-sidebar">
-              <i className="bi bi-geo-alt-fill"></i>
-              </span>
-              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Sites</span>
-            </li>
+                className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                  activeMenu === "site" ? "bg-[#1c2d55] text-white" : ""
+                } ${currentModule === "site" ? "bg-[#1c2d55] text-white" : ""}`}
+                onClick={() => handleMenuClick("site")}
+              >
+                <span className="icon-sidebar">
+                <i className="bi bi-geo-alt-fill"></i>
+                </span>
+                <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Sites</span>
+              </li>
+            </>
+              
+            ) : (
+              null
+            )}
+            
             <li
               className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
                 activeMenu === "user" ? "bg-[#1c2d55] text-white" : ""

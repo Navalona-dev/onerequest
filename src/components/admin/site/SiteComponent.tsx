@@ -13,6 +13,7 @@ export interface Site {
   nom: string;
   description: string;
   isActive: boolean;
+  isCurrent: boolean;
 }
 
 const SiteComponent = () => {
@@ -33,7 +34,6 @@ const SiteComponent = () => {
   useEffect(() => {
     api.get("/api/sites")
       .then((response) => {
-        console.log("Données reçues:", response.data); // 👈 Ajoute ceci
         setSites(response.data);
       })
       .catch((error) => console.error("Erreur API:", error));
@@ -66,8 +66,8 @@ const SiteComponent = () => {
               </thead>
               <tbody>
               {sites.length > 0 ? (
-                sites.map((item) => (
-                  <tr key={item.id} className={`text-nowrap ${isPair(nombre + item.id) ? "bg-[#1c2d55]" : ""}`}>
+                sites.map((item, index) => (
+                  <tr key={item.id} className={`text-nowrap ${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
                     <td className="px-6 py-4">
                       <a href="#"
                       onClick={(e) => {
@@ -150,7 +150,10 @@ const SiteComponent = () => {
           initialData={{
             nom: selectedSite.nom,
             description: selectedSite.description,
+            isActive: selectedSite.isActive,
+            isCurrent: selectedSite.isCurrent
           }}
+          
         />
       )}
 

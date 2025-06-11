@@ -4,47 +4,66 @@ import { store } from "../../../store";
 import AddUser from "./AddUser";
 import UpdateUser from "./UpdateUser";
 import deleteUser from "../../../service/DeleteUser";
+import UserAdminConnected from "../../../hooks/UserAdminConnected";
 
-interface Privilege {
+type Privilege = {
     id: number;
     title: string;
-    description?: string;
-    // autres propriétés si besoin
-  }
-
-export interface User {
+  };
+  
+  type Site = {
     id: number;
     nom: string;
-    email: string;
+  };
+  
+  type UserType = {
+    id: number;
+    nom: string;
     prenom: string;
-    site: { id: number; nom: string } | null; 
+    email: string;
     privileges: Privilege[];
-
-  }
+    site: Site;
+    message: string;
+    isSuperAdmin: boolean;
+  };
+  
 
 const UserComponent = () => {
 
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<UserType[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [showModalUpdate, setShowModalUpdate] = useState(false);
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
     const [nombre, setNombre] = useState<number>(0); 
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
 
+    const user = UserAdminConnected() as UserType | null;
 
     function isPair(n: number): boolean {
         return n % 2 === 0;
     }
 
-    useEffect(() => {
+ useEffect(() => {
+    if(user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true) {
         api.get('/api/users')
-          .then((response) => {
-            console.log("Données reçues:", response.data); 
-            setUsers(response.data);
-          })
-          .catch((error) => console.error("Erreur API:", error));
-      }, []);
+        .then((response) => {
+        setUsers(response.data);
+        })
+        .catch((error) => console.error("Erreur API:", error));
+    }else {
+        if (user && user.site) {
+            api.get(`/api/sites/${user.site.id}/users`)
+                .then((response) => {
+                    const result = Array.isArray(response.data) ? response.data : [response.data];
+                    setUsers(result);
+                })
+                .catch((error) => console.error("Erreur API:", error));
+        }
+    }
+    }, [user]);
+
+   
 
     return(
          <div className="h-[69vh]">
@@ -84,8 +103,8 @@ const UserComponent = () => {
                     </thead>
                     <tbody>
                         {users.length > 0 ? (
-                            users.map((item) => (
-                                <tr className={`${isPair(nombre + item.id) ? "bg-[#1c2d55]" : ""}`}>
+                            users.map((item, index) => (
+                                <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
                                     <th className="px-6 py-4">
                                         <a href="#"
                                         onClick={(e) => {

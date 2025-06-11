@@ -8,13 +8,18 @@ interface UpdateSiteProps {
   initialData: {
     nom: string;
     description: string;
+    isActive: boolean;
+    isCurrent: boolean
   };
+ 
 }
 
 const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, initialData }) => {
   const [formData, setFormData] = useState({
     nom: initialData.nom,
     description: initialData.description,
+    isActive: initialData.isActive,
+    isCurrent: initialData.isCurrent
   });
 
   const fieldLabels: { [key: string]: string } = {
@@ -34,6 +39,7 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
 
     try {
       const response = await api.put(`/api/sites/${siteId}`, formData);
@@ -69,44 +75,41 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
         <h2 className="text-xl font-bold mb-4 text-white">Modifier le site</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {Object.keys(formData).map((field) => (
-            <div key={field}>
-              <label className="block text-gray-400 mb-1">
-                {fieldLabels[field] || field}
-              </label>
-
-              {field === "description" ? (
-                <textarea
-                  name={field}
-                  value={formData[field as keyof typeof formData]}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
-                  required
-                  rows={4}
-                />
-              ) : (
-                <input
-                  type="text"
-                  name={field}
-                  value={formData[field as keyof typeof formData]}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
-                  required
-                  autoComplete="off"
-                />
-              )}
-            </div>
-          ))}
-
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
-              Modifier
-            </button>
+          <div>
+            <label className="block text-gray-400 mb-1">Nom</label>
+            <input
+              type="text"
+              name="nom"
+              value={formData.nom}
+              onChange={handleChange}
+              className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
+              required
+              autoComplete="off"
+            />
           </div>
-        </form>
+
+            <div>
+              <label className="block text-gray-400 mb-1">Description</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
+                required
+                rows={4}
+              />
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Modifier
+              </button>
+            </div>
+          </form>
+
 
         <button
           onClick={() => setShowModalUpdate(false)}

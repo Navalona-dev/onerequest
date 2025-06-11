@@ -15,6 +15,7 @@ import PrivateRouteAdmin from './service/PrivateRouteAdmin';
 import ContentPageFront from './pages/front/ContentPage';
 import LoginPage from './pages/admin/LoginPage';
 import LogoutAdmin from './service/LogoutAdmin';
+import TokenWatcher from './service/TokenWatcher';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <ThemeProvider>
         <LayoutContentProvider>
           <ModuleProvider>
+          <TokenWatcher />
             <Routes>
               <Route path="/" element={<ContentPageFront />} />
               <Route path="/soumettre-demande" element={<ContentPageFront />} />

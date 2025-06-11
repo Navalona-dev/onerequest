@@ -6,13 +6,36 @@ import UpdateCodeCouleur from "./UpdateCodeCouleur";
 import toggleActiveCodeCouleur from "../../../service/ToogleActiveCodeCouleur";
 
 import deleteCodeCouleur from "../../../service/DeleteCodeCouleur";
+import UserAdminConnected from "../../../hooks/UserAdminConnected";
 
 import api from "../../../service/Api";
 import { store } from "../../../store";
 
-export interface CodeCouleur {
+type Site = {
   id: number;
-  site: { id: number; nom: string } | null;  // <- ici
+  nom: string;
+};
+
+type Privilege = {
+  id: number;
+  title: string;
+};
+
+
+type UserType = {
+  id: number;
+  nom: string;
+  prenom: string;
+  email: string;
+  privileges: Privilege[];
+  site: Site;
+  message: string;
+  isSuperAdmin: boolean;
+};
+
+type CodeCouleurType = {
+  id: number;
+  site: Site;
   bgColor: string;
   textColor: string;
   btnColor: string;
@@ -26,8 +49,12 @@ export interface CodeCouleur {
 }
 
 
+
+
 const CodeColor = () => {
   const [siteCount, setSiteCount] = useState(0);
+
+  const user = UserAdminConnected() as UserType | null;
 
   const countSite = async () => {
     try {
@@ -42,11 +69,10 @@ const CodeColor = () => {
   };
 
   
-  const [codeCouleurs, setCodeCouleurs] = useState<CodeCouleur[]>([]);
+  const [codeCouleurs, setCodeCouleurs] = useState<CodeCouleurType[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
-  const [selectedCodeCouleur, setSelectedCodeCouleur] = useState<CodeCouleur | null>(null);
-
+  const [selectedCodeCouleur, setSelectedCodeCouleur] = useState<CodeCouleurType | null>(null);
 
   const state = store.getState();
   const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
@@ -58,10 +84,27 @@ const CodeColor = () => {
   }
   
   useEffect(() => {
-    api.get("/api/code_couleurs")
-      .then((response) => setCodeCouleurs(response.data))
+
+    if(user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true) {
+      api.get("/api/code_couleurs")
+      .then((response) => {
+        console.log(response.data);
+        setCodeCouleurs(response.data)
+      })
       .catch((error) => console.error("Erreur API:", error));
-  }, []);
+    } else {
+      if(user && user.site) {
+        api.get(`/api/sites/${user.site.id}/code-couleurs`)
+        .then((response) => {
+          const result = Array.isArray(response.data) ? response.data : [response.data];
+          console.log(result);
+          setCodeCouleurs(result);
+      })
+        .catch((error) => console.error("Erreur API:", error));
+      }
+    }
+    
+  }, [user]);
 
   useEffect(() => {
     const fetchSiteCount = async () => {
@@ -112,8 +155,8 @@ const CodeColor = () => {
               </thead>
               <tbody>
               {codeCouleurs.length > 0 ? (
-                codeCouleurs.map((item) => (
-                  <tr key={item.id} className={`text-nowrap ${isPair(nombre + item.id) ? "bg-[#1c2d55]" : ""}`}>
+                codeCouleurs.map((item, index) => (
+                  <tr key={item.id} className={`text-nowrap ${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
                     <td className="px-6 py-4">
                       <a href="#" 
                       onClick={(e) => {
