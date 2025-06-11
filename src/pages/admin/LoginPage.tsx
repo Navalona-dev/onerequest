@@ -17,8 +17,8 @@ const LoginPage = () => {
     try {
       const response = await api.post("/api/login", { email, password });
       const token = response.data.token;
-      localStorage.setItem("jwt", token);
-      localStorage.setItem("email", email);
+      sessionStorage.setItem("jwt", token);
+      sessionStorage.setItem("email", email);
       setError(null);
       navigate("/admin");
     } catch (err) {

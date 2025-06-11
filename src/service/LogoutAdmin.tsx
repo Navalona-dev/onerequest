@@ -5,10 +5,10 @@ const LogoutAdmin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Supprime les données du localStorage
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("user");
-    localStorage.removeItem("email");
+    // Supprime les données du sessionStorage
+    sessionStorage.removeItem("jwt");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("email");
 
     // Redirige vers la page de login
     navigate("/admin/login");

@@ -7,8 +7,8 @@ const UserAdminConnected = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("jwt");
-        const email = localStorage.getItem("email");
+        const token = sessionStorage.getItem("jwt");
+        const email = sessionStorage.getItem("email");
 
         const response = await api.get(`/api/users/${email}/get-user-admin-connected`, {
           headers: {
