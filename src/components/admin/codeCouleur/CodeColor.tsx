@@ -88,7 +88,6 @@ const CodeColor = () => {
     if(user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true) {
       api.get("/api/code_couleurs")
       .then((response) => {
-        console.log(response.data);
         setCodeCouleurs(response.data)
       })
       .catch((error) => console.error("Erreur API:", error));
@@ -97,7 +96,6 @@ const CodeColor = () => {
         api.get(`/api/sites/${user.site.id}/code-couleurs`)
         .then((response) => {
           const result = Array.isArray(response.data) ? response.data : [response.data];
-          console.log(result);
           setCodeCouleurs(result);
       })
         .catch((error) => console.error("Erreur API:", error));

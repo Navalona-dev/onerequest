@@ -8,6 +8,8 @@ import deleteSite from "../../../service/DeleteSite";
 import api from "../../../service/Api";
 import { store } from "../../../store";
 
+import RegionComponent from "../region/RegionComponent";
+
 export interface Site {
   id: number;
   nom: string;
@@ -21,6 +23,7 @@ const SiteComponent = () => {
   const [showModal, setShowModal] = useState(false);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
   const [selectedSite, setSelectedSite] = useState<Site | null>(null);
+  const [showRegion, setShowRegion] = useState(false);
 
   const state = store.getState();
   const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
@@ -43,91 +46,106 @@ const SiteComponent = () => {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Table des site */}
-        <div className="h-[75vh] overflow-y-auto">
-          <div className="color-header p-4 flex justify-between items-center mb-5">
-            <h4 className="font-bold text-white">Liste site</h4>
-            <button
-              onClick={() => setShowModal(true)}
-              className="bg-red-500 px-5 py-2 text-white rounded"
-            >
-              {create.upperText}
-            </button>
-          </div>
+        {showRegion ? (
+          <RegionComponent />
+        ) : (
+          <div className="h-[75vh] overflow-y-auto">
+            <div className="color-header p-4 flex justify-between items-center mb-5">
+              <h4 className="font-bold text-white">Liste site</h4>
+              <button
+                onClick={() => setShowModal(true)}
+                className="bg-red-500 px-5 py-2 text-white rounded"
+              >
+                {create.upperText}
+              </button>
+            </div>
 
 
-          <div className="overflow-x-auto w-[80vh] pl-4">
-            <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-400 dark:text-gray-400">
-              <thead className="text-xs text-white uppercase">
-                <tr className="text-nowrap border-b border-gray-700">
-                  <th className="px-6 py-3">Actions</th>
-                  <th className="px-6 py-3">Nom</th>
-                  <th className="px-6 py-3">Description</th>
-                </tr>
-              </thead>
-              <tbody>
-              {sites.length > 0 ? (
-                sites.map((item, index) => (
-                  <tr key={item.id} className={`text-nowrap ${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
-                    <td className="px-6 py-4">
-                      <a href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleActiveSite(
-                          item.id,
-                          true,
-                          setShowModal
-                        )
-                      }}
-                       className={`${item.isActive ? '' : 'hidden'}`} title={deactivate.upperText}>
-                        <i className="bi bi-check-circle-fill bg-green-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
-                      </a>
-                      <a href="#" 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleActiveSite(
-                          item.id,
-                          false,
-                          setShowModal
-                        )
-                      }}
-                      className={`${!item.isActive ? '' : 'hidden'}`} title={activate.upperText}>
-                        <i className="bi bi-x-circle-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
-                      </a>
-                      <a href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        deleteSite(item.id, setShowModal);
-                      }}
-                       title={deleteAction.upperText}>
-                        <i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
-                      </a>
-                      <a
-                        href="#"
+            <div className="overflow-x-auto w-[80vh] pl-4">
+              <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-400 dark:text-gray-400">
+                <thead className="text-xs text-white uppercase">
+                  <tr className="text-nowrap border-b border-gray-700">
+                    <th className="px-6 py-3">Actions</th>
+                    <th className="px-6 py-3">Nom</th>
+                    <th className="px-6 py-3">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {sites.length > 0 ? (
+                  sites.map((item, index) => (
+                    <tr key={item.id} className={`text-nowrap ${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
+                      <td className="px-6 py-4">
+                        <a href="#"
                         onClick={(e) => {
                           e.preventDefault();
-                          setSelectedSite(item);
-                          setShowModalUpdate(true);
+                          toggleActiveSite(
+                            item.id,
+                            true,
+                            setShowModal
+                          )
                         }}
-                        title={edit.upperText}
-                      >
-                        <i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl"></i>
-                      </a>
+                        className={`${item.isActive ? '' : 'hidden'}`} title={deactivate.upperText}>
+                          <i className="bi bi-check-circle-fill bg-green-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                        </a>
+                        <a href="#" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggleActiveSite(
+                            item.id,
+                            false,
+                            setShowModal
+                          )
+                        }}
+                        className={`${!item.isActive ? '' : 'hidden'}`} title={activate.upperText}>
+                          <i className="bi bi-x-circle-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                        </a>
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setSelectedSite(item);
+                            setShowModalUpdate(true);
+                          }}
+                          title={edit.upperText}
+                        >
+                          <i className="bi bi-pencil-square bg-blue-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                        </a>
+                        <a href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          deleteSite(item.id, setShowModal);
+                        }}
+                        title={deleteAction.upperText}>
+                          <i className="bi bi-trash-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                        </a>
+                        
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            setShowRegion(true);
+                          }}
+                          title="Liste région"
+                        >
+                          <i className="bi bi-globe-americas bg-blue-500 px-1.5 py-1 text-white rounded-3xl"></i>
+                        </a>
+                      </td>
+                      <td className="px-6 py-4">{item.nom}</td>
+                      <td className="px-6 py-4">{item.description}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                      Aucun enregistrement trouvé
                     </td>
-                    <td className="px-6 py-4">{item.nom}</td>
-                    <td className="px-6 py-4">{item.description}</td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                    Aucun enregistrement trouvé
-                  </td>
-                </tr>
-              )}
-              </tbody>
-            </table>
+                )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
+        
 
         {/* Image */}
         <div className="color-card h-[45vh] md:h-[75vh]">
