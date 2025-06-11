@@ -22,7 +22,7 @@ export const useGlobalActiveCodeCouleur = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/api/code_couleurs/get-global-active")
+    publicApi.get("/api/code_couleurs/get-global-active")
       .then((response) => {
         console.log(response.data); // <-- ici
         setCodeCouleur(response.data);
