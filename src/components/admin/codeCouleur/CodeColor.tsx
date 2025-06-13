@@ -10,6 +10,7 @@ import UserAdminConnected from "../../../hooks/UserAdminConnected";
 
 import api from "../../../service/Api";
 import { store } from "../../../store";
+import Pagination from "../Pagination";
 
 type Site = {
   id: number;
@@ -77,11 +78,8 @@ const CodeColor = () => {
   const state = store.getState();
   const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
 
-  const [nombre, setNombre] = useState<number>(0); 
-
-  function isPair(n: number): boolean {
-      return n % 2 === 0;
-  }
+  const [currentPage, setCurrentPage] = useState(1);
+  const codeCouleursPerPage = 5;
   
   useEffect(() => {
 
@@ -113,6 +111,10 @@ const CodeColor = () => {
     fetchSiteCount();
   }, []);
   
+  const indexOfLastCodeCouleur = currentPage * codeCouleursPerPage;
+  const indexOfFirstCodeCouleur = indexOfLastCodeCouleur - codeCouleursPerPage;
+  const currentCodeCouleurs = codeCouleurs.slice(indexOfFirstCodeCouleur, indexOfLastCodeCouleur);
+  const totalPages = Math.ceil(codeCouleurs.length / codeCouleursPerPage);
 
   return (
     <>
@@ -152,8 +154,8 @@ const CodeColor = () => {
                 </tr>
               </thead>
               <tbody>
-              {codeCouleurs.length > 0 ? (
-                codeCouleurs.map((item, index) => (
+              {currentCodeCouleurs.length > 0 ? (
+                currentCodeCouleurs.map((item, index) => (
                   <tr key={item.id} className={`text-nowrap ${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
                     <td className="px-6 py-4">
                       <a href="#" 
@@ -223,6 +225,13 @@ const CodeColor = () => {
 
               </tbody>
             </table>
+          </div>
+          <div className="mx-4 mt-4">
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+            />
           </div>
         </div>
 

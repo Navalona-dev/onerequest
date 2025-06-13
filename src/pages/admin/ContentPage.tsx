@@ -13,6 +13,7 @@ import CodeColorPage from "./CodeColorPage";
 import SitePage from "./SitePage";
 import UserPage from "./UserPage";
 import LoginPage from "./LoginPage";
+import RegionPage from "./RegionPage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -31,7 +32,8 @@ const ContentPage = () => {
             "demande", 
             "code-couleur", 
             "site", 
-            "user"
+            "user",
+            "region"
         ].includes(path)) {
             setCurrentModule(path as any);
         } else {
@@ -52,6 +54,8 @@ const ContentPage = () => {
                 return <SitePage />;
             case "user":
                 return <UserPage />;
+            case "region":
+                return <RegionPage />;
             // case "demande":
             //     return <Demande />;
             default:

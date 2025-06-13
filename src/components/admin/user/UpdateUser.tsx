@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import api from "../../../service/Api";
-
+import { AxiosError } from "axios";
 
 export interface Privilege {
     id: number;
@@ -32,7 +32,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ setShowModalUpdate, userId, ini
         nom: initialData.nom,
         prenom: initialData.prenom,
         email: initialData.email,
-        privileges: initialData.privileges.map(p => `/api/privileges/${p.id}`), // ✅ Convertir en URI
+        privileges: initialData.privileges.map(p => `/api/privileges/${p.id}`), 
       });
       
 
@@ -85,8 +85,15 @@ const listePrivilege = async () => {
     e.preventDefault();
 
     try {
-      const response = await api.put(`/api/users/${userId}`, formData);
-      console.log("Réponse API:", response.data);
+      const response = await api.patch(
+        `/api/users/${userId}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/merge-patch+json'
+          }
+        }
+      );
 
       Swal.fire({
         icon: "success",
@@ -100,15 +107,43 @@ const listePrivilege = async () => {
         window.location.reload(); // ou mets à jour l'état local
       });
 
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Erreur",
-        text: "Une erreur est survenue lors de la mise à jour.",
-        confirmButtonColor: "#ef4444",
-        background: "#1c2d55",
-        color: "#fff",
-      });
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>;
+          
+        let errorMessage = `Erreur lors de l\'ajout d\'utilisateur.`;
+      
+        if (error.response) {
+          // Si une réponse est retournée par le backend
+          const status = error.response.status;
+          const backendMessage = error.response.data?.message;
+      
+          // Si le backend renvoie un message clair, on l’affiche
+          if (backendMessage) {
+            errorMessage = backendMessage;
+          } else if (status == 400) {
+            errorMessage = "Un compte avec cet email existe déjà.";
+          }
+          else if (status === 404) {
+            errorMessage = "Utilisateur introuvable.";
+          } else if (status === 401) {
+            errorMessage = "Non autorisé. Veuillez vous reconnecter.";
+          } else if (status === 500) {
+            errorMessage = "Erreur serveur. Réessayez plus tard.";
+          }
+          // Tu peux rajouter d'autres cas ici si besoin
+        } else {
+          // Pas de réponse du serveur (ex: problème de réseau)
+          //errorMessage = "Un compte avec cet email existe déjà.";
+        }
+      
+        await Swal.fire({
+          icon: "error",
+          title: "Erreur",
+          text: errorMessage,
+          confirmButtonColor: "#ef4444",
+          background: "#1c2d55",
+          color: "#fff",
+        });
     }
   };
 

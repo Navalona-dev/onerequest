@@ -101,7 +101,13 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
     const payload = buildPayload();
 
     try {
-      const response = await api.put(`/api/code_couleurs/${codeId}`, payload);
+      const response = await api.patch(`/api/code_couleurs/${codeId}`, payload,
+        {
+          headers: {
+            'Content-Type': 'application/merge-patch+json'
+          }
+        }
+      );
       Swal.fire({
         icon: "success",
         title: "Bon travail!",
@@ -140,8 +146,8 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
   console.log("codeCouleur props:", codeCouleur);
 
   return (
-    <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
-      <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down">
+    <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50 h-[100vh]">
+      <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-y-auto">
         <h2 className="text-xl font-bold mb-4 text-white">Modifier le code couleur</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {Object.keys(formData).map((field) => (

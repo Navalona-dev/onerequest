@@ -48,7 +48,13 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
 
   const handleSiteCurrent = async (siteId: number) => {
     try {
-      const response = await api.put(`/api/sites/${siteId}/selected`);
+      const response = await api.patch(`/api/sites/${siteId}/selected`, 
+        {
+          headers: {
+            'Content-Type': 'application/merge-patch+json'
+          }
+        }
+      );
       setSiteCurrent(response.data);
       window.location.reload();
     } catch (error) {
@@ -105,7 +111,7 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
         <input
           type="text"
           placeholder="Search..."
-          className="bg-[#111C44] text-white p-2 rounded hidden md:inline-block"
+          className="bg-[#111C44] text-white p-2 rounded hidden md:inline-block focus:outline-none focus:ring-0 focus:border-transparent"
         />
       </div>
 

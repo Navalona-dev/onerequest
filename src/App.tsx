@@ -40,6 +40,7 @@ function App() {
                 <Route path="/code-couleur" element={<ContentPage />} />
                 <Route path="/site" element={<ContentPage />} />
                 <Route path="/user" element={<ContentPage />} />
+                <Route path="/region" element={<ContentPage />} />
               </Route>
             </Routes>
           </ModuleProvider>

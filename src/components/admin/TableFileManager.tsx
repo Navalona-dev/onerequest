@@ -83,7 +83,7 @@ const TableFileManager = () => {
                 </table>
             </div>
             <div className="mt-5">
-                <Pagination />
+                {/*<Pagination />*/}
             </div>
         </div>
 

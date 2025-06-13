@@ -2,29 +2,22 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import api from "../../../service/Api";
 
-interface UpdateSiteProps {
+interface UpdateRegionProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
-  siteId: number;
+  regionId: number;
   initialData: {
     nom: string;
-    description: string;
-    isActive: boolean;
-    isCurrent: boolean
   };
  
 }
 
-const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, initialData }) => {
+const UpdateRegion: React.FC<UpdateRegionProps> = ({ setShowModalUpdate, regionId, initialData }) => {
   const [formData, setFormData] = useState({
     nom: initialData.nom,
-    description: initialData.description,
-    isActive: initialData.isActive,
-    isCurrent: initialData.isCurrent
   });
 
   const fieldLabels: { [key: string]: string } = {
     nom: "Nom",
-    description: "Description",
   };
 
   const handleChange = (
@@ -42,7 +35,7 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
 
 
     try {
-      const response = await api.patch(`/api/sites/${siteId}`, formData,
+      const response = await api.patch(`/api/regions/${regionId}`, formData,
         {
           headers: {
             'Content-Type': 'application/merge-patch+json'
@@ -53,7 +46,7 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
       Swal.fire({
         icon: "success",
         title: "Succès",
-        text: "Site mis à jour avec succès.",
+        text: "Région mis à jour avec succès.",
         confirmButtonColor: "#7c3aed",
         background: "#1c2d55",
         color: "#fff",
@@ -77,7 +70,7 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
   return (
     <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
       <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down">
-        <h2 className="text-xl font-bold mb-4 text-white">Modifier le site</h2>
+        <h2 className="text-xl font-bold mb-4 text-white">Modifier la région</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -92,18 +85,6 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
               autoComplete="off"
             />
           </div>
-
-            <div>
-              <label className="block text-gray-400 mb-1">Description</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
-                required
-                rows={4}
-              />
-            </div>
 
             <div className="flex justify-end">
               <button
@@ -128,4 +109,4 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
   );
 };
 
-export default UpdateSite;
+export default UpdateRegion;

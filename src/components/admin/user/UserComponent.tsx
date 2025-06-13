@@ -5,6 +5,7 @@ import AddUser from "./AddUser";
 import UpdateUser from "./UpdateUser";
 import deleteUser from "../../../service/DeleteUser";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
+import Pagination from "../Pagination";
 
 type Privilege = {
     id: number;
@@ -35,14 +36,20 @@ const UserComponent = () => {
     const [showModalUpdate, setShowModalUpdate] = useState(false);
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
-    const [nombre, setNombre] = useState<number>(0); 
+   
     const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
 
     const user = UserAdminConnected() as UserType | null;
 
-    function isPair(n: number): boolean {
-        return n % 2 === 0;
-    }
+    const [currentPage, setCurrentPage] = useState(1);
+    const usersPerPage = 3;
+
+    //Search
+    const [searchNom, setSearchNom] = useState("");
+    const [searchPrenom, setSearchPrenom] = useState("");
+    const [searchMail, setSearchMail] = useState("");
+    const [searchSite, setSearchSite] = useState("");
+    const [searchPrivilege, setSearchPrivilege] = useState("");
 
  useEffect(() => {
     if(user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true) {
@@ -63,11 +70,35 @@ const UserComponent = () => {
     }
     }, [user]);
 
-   
+    const filteredUsers = users.filter(user => {
+        const nomMatch = user.nom.toLowerCase().includes(searchNom.toLowerCase());
+        const prenomMatch = user.prenom.toLowerCase().includes(searchPrenom.toLowerCase());
+        const emailMatch = user.email.toLowerCase().includes(searchMail.toLowerCase());
+        const siteMatch = user.site?.nom?.toLowerCase().includes(searchSite.toLowerCase()) ?? false;
+        const privilegeMatch = user.privileges?.some(p => 
+          p.title.toLowerCase().includes(searchPrivilege.toLowerCase())
+        ) ?? false;
+      
+        return (
+          nomMatch &&
+          prenomMatch &&
+          emailMatch &&
+          siteMatch &&
+          privilegeMatch
+        );
+      });
+      
+
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+    const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  
 
     return(
-         <div className="h-[69vh]">
-            <div className="color-header p-4 flex justify-between items-center mb-5">
+        <>
+         <div className="h-[69vh] overflow-y-auto">
+            <div className="color-header px-4 flex justify-between items-center mb-3">
                 <h4 className="font-bold text-white">Liste utilisateur</h4>
                 <button
                     onClick={() => setShowModal(true)}
@@ -76,7 +107,58 @@ const UserComponent = () => {
                     {create.upperText}
                 </button>
             </div>
-            <div className="relative overflow-x-auto h-[56vh] overflow-y-auto">
+
+            <div className="card mb-4 px-5 mx-4 border border-gray-700 py-5">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div className="w-full">
+                        <input type="text" name="" id="" 
+                        placeholder="Nom..."
+                        value={searchNom}
+                        onChange={(e) => setSearchNom(e.target.value)}
+                        className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
+                                focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                    </div>
+                    <div className="w-full">
+                        <input type="text" name="" id="" 
+                        placeholder="E-mail..."
+                        value={searchMail}
+                        onChange={(e) => setSearchMail(e.target.value)}
+                        className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
+                                focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                    </div>
+                    <div className="w-full">
+                        <input type="text" name="" id="" 
+                        placeholder="Site..."
+                        value={searchSite}
+                        onChange={(e) => setSearchSite(e.target.value)}
+                        className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
+                                focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                    </div>
+                    <div className="w-full">
+                        <input type="text" name="" id="" 
+                        placeholder="Prénom..."
+                        value={searchPrenom}
+                        onChange={(e) => setSearchPrenom(e.target.value)}
+                        className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
+                                focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                    </div>
+                    <div className="w-full">
+                        <input type="text" name="" id="" 
+                        placeholder="Privilège..."
+                        value={searchPrivilege}
+                        onChange={(e) => setSearchPrivilege(e.target.value)}
+                        className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
+                                focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="overflow-x-auto w-[40vh] md:w-full sm:md-[40vh] overflow-y-auto h-[50vh]">
+            <div className="">
                 <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
                         <tr className="border-b-2 border-gray-700 ...">
@@ -102,8 +184,8 @@ const UserComponent = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.length > 0 ? (
-                            users.map((item, index) => (
+                        {currentUsers.length > 0 ? (
+                            currentUsers.map((item, index) => (
                                 <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
                                     <th className="px-6 py-4">
                                         <a href="#"
@@ -154,8 +236,19 @@ const UserComponent = () => {
                     </tbody>
                 </table>
             </div>
-            {/* Modal */}
-            {showModal && <AddUser setShowModal={setShowModal} />}
+           
+            </div>
+
+            <div className="mx-4 ">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => setCurrentPage(page)}
+                />
+            </div>
+         </div>
+        {/* Modal */}
+        {showModal && <AddUser setShowModal={setShowModal} />}
             {showModalUpdate && selectedUser && (
                 <UpdateUser
                     setShowModalUpdate={setShowModalUpdate}
@@ -165,11 +258,12 @@ const UserComponent = () => {
                         prenom: selectedUser.prenom,
                         email: selectedUser.email,
                         site: selectedUser.site ?? null,
-                        privileges: selectedUser.privileges
+                        privileges: selectedUser.privileges,
                     }}
                     />
             )}
-         </div>
+        </>
+        
     )
 }
 

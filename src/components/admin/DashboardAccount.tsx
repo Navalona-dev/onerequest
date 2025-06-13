@@ -80,7 +80,7 @@ const DashboardAccount = () => {
                         {/* Ajoute les autres entreprises ici */}
                     </div>
                     <div className="mt-5">
-                        <Pagination />
+                        {/*<Pagination />*/}
                     </div>
                 </div>
             </div>

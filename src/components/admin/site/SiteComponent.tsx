@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Listbox } from "@headlessui/react";
 import bgImage from '../../../assets/images/bg-site.png';
 import AddSite from "./AddSite";
 import UpdateSite from "./UpdateSite";
@@ -7,144 +8,264 @@ import toggleActiveSite from "../../../service/ToogleActiveSite";
 import deleteSite from "../../../service/DeleteSite";
 import api from "../../../service/Api";
 import { store } from "../../../store";
+import Pagination from "../Pagination";
+import SelectRegion from "./SelectRegion";
 
-import RegionComponent from "../region/RegionComponent";
+import { Link } from "react-router-dom";
+import { error } from "console";
+type RegionType = {
+  id: number;
+  nom: string;
+}
 
-export interface Site {
+type SiteType = {
   id: number;
   nom: string;
   description: string;
   isActive: boolean;
   isCurrent: boolean;
+  region: RegionType
 }
 
 const SiteComponent = () => {
-  const [sites, setSites] = useState<Site[]>([]);
+  const [sites, setSites] = useState<SiteType[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
-  const [selectedSite, setSelectedSite] = useState<Site | null>(null);
-  const [showRegion, setShowRegion] = useState(false);
+  const [selectedSite, setSelectedSite] = useState<SiteType | null>(null);
+  const [showModalSelectRegion, setShowModalSelectRegion] = useState(false);
 
   const state = store.getState();
-  const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
+  const { create, delete: deleteAction, edit, activate, deactivate, addRegion } = state.actionTexts;
 
-  const [nombre, setNombre] = useState<number>(0); 
+  const [currentPage, setCurrentPage] = useState(1);
+  const sitesPerPage = 5;
 
-  function isPair(n: number): boolean {
-      return n % 2 === 0;
-  }
+  const [regions, setListeRegion] = useState<RegionType[]>([]);
+  const [selectedRegion, setSelectedRegion] = useState<RegionType | null>(null);
+
+  const [searchByRegion, setSearchByRegion] = useState(false);
+  const [searchNom, setSearchNom] = useState("");
+
 
   useEffect(() => {
-    api.get("/api/sites")
-      .then((response) => {
-        setSites(response.data);
-      })
-      .catch((error) => console.error("Erreur API:", error));
+    if (searchByRegion && selectedRegion) {
+      api.get(`/api/regions/${selectedRegion.id}/sites`)
+        .then((response) => {
+          setSites(response.data);
+        })
+        .catch((error) => console.error("Erreur API:", error));
+    } else {
+      api.get("/api/sites")
+        .then((response) => {
+          setSites(response.data);
+        })
+        .catch((error) => console.error("Erreur API:", error));
+    }
+  }, [searchByRegion, selectedRegion]);
+  
+
+  const filteredSites = sites.filter(site =>
+    site.nom.toLowerCase().includes(searchNom.toLowerCase())
+  );
+  const indexOfLastSite = currentPage * sitesPerPage;
+  const indexOfFirstSite = indexOfLastSite - sitesPerPage;
+  const currentSites = filteredSites.slice(indexOfFirstSite, indexOfLastSite);
+  const totalPages = Math.ceil(filteredSites.length / sitesPerPage);
+  
+
+  useEffect(() => {
+    api.get('/api/regions')
+    .then((response) => {
+      setListeRegion(response.data)
+    })
+    .catch((error) => console.error("Erreur API:", error));
   }, []);
+
   
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Table des site */}
-        {showRegion ? (
-          <RegionComponent />
-        ) : (
-          <div className="h-[75vh] overflow-y-auto">
-            <div className="color-header p-4 flex justify-between items-center mb-5">
-              <h4 className="font-bold text-white">Liste site</h4>
-              <button
-                onClick={() => setShowModal(true)}
-                className="bg-red-500 px-5 py-2 text-white rounded"
-              >
-                {create.upperText}
-              </button>
-            </div>
+        <div className="h-[75vh] overflow-y-auto">
+              <div className="color-header p-4 flex justify-between items-center mb-5">
+                <h4 className="font-bold text-white">Liste site</h4>
+                <div>
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="bg-red-500 px-5 py-1.5 text-white rounded mr-3"
+                  >
+                    {create.upperText}
+                  </button>
+                  <Link to={'/region'}
+                    className="bg-red-500 px-5 py-2 text-white rounded"
+                  >
+                    Liste région
+                  </Link>
+                </div>
+              </div>
+
+              <div className="card my-6 px-5 mx-4 border border-gray-700 py-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="w-full">
+                      <Listbox value={selectedRegion} onChange={setSelectedRegion}>
+                        <div className="relative">
+                          <Listbox.Button 
+                          className="bg-[#1c2d55] text-white py-2 text-sm w-full rounded focus:outline-none focus:ring-0 focus:border-transparent">
+                            {selectedRegion ? selectedRegion.nom : "Région..."}
+                          </Listbox.Button>
+                          <i 
+                            onClick={() => {
+                              if (selectedRegion) {
+                                setSearchByRegion(true);
+                              }
+                            }}
+                            className="cursor-pointer bi bi-search absolute mr-6 right-3 top-1/2 transform -translate-y-1/2 text-white text-sm"
+                          />
+                          <i 
+                            onClick={() => {
+                              setSearchByRegion(false);
+                              setSelectedRegion(null);
+                            }}
+                            className="cursor-pointer bi bi-trash-fill absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-sm"
+                          />
 
 
-            <div className="overflow-x-auto w-[80vh] pl-4">
-              <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-400 dark:text-gray-400">
-                <thead className="text-xs text-white uppercase">
-                  <tr className="text-nowrap border-b border-gray-700">
-                    <th className="px-6 py-3">Actions</th>
-                    <th className="px-6 py-3">Nom</th>
-                    <th className="px-6 py-3">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {sites.length > 0 ? (
-                  sites.map((item, index) => (
-                    <tr key={item.id} className={`text-nowrap ${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
-                      <td className="px-6 py-4">
-                        <a href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          toggleActiveSite(
-                            item.id,
-                            true,
-                            setShowModal
-                          )
-                        }}
-                        className={`${item.isActive ? '' : 'hidden'}`} title={deactivate.upperText}>
-                          <i className="bi bi-check-circle-fill bg-green-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
-                        </a>
-                        <a href="#" 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          toggleActiveSite(
-                            item.id,
-                            false,
-                            setShowModal
-                          )
-                        }}
-                        className={`${!item.isActive ? '' : 'hidden'}`} title={activate.upperText}>
-                          <i className="bi bi-x-circle-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
-                        </a>
-                        <a
-                          href="#"
+                          <Listbox.Options 
+                          className="absolute mt-1 w-full bg-[#1c2d55] text-white rounded shadow-lg z-50 max-h-60 overflow-auto focus:outline-none focus:ring-0 focus:border-transparent">
+                            {regions.map((region, index) => (
+                              <Listbox.Option
+                                key={index}
+                                value={region}
+                                className={({ active }) =>
+                                  `cursor-pointer select-none px-4 py-2 ${
+                                    active ? "bg-[#2a3a75]" : ""
+                                  }`
+                                }
+                              >
+                                {region.nom}
+                              </Listbox.Option>
+                            ))}
+                          </Listbox.Options>
+                        </div>
+                      </Listbox>
+                    </div>
+
+                    <div className="relative w-full">
+                    <input
+                      type="text"
+                      placeholder="Nom..."
+                      value={searchNom}
+                      onChange={(e) => setSearchNom(e.target.value)}
+                      className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
+                                focus:outline-none focus:ring-0 focus:border-transparent"
+                    />
+
+
+                    </div>
+
+                  </div>
+              </div>
+
+              <div className="overflow-x-auto w-[45vh] md:w-[80vh] sm:w-[45vh] pl-4">
+                <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-400 dark:text-gray-400">
+                  <thead className="text-xs text-white uppercase">
+                    <tr className="text-nowrap border-b border-gray-700">
+                      <th className="px-6 py-3">Actions</th>
+                      <th className="px-6 py-3">Nom</th>
+                      <th className="px-6 py-3">Région</th>
+                      <th className="px-6 py-3">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {currentSites.length > 0 ? (
+                    currentSites.map((item, index) => (
+                      <tr key={item.id} className={`text-nowrap ${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
+                        <td className="px-6 py-4">
+                          <a href="#"
                           onClick={(e) => {
                             e.preventDefault();
-                            setSelectedSite(item);
-                            setShowModalUpdate(true);
+                            toggleActiveSite(
+                              item.id,
+                              true,
+                              setShowModal
+                            )
                           }}
-                          title={edit.upperText}
-                        >
-                          <i className="bi bi-pencil-square bg-blue-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
-                        </a>
-                        <a href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          deleteSite(item.id, setShowModal);
-                        }}
-                        title={deleteAction.upperText}>
-                          <i className="bi bi-trash-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
-                        </a>
-                        
-                        <a
-                          href="#"
+                          className={`${item.isActive ? '' : 'hidden'}`} title={deactivate.upperText}>
+                            <i className="bi bi-check-circle-fill bg-green-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                          </a>
+                          <a href="#" 
                           onClick={(e) => {
-                            setShowRegion(true);
+                            e.preventDefault();
+                            toggleActiveSite(
+                              item.id,
+                              false,
+                              setShowModal
+                            )
                           }}
-                          title="Liste région"
-                        >
-                          <i className="bi bi-globe-americas bg-blue-500 px-1.5 py-1 text-white rounded-3xl"></i>
-                        </a>
+                          className={`${!item.isActive ? '' : 'hidden'}`} title={activate.upperText}>
+                            <i className="bi bi-x-circle-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                          </a>
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setSelectedSite(item);
+                              setShowModalUpdate(true);
+                            }}
+                            title={edit.upperText}
+                          >
+                            <i className="bi bi-pencil-square bg-blue-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                          </a>
+                          <a href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            deleteSite(item.id, setShowModal);
+                          }}
+                          title={deleteAction.upperText}>
+                            <i className="bi bi-trash-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                          </a>
+                          
+                        </td>
+                        <td className="px-6 py-4">{item.nom}</td>
+                        <td className="px-6 py-4">
+                          {item.region ? (
+                            item.region.nom
+                          ) : (
+                            <div className="flex items-center justify-center">
+                              <a href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setSelectedSite(item)
+                                setShowModalSelectRegion(true);
+                              }}
+                              title={addRegion.upperText}
+                              >
+                                <i className="bi bi-plus-circle-fill text-blue-500"></i>
+                              </a>
+                            </div>
+                          )}
+                          </td>
+                        <td className="px-6 py-4">{item.description}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                        Aucun enregistrement trouvé
                       </td>
-                      <td className="px-6 py-4">{item.nom}</td>
-                      <td className="px-6 py-4">{item.description}</td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                      Aucun enregistrement trouvé
-                    </td>
-                  </tr>
-                )}
-                </tbody>
-              </table>
-            </div>
+                  )}
+                  </tbody>
+                </table>
+              </div>
+              <div className="mx-4 mt-4">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => setCurrentPage(page)}
+                />
+              </div>
           </div>
-        )}
         
 
         {/* Image */}
@@ -161,6 +282,11 @@ const SiteComponent = () => {
 
       {/* Modal */}
       {showModal && <AddSite setShowModal={setShowModal} />}
+      {showModalSelectRegion && selectedSite &&
+        <SelectRegion 
+          setShowModalSelectRegion={setShowModalSelectRegion}
+          siteId={selectedSite.id}
+        />}
       {showModalUpdate && selectedSite && (
         <UpdateSite
           setShowModalUpdate={setShowModalUpdate}
