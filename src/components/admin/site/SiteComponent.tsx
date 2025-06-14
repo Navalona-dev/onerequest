@@ -18,13 +18,20 @@ type RegionType = {
   nom: string;
 }
 
+type CommuneType = {
+  id: number;
+  nom: string;
+  district: string;
+}
+
 type SiteType = {
   id: number;
   nom: string;
   description: string;
   isActive: boolean;
   isCurrent: boolean;
-  region: RegionType
+  region: RegionType;
+  commune: CommuneType;
 }
 
 const SiteComponent = () => {
@@ -67,11 +74,19 @@ const SiteComponent = () => {
   const filteredSites = sites.filter(site =>
     site.nom.toLowerCase().includes(searchNom.toLowerCase())
   );
+
   const indexOfLastSite = currentPage * sitesPerPage;
   const indexOfFirstSite = indexOfLastSite - sitesPerPage;
-  const currentSites = filteredSites.slice(indexOfFirstSite, indexOfLastSite);
-  const totalPages = Math.ceil(filteredSites.length / sitesPerPage);
+  let currentSites;
+  let totalPages;
   
+  if (filteredSites.length > 0) {
+    currentSites = filteredSites.slice(indexOfFirstSite, indexOfLastSite);
+    totalPages = Math.ceil(filteredSites.length / sitesPerPage);
+  } else {
+    currentSites = sites.slice(indexOfFirstSite, indexOfLastSite);
+    totalPages = Math.ceil(sites.length / sitesPerPage);
+  }
 
   useEffect(() => {
     api.get('/api/regions')
@@ -173,6 +188,7 @@ const SiteComponent = () => {
                       <th className="px-6 py-3">Actions</th>
                       <th className="px-6 py-3">Nom</th>
                       <th className="px-6 py-3">Région</th>
+                      <th className="px-6 py-3">Commune / District</th>
                       <th className="px-6 py-3">Description</th>
                     </tr>
                   </thead>
@@ -245,12 +261,19 @@ const SiteComponent = () => {
                             </div>
                           )}
                           </td>
+                          <td className="px-6 py-4">
+                            {item.commune ? (
+                              <>
+                              {item.commune.nom} <span>/</span> {item.commune.district}
+                              </>
+                            ) : null}
+                            </td>
                         <td className="px-6 py-4">{item.description}</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                      <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
                         Aucun enregistrement trouvé
                       </td>
                     </tr>

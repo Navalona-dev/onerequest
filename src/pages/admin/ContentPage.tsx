@@ -14,6 +14,7 @@ import SitePage from "./SitePage";
 import UserPage from "./UserPage";
 import LoginPage from "./LoginPage";
 import RegionPage from "./RegionPage";
+import CommunePage from "./CommunePage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -24,7 +25,8 @@ const ContentPage = () => {
     const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
 
     useEffect(() => {
-        const path = location.pathname.replace("/", "");
+        const path = location.pathname.replace(/^\/+/, ""); // enlève les slashes initiaux
+    
         if ([
             "dashboard", 
             "document", 
@@ -36,11 +38,14 @@ const ContentPage = () => {
             "region"
         ].includes(path)) {
             setCurrentModule(path as any);
+        } else if (/^\d+\/commune$/.test(path)) {
+            // correspond à /1/commune ou /5/commune, etc.
+            setCurrentModule("commune");
         } else {
             setCurrentModule("dashboard"); // fallback
         }
     }, [location.pathname, setCurrentModule]);
-
+    
     const renderContent = () => {
         switch (currentModule) {
             case "dashboard":
@@ -56,6 +61,9 @@ const ContentPage = () => {
                 return <UserPage />;
             case "region":
                 return <RegionPage />;
+
+            case "commune":
+                return <CommunePage />;
             // case "demande":
             //     return <Demande />;
             default:
@@ -71,16 +79,16 @@ const ContentPage = () => {
                 </div>
             )}
 
-<div className="flex-1 bg-[#0F1C3F] flex flex-col min-h-screen">
-    <Header onToggleMobileSidebar={() => setIsMobileSidebarVisible(true)} />
-    {layoutContent === 'horizontal' && <HorizontalNav />}
-    
-    <div className="flex-grow">
-        {renderContent()}
-    </div>
+            <div className="flex-1 bg-[#0F1C3F] flex flex-col min-h-screen">
+                <Header onToggleMobileSidebar={() => setIsMobileSidebarVisible(true)} />
+                {layoutContent === 'horizontal' && <HorizontalNav />}
+                
+                <div className="flex-grow">
+                    {renderContent()}
+                </div>
 
-    <Footer />
-</div>
+                <Footer />
+            </div>
 
 
             {!showCustomizer && (

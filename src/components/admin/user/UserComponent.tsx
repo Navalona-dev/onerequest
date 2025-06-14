@@ -6,6 +6,7 @@ import UpdateUser from "./UpdateUser";
 import deleteUser from "../../../service/DeleteUser";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
 import Pagination from "../Pagination";
+import bgImage from '../../../assets/images/bg-site.png';
 
 type Privilege = {
     id: number;
@@ -42,7 +43,7 @@ const UserComponent = () => {
     const user = UserAdminConnected() as UserType | null;
 
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 3;
+    const usersPerPage = 5;
 
     //Search
     const [searchNom, setSearchNom] = useState("");
@@ -71,33 +72,37 @@ const UserComponent = () => {
     }, [user]);
 
     const filteredUsers = users.filter(user => {
-        const nomMatch = user.nom.toLowerCase().includes(searchNom.toLowerCase());
-        const prenomMatch = user.prenom.toLowerCase().includes(searchPrenom.toLowerCase());
-        const emailMatch = user.email.toLowerCase().includes(searchMail.toLowerCase());
-        const siteMatch = user.site?.nom?.toLowerCase().includes(searchSite.toLowerCase()) ?? false;
-        const privilegeMatch = user.privileges?.some(p => 
+        const nomMatch = !searchNom || user.nom.toLowerCase().includes(searchNom.toLowerCase());
+        const prenomMatch = !searchPrenom || user.prenom.toLowerCase().includes(searchPrenom.toLowerCase());
+        const emailMatch = !searchMail || user.email.toLowerCase().includes(searchMail.toLowerCase());
+        const siteMatch = !searchSite || (user.site?.nom.toLowerCase().includes(searchSite.toLowerCase()) ?? false);
+        const privilegeMatch = !searchPrivilege || (user.privileges?.some(p => 
           p.title.toLowerCase().includes(searchPrivilege.toLowerCase())
-        ) ?? false;
-      
-        return (
-          nomMatch &&
-          prenomMatch &&
-          emailMatch &&
-          siteMatch &&
-          privilegeMatch
-        );
-      });
-      
+        ) ?? false);
+    
+        return nomMatch && prenomMatch && emailMatch && siteMatch && privilegeMatch;
+    });
+    
+      const dataToPaginate = filteredUsers.length > 0 ? filteredUsers : users;
 
-    const indexOfLastUser = currentPage * usersPerPage;
-    const indexOfFirstUser = indexOfLastUser - usersPerPage;
-    const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-    const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+      const totalPages = Math.max(1, Math.ceil(dataToPaginate.length / usersPerPage));
+      
+      const indexOfLastUser = currentPage * usersPerPage;
+      const indexOfFirstUser = indexOfLastUser - usersPerPage;
+      
+      const currentUsers = dataToPaginate.slice(indexOfFirstUser, indexOfLastUser);
+
+      useEffect(() => {
+        if (currentPage > totalPages) {
+          setCurrentPage(1);
+        }
+      }, [currentPage, totalPages]);
+      
   
 
     return(
         <>
-         <div className="h-[69vh] overflow-y-auto">
+        <div className="h-[69vh] overflow-y-auto">
             <div className="color-header px-4 flex justify-between items-center mb-3">
                 <h4 className="font-bold text-white">Liste utilisateur</h4>
                 <button
@@ -107,8 +112,7 @@ const UserComponent = () => {
                     {create.upperText}
                 </button>
             </div>
-
-            <div className="card mb-4 px-5 mx-4 border border-gray-700 py-5">
+            <div className="card my-6 px-5 mx-4 border border-gray-700 py-5">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="w-full">
                         <input type="text" name="" id="" 
@@ -157,11 +161,10 @@ const UserComponent = () => {
                     </div>
                 </div>
             </div>
-            <div className="overflow-x-auto w-[40vh] md:w-full sm:md-[40vh] overflow-y-auto h-[50vh]">
-            <div className="">
+            <div className="w-[38vh] md:w-full sm:w-[38vh] h-[55vh] overflow-auto">
                 <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
-                        <tr className="border-b-2 border-gray-700 ...">
+                        <tr className="text-nowrap border-b-2 border-gray-700 ...">
                             <th scope="col" className="px-6 py-3 text-white">
                                 Actions
                             </th>
@@ -186,7 +189,7 @@ const UserComponent = () => {
                     <tbody>
                         {currentUsers.length > 0 ? (
                             currentUsers.map((item, index) => (
-                                <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
+                                <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"} text-nowrap`}>
                                     <th className="px-6 py-4">
                                         <a href="#"
                                         onClick={(e) => {
@@ -199,7 +202,7 @@ const UserComponent = () => {
                                         onClick={(e) => {
                                             e.preventDefault();
                                             deleteUser(item.id, setShowModal);
-                                          }}
+                                        }}
                                         title={deleteAction.upperText}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i></a>
                                     </th>
                                     <td className="px-6 py-4">
@@ -236,17 +239,15 @@ const UserComponent = () => {
                     </tbody>
                 </table>
             </div>
-           
-            </div>
-
             <div className="mx-4 ">
                 <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={(page) => setCurrentPage(page)}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
                 />
             </div>
-         </div>
+        </div>
+        
         {/* Modal */}
         {showModal && <AddUser setShowModal={setShowModal} />}
             {showModalUpdate && selectedUser && (

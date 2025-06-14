@@ -11,12 +11,12 @@ interface AddRegionProps {
 const AddRegion: React.FC<AddRegionProps> = ({ setShowModal }) => {
     const [formData, setFormData] = useState({
         nom: "",
-        sites: [] as string[]
+        //sites: [] as string[]
     });
 
     const fieldLabels: { [key: string]: string } = {
         nom: "Nom",
-        sites: "Sites"
+        //sites: "Sites"
       };
 
       const [siteListe, setSiteListe] = useState<{ id: number; nom?: string; libelle?: string }[]>([]);
@@ -130,7 +130,16 @@ const AddRegion: React.FC<AddRegionProps> = ({ setShowModal }) => {
                     <sup className="text-red-500">*</sup>
                     
                   </label>
-                  {field === "sites" ? (
+                  <input
+                        type="text"
+                        name={field}
+                        value={formData[field as keyof typeof formData]}
+                        onChange={handleChange}
+                        className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white"
+                        autoComplete="off"
+                        required
+                    />
+                  {/*{field === "sites" ? (
                     <select
                         name="sites"
                         multiple
@@ -156,7 +165,7 @@ const AddRegion: React.FC<AddRegionProps> = ({ setShowModal }) => {
                         autoComplete="off"
                         required
                     />
-                }
+                }*/}
                 </div>
             )}
 

@@ -41,6 +41,8 @@ function App() {
                 <Route path="/site" element={<ContentPage />} />
                 <Route path="/user" element={<ContentPage />} />
                 <Route path="/region" element={<ContentPage />} />
+                <Route path="/:idRegion/commune" element={<ContentPage />} />
+
               </Route>
             </Routes>
           </ModuleProvider>

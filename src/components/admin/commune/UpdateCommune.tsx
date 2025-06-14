@@ -2,29 +2,25 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import api from "../../../service/Api";
 
-interface UpdateSiteProps {
+interface UpdateCommuneProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
-  siteId: number;
+  communeId: number;
   initialData: {
     nom: string;
-    description: string;
-    isActive: boolean;
-    isCurrent: boolean
+    district: string;
   };
  
 }
 
-const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, initialData }) => {
+const UpdateCommune: React.FC<UpdateCommuneProps> = ({ setShowModalUpdate, communeId, initialData }) => {
   const [formData, setFormData] = useState({
     nom: initialData.nom,
-    description: initialData.description,
-    isActive: initialData.isActive,
-    isCurrent: initialData.isCurrent
+    district: initialData.district,
   });
 
   const fieldLabels: { [key: string]: string } = {
     nom: "Nom",
-    description: "Description",
+    district: "District",
   };
 
   const handleChange = (
@@ -42,7 +38,7 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
 
 
     try {
-      const response = await api.patch(`/api/sites/${siteId}`, formData,
+      const response = await api.patch(`/api/communes/${communeId}`, formData,
         {
           headers: {
             'Content-Type': 'application/merge-patch+json'
@@ -53,7 +49,7 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
       Swal.fire({
         icon: "success",
         title: "Succès",
-        text: "Site mis à jour avec succès.",
+        text: "Commune mis à jour avec succès.",
         confirmButtonColor: "#7c3aed",
         background: "#1c2d55",
         color: "#fff",
@@ -77,7 +73,7 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
   return (
     <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
       <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down">
-        <h2 className="text-xl font-bold mb-4 text-white">Modifier le site</h2>
+        <h2 className="text-xl font-bold mb-4 text-white">Modifier le commune</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -87,23 +83,24 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
               name="nom"
               value={formData.nom}
               onChange={handleChange}
-              className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+              className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
               required
               autoComplete="off"
             />
           </div>
 
-            <div>
-              <label className="block text-gray-400 mb-1">Description</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
-                required
-                rows={4}
-              />
-            </div>
+          <div>
+            <label className="block text-gray-400 mb-1">District</label>
+            <input
+              type="text"
+              name="district"
+              value={formData.district}
+              onChange={handleChange}
+              className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
+              required
+              autoComplete="off"
+            />
+          </div>
 
             <div className="flex justify-end">
               <button
@@ -128,4 +125,4 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
   );
 };
 
-export default UpdateSite;
+export default UpdateCommune;

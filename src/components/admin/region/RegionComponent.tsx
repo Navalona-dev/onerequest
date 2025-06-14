@@ -8,7 +8,6 @@ import Pagination from "../Pagination";
 import UpdateRegion from "./UpdateRegion";
 import deleteRegion from "../../../service/DeleteRegion";
 
-
 type SiteType = {
   id: number;
   nom: string;
@@ -48,24 +47,24 @@ const RegionComponent = () => {
     return(
         <>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="h-[75vh] overflow-y-auto">
+          <div className="h-[50vh] md:h-[75vh] sm:h-[50vh] overflow-y-auto">
               <div className="color-header p-4 flex justify-between items-center mb-5">
                 <h4 className="font-bold text-white">Liste région</h4>
                 <div>
-                <button
-                  onClick={() => setShowModal(true)}
-                  className="bg-red-500 px-5 py-1.5 text-white rounded mr-3"
-                >
-                  {create.upperText}
-                </button>
-                <Link to={'/site'}
-                  className="bg-red-500 px-5 py-2 text-white rounded">
-                  Liste site
-                </Link>
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="bg-red-500 px-5 py-1.5 text-white rounded mr-3"
+                  >
+                    {create.upperText}
+                  </button>
+                  <Link to={'/site'}
+                    className="bg-red-500 px-5 py-2 text-white rounded">
+                    Liste site
+                  </Link>
 
                 </div>
               </div>
-              <div className="overflow-x-auto w-[80vh] pl-4">
+              <div className="overflow-x-auto w-[43vh] md:w-full sm:w-[43vh] pl-4">
               <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-400 dark:text-gray-400">
                   <thead className="text-xs text-white uppercase">
                     <tr className="text-nowrap border-b border-gray-700">
@@ -100,6 +99,9 @@ const RegionComponent = () => {
                             
                             <i className="bi bi-trash-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
                           </a>
+                          <Link to={`/${item.id}/commune`} title="Liste commune">
+                            <i className="bi bi-geo-alt-fill bg-blue-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                          </Link>
                           
                         </td>
                         <td className="px-6 py-4">{item.nom}</td>
@@ -108,7 +110,7 @@ const RegionComponent = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                      <td colSpan={2} className="px-6 py-4 text-center text-gray-500">
                         Aucun enregistrement trouvé
                       </td>
                     </tr>
@@ -125,14 +127,14 @@ const RegionComponent = () => {
               </div>
           </div>
           <div className="color-card h-[45vh] md:h-[75vh]">
-          <div className="h-[40vh] md:h-[70vh] p-8 flex items-center justify-center">
-            <img
-              src={bgImage}
-              alt="background"
-              className="w-[30vh] h-[30vh] md:w-[60vh] md:h-[60vh]"
-            />
+            <div className="h-[40vh] md:h-[70vh] p-8 flex items-center justify-center">
+              <img
+                src={bgImage}
+                alt="background"
+                className="w-[30vh] h-[30vh] md:w-[60vh] md:h-[60vh]"
+              />
+            </div>
           </div>
-        </div>
         </div>
        
 

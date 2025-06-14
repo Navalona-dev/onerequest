@@ -36,7 +36,7 @@ type UserType = {
 
 type CodeCouleurType = {
   id: number;
-  site: Site;
+  //site: Site;
   bgColor: string;
   textColor: string;
   btnColor: string;
@@ -47,6 +47,7 @@ type CodeCouleurType = {
   isDefault: boolean;
   textColorHover: string;
   btnColorHover: string;
+  libelle: string;
 }
 
 
@@ -124,16 +125,12 @@ const CodeColor = () => {
           <div className="color-header p-4">
             <div className="color-header p-4 flex justify-between items-center mb-5">
               <h4 className="font-bold text-white">Liste code couleur</h4>
-                {siteCount > 0 ? (
-                  <button
+              <button
                     onClick={() => setShowModal(true)}
                     className="bg-red-500 px-5 py-2 text-white rounded"
                   >
                     {create.upperText}
                   </button>
-                ) : (
-                  <p className="text-red-500">Ajouter au moins un site avant d'ajouter un code couleur</p>
-                )}
                 
               </div>
           </div>
@@ -143,7 +140,7 @@ const CodeColor = () => {
               <thead className="text-xs text-white uppercase">
                 <tr className="text-nowrap border-b border-gray-700">
                   <th className="px-6 py-3">Actions</th>
-                  <th className="px-6 py-3">Site</th>
+                  <th className="px-6 py-3">Libellé</th>
                   <th className="px-6 py-3">Fond</th>
                   <th className="px-6 py-3">Texte</th>
                   <th className="px-6 py-3">Texte en survol</th>
@@ -204,7 +201,7 @@ const CodeColor = () => {
                       </a>
                     </td>
                     <td className="px-6 py-4">
-                      {item.site ? item.site.nom : (item.isGlobal === true ? "Couleur globale" : "Couleur par defaut")}
+                     {item.libelle}
                     </td>
                     <td className="px-6 py-4">{item.bgColor}</td>
                     <td className="px-6 py-4">{item.textColor}</td>
@@ -254,7 +251,7 @@ const CodeColor = () => {
           setShowModalUpdate={setShowModalUpdate}
           codeId={selectedCodeCouleur.id}
           initialData={{
-            site: selectedCodeCouleur.site ?? null,
+            libelle: selectedCodeCouleur.libelle,
             bgColor: selectedCodeCouleur.bgColor,
             textColor: selectedCodeCouleur.textColor,
             btnColor: selectedCodeCouleur.btnColor,
@@ -265,10 +262,6 @@ const CodeColor = () => {
             isDefault: selectedCodeCouleur.isDefault,
             textColorHover: selectedCodeCouleur.textColorHover,
             btnColorHover: selectedCodeCouleur.btnColorHover
-          }}
-          codeCouleur={{
-            isGlobal: selectedCodeCouleur.isGlobal,
-            isDefault: selectedCodeCouleur.isDefault
           }}
           
         />

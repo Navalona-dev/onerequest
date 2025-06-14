@@ -94,13 +94,21 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
     }
   }, [location.pathname]);
 
- useEffect(() => {
+  useEffect(() => {
     api.get('/api/sites/current')
-    .then((response) => {
-      setCurrentSite(response.data);
-    })
-    .catch((error) => console.error("Erreur API:", error));
- }, [])
+      .then((response) => {
+        if (response.status === 204 || !response.data) {
+          setCurrentSite(null);
+        } else {
+          setCurrentSite(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Erreur API:", error); // Autres erreurs réseau ou 500
+      });
+  }, []);
+  
+  
 
   return (
       <div className={`transition-all duration-300 ${isSidebarCollapsed ? 'w-20' : 'w-64'} ${bgColor} min-h-screen p-4 admin-sidebar`}>

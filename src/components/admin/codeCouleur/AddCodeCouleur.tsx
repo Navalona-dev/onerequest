@@ -9,7 +9,7 @@ interface AddCodeCouleurProps {
 
 const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
     const [formData, setFormData] = useState({
-        site: "",
+        libelle: "",
         bgColor: "",
         textColor: "",
         btnColor: "",
@@ -18,7 +18,7 @@ const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
     });
 
     const fieldLabels: { [key: string]: string } = {
-        site: "Site",
+        libelle: "Libelle",
         bgColor: "Couleur de fond",
         textColor: "Couleur du texte",
         btnColor: "Couleur du bouton",
@@ -106,34 +106,15 @@ const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
 
                 </label>
 
-                {field === "site" ? (
-                  <select
-                    id="sites"
-                    name="site"
-                    value={formData.site}
-                    onChange={handleChange}
-                    className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
-                    required
-                  >
-                    <option value="" disabled>Selectionner un site</option>
-                    {siteListe.map((site) => (
-                      <option key={site.id} value={`/api/sites/${site.id}`}>
-                        {site.nom}
-                      </option>
-                    ))}
-
-                  </select>
-                ) : (
-                  <input
-                    type="color"
+                <input
+                    type={`${field === "libelle" ? "text" : "color"}`}
                     name={field}
                     value={formData[field as keyof typeof formData]}
                     onChange={handleChange}
-                    className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] cursor-pointer"
+                    className={`w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] ${field === "libelle" ? "text-white" : "cursor-pointer"}`}
                     autoComplete="off"
                     required={field === "bgColor" || field === "textColor" || field === "btnColor"}
                   />
-                )}
               </div>
             ))}
 
