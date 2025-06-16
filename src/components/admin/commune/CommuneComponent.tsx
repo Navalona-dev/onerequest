@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import api from "../../../service/Api";
 import AddCommune from "./AddCommune";
 import UpdateCommune from "./UpdateCommune";
+import deleteCommune from "../../../service/DeleteCommune";
 
 type CommuneType = {
     id: number;
@@ -35,7 +36,7 @@ const CommuneComponent = () => {
             setRegion(response.data)
         })
         .catch((error) => console.error("Erreur API", error))
-    })
+    }, [])
 
     useEffect(() => {
         api.get(`/api/regions/${idRegion}/communes`)
@@ -116,7 +117,10 @@ const CommuneComponent = () => {
                           </a>
                           <a href="#"
                           title={deleteAction.upperText}
-                         
+                          onClick={(e) => {
+                            e.preventDefault();
+                            deleteCommune(item.id, setShowModalAdd);
+                          }}
                           >
                             
                             <i className="bi bi-trash-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>

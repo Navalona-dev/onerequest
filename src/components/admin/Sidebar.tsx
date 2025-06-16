@@ -91,6 +91,8 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
       setActiveMenu("site");
     }else if (path.includes("/user")) {
       setActiveMenu("user");
+    }else if (path.includes("/categorie-domaine-entreprise")) {
+      setActiveMenu("categorie-domaine-entreprise");
     }
   }, [location.pathname]);
 
@@ -162,6 +164,18 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Documents</span>
             </li>
 
+            <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "categorie-domaine-entreprise" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "categorie-domaine-entreprise" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("categorie-domaine-entreprise")}
+            >
+              <span className="icon-sidebar">
+              <i className="bi bi-tags-fill"></i>
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Categorie entreprise</span>
+            </li>
+
             {/* Dropdown */}
             <li
               className="flex flex-col relative"
@@ -208,7 +222,6 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               )}
             </li>
 
-            
             {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') && user.isSuperAdmin === true ? (
             <>
             <li

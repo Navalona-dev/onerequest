@@ -13,6 +13,8 @@ import SelectRegion from "./SelectRegion";
 
 import { Link } from "react-router-dom";
 import { error } from "console";
+import SelectCommune from "./SelectCommune";
+
 type RegionType = {
   id: number;
   nom: string;
@@ -40,6 +42,7 @@ const SiteComponent = () => {
   const [showModalUpdate, setShowModalUpdate] = useState(false);
   const [selectedSite, setSelectedSite] = useState<SiteType | null>(null);
   const [showModalSelectRegion, setShowModalSelectRegion] = useState(false);
+  const [showModalSelectCommune, setShowModalSelectCommune] = useState(false);
 
   const state = store.getState();
   const { create, delete: deleteAction, edit, activate, deactivate, addRegion } = state.actionTexts;
@@ -266,7 +269,18 @@ const SiteComponent = () => {
                               <>
                               {item.commune.nom} <span>/</span> {item.commune.district}
                               </>
-                            ) : null}
+                            ) : (
+                              item.region ? (
+                                  <a href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setSelectedSite(item)
+                                    setSelectedRegion(item.region)
+                                    setShowModalSelectCommune(true);
+                                  }}
+                                  ><i className="bi bi-plus-circle-fill"></i></a>
+                              ) : null
+                            )}
                             </td>
                         <td className="px-6 py-4">{item.description}</td>
                       </tr>
@@ -310,6 +324,14 @@ const SiteComponent = () => {
           setShowModalSelectRegion={setShowModalSelectRegion}
           siteId={selectedSite.id}
         />}
+
+      {showModalSelectCommune && selectedSite &&
+        <SelectCommune
+          setShowModalSelectCommune={setShowModalSelectCommune}
+          siteId={selectedSite.id}
+          regionId={selectedSite.region.id}
+        />}
+
       {showModalUpdate && selectedSite && (
         <UpdateSite
           setShowModalUpdate={setShowModalUpdate}

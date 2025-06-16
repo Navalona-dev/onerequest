@@ -52,9 +52,26 @@ const UserComponent = () => {
     const [searchSite, setSearchSite] = useState("");
     const [searchPrivilege, setSearchPrivilege] = useState("");
 
+    const [currentSite, setCurrentSite] = useState<Site | null>(null);
+
+    useEffect(() => {
+        api.get('/api/sites/current')
+        .then((response) => {
+            if (response.status === 204 || !response.data) {
+            setCurrentSite(null);
+            } else {
+            setCurrentSite(response.data);
+            }
+        })
+        .catch((error) => {
+            console.error("Erreur API:", error); // Autres erreurs réseau ou 500
+        });
+    })
+
  useEffect(() => {
     if(user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true) {
-        api.get('/api/users')
+        //api.get('/api/users')
+        api.get(`/api/sites/${currentSite?.id}/users`)
         .then((response) => {
         setUsers(response.data);
         })
@@ -105,12 +122,15 @@ const UserComponent = () => {
         <div className="h-[69vh] overflow-y-auto">
             <div className="color-header px-4 flex justify-between items-center mb-3">
                 <h4 className="font-bold text-white">Liste utilisateur</h4>
-                <button
+                {user && user.privileges && user.privileges.some(p => p.title === "super_admin" || p.title === "admin_site") ? (
+                    <button
                     onClick={() => setShowModal(true)}
                     className="bg-red-500 px-5 py-2 text-white rounded"
                     >
                     {create.upperText}
                 </button>
+                ) : null}
+                
             </div>
             <div className="card my-6 px-5 mx-4 border border-gray-700 py-5">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -191,19 +211,26 @@ const UserComponent = () => {
                             currentUsers.map((item, index) => (
                                 <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"} text-nowrap`}>
                                     <th className="px-6 py-4">
-                                        <a href="#"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            setSelectedUser(item);
-                                            setShowModalUpdate(true);
-                                        }}
-                                        title={edit.upperText}><i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i></a>
-                                        <a href="#"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            deleteUser(item.id, setShowModal);
-                                        }}
-                                        title={deleteAction.upperText}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i></a>
+                                    {user && user.privileges && user.privileges.some(p => p.title === "super_admin" || p.title === "admin_site") ? (
+                                        <>
+                                             <a href="#"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setSelectedUser(item);
+                                                    setShowModalUpdate(true);
+                                                }}
+                                                title={edit.upperText}><i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                            </a>
+                                            <a href="#"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    deleteUser(item.id, setShowModal);
+                                                }}
+                                                title={deleteAction.upperText}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                            </a>
+                                        </>
+                                    ) : null}
+                                       
                                     </th>
                                     <td className="px-6 py-4">
                                         {item.nom} 
