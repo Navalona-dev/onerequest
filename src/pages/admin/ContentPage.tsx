@@ -16,6 +16,7 @@ import LoginPage from "./LoginPage";
 import RegionPage from "./RegionPage";
 import CommunePage from "./CommunePage";
 import CategorieDomaineEntreprise from "./CategorieDomaineEntreprise";
+import DomaineEntreprise from "./DomaineEntreprise";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -43,6 +44,9 @@ const ContentPage = () => {
         } else if (/^\d+\/commune$/.test(path)) {
             // correspond à /1/commune ou /5/commune, etc.
             setCurrentModule("commune");
+        }else if (/^\d+\/domaine-entreprise$/.test(path)) {
+            
+            setCurrentModule("domaine-entreprise");
         } else {
             setCurrentModule("dashboard"); // fallback
         }
@@ -63,11 +67,12 @@ const ContentPage = () => {
                 return <UserPage />;
             case "region":
                 return <RegionPage />;
-
             case "commune":
                 return <CommunePage />;
             case "categorie-domaine-entreprise":
                 return <CategorieDomaineEntreprise />;
+            case "domaine-entreprise":
+                return <DomaineEntreprise />;
             default:
                 return <Dashboard />;
         }

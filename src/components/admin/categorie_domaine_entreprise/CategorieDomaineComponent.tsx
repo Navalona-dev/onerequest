@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { store } from "../../../store";
 import api from "../../../service/Api";
 import Pagination from "../Pagination";
-import AddCategorieDomaine from "./AddCategirieDomaine";
+import AddCategorieDomaine from "./AddCategorieDomaine";
 import UpdateCategorieDomaine from "./UpdateCategorieDomaine";
+import { Link } from "react-router-dom";
+import deleteCategorieDomaine from "../../../service/DeleteCategorieDomaine";
 
 type CategoryType = {
     id: number;
@@ -54,19 +56,20 @@ const CategorieDomaineComponent = () => {
     return(
         <>
         <div className="h-[69vh] overflow-y-auto m-4">
-            <div className="color-header px-4 flex justify-between items-center mb-3">
-                <h4 className="font-bold text-white">Liste catégorie domaine entreprise</h4>
-                    <button
+            <div className="color-header px-4 flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-3">
+                <h4 className="font-bold text-white text-lg">Liste catégorie domaine entreprise</h4>
+
+                <button
                     onClick={(e) => {
-                        e.preventDefault();
-                        setShowModalAdd(true);
+                    e.preventDefault();
+                    setShowModalAdd(true);
                     }}
-                    className="bg-red-500 px-5 py-2 text-white rounded"
-                    >
+                    className="bg-red-500 px-5 py-2 text-white rounded w-full md:w-auto"
+                >
                     {create.upperText}
                 </button>
-                
             </div>
+
 
             <div className="card my-6 px-5 mx-12 border border-gray-700 py-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -119,9 +122,15 @@ const CategorieDomaineComponent = () => {
                                                 title={edit.upperText}><i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                             </a>
                                             <a href="#"
-                                               
+                                               onClick={(e) => {
+                                                e.preventDefault();
+                                                deleteCategorieDomaine(item.id);
+                                               }}
                                                 title={deleteAction.upperText}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                             </a>
+                                            <Link to={`/${item.id}/domaine-entreprise`}
+                                                title="Liste domaine entreprise"><i className="bi bi-list-stars bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                            </Link>
                                         </>
                                        
                                     </td>

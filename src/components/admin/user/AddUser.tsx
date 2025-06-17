@@ -165,7 +165,7 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                         multiple
                         value={formData.privileges}
                         onChange={handleChange}
-                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
+                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
                         required
                     >
                         <option value="" disabled>Selectionner un privilège</option>
@@ -182,7 +182,7 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                         name="site"
                         value={formData.site}
                         onChange={handleChange}
-                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
+                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
                         required
                     >
                         <option value="" disabled>Selectionner un site</option>
@@ -199,7 +199,7 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                         name={field}
                         value={formData[field as keyof typeof formData]}
                         onChange={handleChange}
-                        className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white"
+                        className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                         autoComplete="off"
                         required={field === "nom" || field === "email"}
                     />

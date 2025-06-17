@@ -130,7 +130,7 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
                   name={field}
                   value={formData[field as keyof typeof formData]}
                   onChange={handleChange}
-                  className={`w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] ${field === "libelle" ? "text-white" : "cursor-pointer"}`}
+                  className={`w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] ${field === "libelle" ? "text-white" : "cursor-pointer"} focus:outline-none focus:ring-0 focus:border-transparent`}
                   autoComplete="off"
                   required={["bgColor", "textColor", "btnColor"].includes(field)}
                 />

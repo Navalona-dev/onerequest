@@ -3,18 +3,20 @@ import { AxiosError } from "axios";
 import api from "../../../service/Api";
 import Swal from "sweetalert2";
 
-interface AddUCategorieDomaineProps {
+interface AddDomaineEntrepriseProps {
     setShowModalAdd: React.Dispatch<React.SetStateAction<boolean>>;
+    idCategorie: number
   }
   
-  const AddCategorieDomaine: React.FC<AddUCategorieDomaineProps> = ({ setShowModalAdd }) => {
+  const AddDomaineEntreprise: React.FC<AddDomaineEntrepriseProps> = ({ setShowModalAdd, idCategorie }) => {
       const [formData, setFormData] = useState({
-          nom: "",
+          libelle: "",
           description: "",
+          categorieDomaineEntreprise: `/api/categorie_domaine_entreprises/${idCategorie}`
       });
 
       const fieldLabels: { [key: string]: string } = {
-        nom: "Titre",
+        libelle: "Libellé",
         description: "Description",
       };
 
@@ -32,13 +34,13 @@ interface AddUCategorieDomaineProps {
         e.preventDefault();
     
         try {
-          const response = await api.post("/api/categorie_domaine_entreprises", formData);
+          const response = await api.post("/api/domaine_entreprises", formData);
           console.log("Réponse API:", response.data);
     
           Swal.fire({
             icon: "success",
             title: "Bon travail!",
-            text: "Catégorie domaine entreprise ajoutée avec succès !",
+            text: "Domaine entreprise ajoutée avec succès !",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -65,10 +67,10 @@ interface AddUCategorieDomaineProps {
               if (backendMessage) {
                 errorMessage = backendMessage;
               } else if (status == 400) {
-                errorMessage = "Un compte avec cet email existe déjà.";
+               
               }
               else if (status === 404) {
-                errorMessage = "Utilisateur introuvable.";
+                errorMessage = "Catégorie introuvable.";
               } else if (status === 401) {
                 errorMessage = "Non autorisé. Veuillez vous reconnecter.";
               } else if (status === 500) {
@@ -77,7 +79,6 @@ interface AddUCategorieDomaineProps {
               // Tu peux rajouter d'autres cas ici si besoin
             } else {
               // Pas de réponse du serveur (ex: problème de réseau)
-              //errorMessage = "Un compte avec cet email existe déjà.";
             }
           
             await Swal.fire({
@@ -100,37 +101,39 @@ interface AddUCategorieDomaineProps {
     
             <form onSubmit={handleSubmit} className="space-y-4">
             {Object.keys(formData).map((field) =>
-                <div key={field}>
-                  <label className="block text-gray-400 mb-1">
-                    {fieldLabels[field] || field}
-                    {(field === "prenom") ? (
-                        <sup></sup>
-                  ) : (
-                    <sup className="text-red-500">*</sup>
-                    
-                  )}
-                  </label>
-                 {field === "description" ? (
-                     <textarea
-                     name={field}
-                     value={formData[field as keyof typeof formData]}
-                     onChange={handleChange}
-                     className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
-                     required
-                     rows={4}
-                   />
-                 ) : (
-                    <input
-                        type="text"
+                field === "categorieDomaineEntreprise" ? null : (
+                    <div key={field}>
+                    <label className="block text-gray-400 mb-1">
+                        {fieldLabels[field] || field}
+                        {(field === "prenom") ? (
+                            <sup></sup>
+                    ) : (
+                        <sup className="text-red-500">*</sup>
+                        
+                    )}
+                    </label>
+                    {field === "description" ? (
+                        <textarea
                         name={field}
                         value={formData[field as keyof typeof formData]}
                         onChange={handleChange}
-                        className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:ring-0 focus:border-transparent"
-                        autoComplete="off"
-                        required={field === "nom" || field === "email"}
+                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                        required
+                        rows={4}
                     />
-                 )}
-                </div>
+                    ) : (
+                        <input
+                            type="text"
+                            name={field}
+                            value={formData[field as keyof typeof formData]}
+                            onChange={handleChange}
+                            className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
+                            autoComplete="off"
+                            required={field === "nom" || field === "email"}
+                        />
+                    )}
+                    </div>
+                )
             )}
 
 
@@ -157,4 +160,4 @@ interface AddUCategorieDomaineProps {
     )
 }
 
-export default AddCategorieDomaine;
+export default AddDomaineEntreprise;
