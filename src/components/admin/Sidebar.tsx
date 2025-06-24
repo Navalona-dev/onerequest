@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import {
   FaFolder,
@@ -91,7 +91,10 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
       setActiveMenu("site");
     }else if (path.includes("/user")) {
       setActiveMenu("user");
-    }else if (path.includes("/categorie-domaine-entreprise")) {
+    }else if (path.includes("/type-demande")) {
+      setActiveMenu("type-demande");
+    }
+    else if (path.includes("/categorie-domaine-entreprise")) {
       setActiveMenu("categorie-domaine-entreprise");
     }
   }, [location.pathname]);
@@ -109,7 +112,6 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
         console.error("Erreur API:", error); // Autres erreurs réseau ou 500
       });
   }, []);
-  
   
 
   return (
@@ -212,7 +214,22 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
                     isSidebarCollapsed ? 'absolute left-full top-0 ml-2 w-48 bg-[#0B1437] p-2 rounded shadow-lg z-50' : 'ml-8 mt-1'
                   } space-y-1 text-sm`}
                 >
-                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>En cours</li>
+                  {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') && user.isSuperAdmin === true ? (
+                    <li 
+                        className={`px-2 py-1 rounded ${hoverColor} cursor-pointer
+                        ${activeMenu === "type-demande" ? "bg-[#1c2d55] text-white" : ""
+                        } ${currentModule === "type-demande" ? "bg-[#1c2d55] text-white" : ""}
+                        `}
+                        onClick={() => {
+                          handleMenuClick("type-demande");
+                          setDemandeOpen(true);
+                        }}
+                      >
+                        <i className="mr-2 text-xs bi bi-circle"></i>
+                        Types
+                    </li>
+                  ) : (null)}
+                  
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Annulée</li>
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Réfusée</li>
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>En attente</li>

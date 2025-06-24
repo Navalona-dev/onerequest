@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-type ModuleType = "dashboard" | "document" | "code-couleur" | "demande" | "accueil" | "soumettre-demande" | "contact" | "rendez-vous" | "site" | "user" | "region" | "commune" | "categorie-domaine-entreprise" | "domaine-entreprise"; // ajoute d'autres si besoin
+type ModuleType = "dashboard" | "document" | "code-couleur" | "demande" | "accueil" | "soumettre-demande" | "contact" | "rendez-vous" | "site" | "user" | "region" | "commune" | "categorie-domaine-entreprise" | "domaine-entreprise" | "type-demande";
 
 interface ModuleContextType {
   currentModule: ModuleType;

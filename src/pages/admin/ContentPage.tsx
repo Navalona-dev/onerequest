@@ -17,6 +17,7 @@ import RegionPage from "./RegionPage";
 import CommunePage from "./CommunePage";
 import CategorieDomaineEntreprise from "./CategorieDomaineEntreprise";
 import DomaineEntreprise from "./DomaineEntreprise";
+import TypeDemandePage from "./TypeDemandePage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -38,7 +39,8 @@ const ContentPage = () => {
             "site", 
             "user",
             "region",
-            "categorie-domaine-entreprise"
+            "categorie-domaine-entreprise",
+            "type-demande"
         ].includes(path)) {
             setCurrentModule(path as any);
         } else if (/^\d+\/commune$/.test(path)) {
@@ -73,6 +75,8 @@ const ContentPage = () => {
                 return <CategorieDomaineEntreprise />;
             case "domaine-entreprise":
                 return <DomaineEntreprise />;
+            case "type-demande":
+                return <TypeDemandePage />;
             default:
                 return <Dashboard />;
         }
