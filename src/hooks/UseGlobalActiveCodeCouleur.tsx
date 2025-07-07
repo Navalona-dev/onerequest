@@ -24,7 +24,6 @@ export const useGlobalActiveCodeCouleur = () => {
   useEffect(() => {
     publicApi.get("/api/code_couleurs/get-global-active")
       .then((response) => {
-        console.log(response.data); // <-- ici
         setCodeCouleur(response.data);
       })
       .catch((error) => console.error("Erreur API:", error))

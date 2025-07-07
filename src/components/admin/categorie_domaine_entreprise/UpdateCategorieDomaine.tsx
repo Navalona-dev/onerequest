@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import api from "../../../service/Api";
+import CodeColor from "../codeCouleur/CodeColor";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { store } from "../../../store";
 
 interface UpdateCategorieProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,6 +20,10 @@ const UpdateCategorieDomaine: React.FC<UpdateCategorieProps> = ({ setShowModalUp
     nom: initialData.nom,
     description: initialData.description,
   });
+
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+  const state = store.getState();
+  const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
 
   const fieldLabels: { [key: string]: string } = {
     nom: "Nom",
@@ -71,8 +78,15 @@ const UpdateCategorieDomaine: React.FC<UpdateCategorieProps> = ({ setShowModalUp
   };
 
   return (
+    <>
+    
     <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
-      <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down">
+      <div 
+      className="bg-[#111C44] border rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down"
+      style={{
+        borderColor: codeCouleur?.btnColor
+      }}
+      >
         <h2 className="text-xl font-bold mb-4 text-white">Modifier la catégorie domaine</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -104,9 +118,9 @@ const UpdateCategorieDomaine: React.FC<UpdateCategorieProps> = ({ setShowModalUp
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                className="text-white px-4 py-2 rounded"
               >
-                Modifier
+                {edit.upperText}
               </button>
             </div>
           </form>
@@ -114,13 +128,14 @@ const UpdateCategorieDomaine: React.FC<UpdateCategorieProps> = ({ setShowModalUp
 
         <button
           onClick={() => setShowModalUpdate(false)}
-          className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg"
+          className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg py-1 px-2 rounded"
           aria-label="Close modal"
         >
-          ×
+          <i className="bi bi-x-circle-fill text-white"></i>
         </button>
       </div>
     </div>
+    </>
   );
 };
 

@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useLayoutContent } from "../../contexts/admin/LayoutContext";
 import UserAdminConnected from "../../hooks/UserAdminConnected";
 import api from "../../service/Api";
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 
 
 type SidebarProps = {
@@ -26,9 +27,21 @@ type Privilege = {
   title: string;
 };
 
+type Region = {
+  id: number;
+  nom: string;
+}
+
+type Commune = {
+  id: number;
+  nom: string;
+}
+
 type Site = {
   id: number;
   nom: string;
+  region: Region | null;
+  commune: Commune | null;
 };
 
 type UserType = {
@@ -56,6 +69,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
   const [activeMenu, setActiveMenu] = useState<string>("dashboard");
   const { currentModule, setCurrentModule } = useModule();
   const { isSidebarCollapsed } = useLayoutContent();
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
   const handleMenuClick = (menu: string) => {
     setActiveMenu(menu);
@@ -72,8 +86,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
      //window.location.reload();
   };
 
-  //const bgColor = theme === "dark" ? "bg-[#0B1437] text-white" : "bg-white text-gray-900";
-  const bgColor = theme === "dark" ? "bg-[#0B1437] text-white" : theme === "light" ? "bg-white text-gray-900" : "bg-red-500 text-white";
+  //const bgColor = theme === "dark" ? "bg-[#0B1437] text-white" : theme === "light" ? "bg-white text-gray-900" : "bg-red-500 text-white";
 
   const hoverColor = theme === "dark" ? "hover:bg-[#1c2d55]" : "hover:bg-[#1c2d55]";
 
@@ -115,7 +128,11 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
   
 
   return (
-      <div className={`transition-all duration-300 ${isSidebarCollapsed ? 'w-20' : 'w-64'} ${bgColor} min-h-screen p-4 admin-sidebar`}>
+      <div className={`transition-all duration-300 ${isSidebarCollapsed ? 'w-20' : 'w-64'} ${theme === "light" ? "text-gray-900" : "text-white"  } min-h-screen p-4 admin-sidebar`}
+      style={{
+        backgroundColor: theme === "dark" ? "#0B1437" : theme === "light" ? "white" : codeCouleur?.btnColor
+      }}
+      >
         {onCloseMobileSidebar && (
           <button
             className="md:hidden absolute top-4 right-4 text-white text-xl"
@@ -128,10 +145,10 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
         <h1 className={`text-2xl font-bold mb-5 ${isSidebarCollapsed ? 'hidden' : 'inline'}`}>ONEREQUEST</h1>
         {user ? (
           user.site ? (
-            <h4 className="my-3">{user.site.nom}</h4>
+            <h4 className="my-3">{user.site.nom} ({user.site.region?.nom} / {user.site.commune?.nom}) </h4>
           ) : (
             currentSite ? (
-              <h4 className="my-3">{currentSite.nom}</h4>
+              <h4 className="my-3">{currentSite.nom} ({currentSite.region?.nom} / {currentSite.commune?.nom})</h4>
             ) : (
               null
             )
@@ -230,7 +247,18 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
                     </li>
                   ) : (null)}
                   
-                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Annulée</li>
+                  <li  
+                      className={`px-2 py-1 rounded ${hoverColor} cursor-pointer
+                      ${activeMenu === "demande" ? "bg-[#1c2d55] text-white" : ""
+                        } ${currentModule === "demande" ? "bg-[#1c2d55] text-white" : ""}
+                    `}
+                    onClick={() => {
+                      handleMenuClick("demande");
+                      setDemandeOpen(true);
+                    }}
+                  >
+                    <i className="mr-2 text-xs bi bi-circle"></i>Liste
+                  </li>
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Réfusée</li>
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>En attente</li>
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Acceptée</li>

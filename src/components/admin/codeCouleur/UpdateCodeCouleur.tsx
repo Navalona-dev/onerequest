@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import api from "../../../service/Api";
+import { store } from "../../../store";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 interface AddCodeCouleurProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
@@ -56,6 +58,9 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
   };
 
   const [siteListe, setSiteListe] = useState<Site[]>([]);
+  const state = store.getState();
+  const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
   const listeSite = async () => {
     try {
@@ -112,7 +117,11 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
 
   return (
     <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50 h-[100vh]">
-      <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-y-auto">
+      <div className="bg-[#111C44] border rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-y-auto"
+      style={{
+        borderColor: codeCouleur?.btnColor
+      }}
+      >
         <h2 className="text-xl font-bold mb-4 text-white">Modifier le code couleur</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {Object.keys(formData).map((field) => (
@@ -138,18 +147,18 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
           ))}
 
           <div className="flex justify-end">
-            <button type="submit" className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
-              Enregistrer
+            <button type="submit" className="text-white px-4 py-2 rounded">
+              {edit.upperText}
             </button>
           </div>
         </form>
 
         <button
           onClick={() => setShowModalUpdate(false)}
-          className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg"
+          className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg py-1 px-2 rounded"
           aria-label="Close modal"
         >
-          ×
+          <i className="bi bi-x-circle-fill text-white"></i>
         </button>
       </div>
     </div>

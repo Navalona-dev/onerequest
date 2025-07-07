@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { layoutOptions, colorSchemeOptions } from "../../datas/themeOptions"; // adapte le chemin si besoin
 import { useTheme } from "../../contexts/admin/ThemeContext";
 import { useLayoutContent } from "../../contexts/admin/LayoutContext";
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 
 interface ThemeCustomizerProps {
   onClose: () => void;
@@ -10,11 +11,16 @@ interface ThemeCustomizerProps {
 const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({ onClose }) => {
     const { theme, setTheme } = useTheme();
     const { layoutContent, setLayoutContent } = useLayoutContent();
+    const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
   return (
     <div>
       {/* Header */}
-      <div className="bg-red-500 px-3 py-4">
+      <div className="px-3 py-4"
+      style={{
+        backgroundColor: codeCouleur?.btnColor
+      }}
+      >
         <div className="flex items-center justify-between w-full">
           <h3 className="font-bold text-white">Thème personnalisé</h3>
           <span className="text-3xl text-white font-bold cursor-pointer" onClick={onClose}>×</span>

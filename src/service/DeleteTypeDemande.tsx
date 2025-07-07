@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
 import api from "./Api";
 
-const deleteCategorieDomaine = async (
-    idCategorie: number,
+const deleteTypeDemande = async (
+    idTypeDemande: number,
   ) => {  
     const result = await Swal.fire({
       title: "Es-tu sûr ?",
@@ -19,13 +19,13 @@ const deleteCategorieDomaine = async (
   
     if (result.isConfirmed) {
       try {
-        const response = await api.delete(`/api/categorie_domaine_entreprises/${idCategorie}`);
+        const response = await api.delete(`/api/type_demandes/${idTypeDemande}`);
         console.log("Réponse API:", response.data);
   
         await Swal.fire({
           icon: "success",
           title: "Bon travail!",
-          text: "Catégorie domaine entreprise supprimée avec succès !",
+          text: "Type demande supprimé avec succès !",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",
           color: "#fff",
@@ -39,7 +39,7 @@ const deleteCategorieDomaine = async (
         Swal.fire({
           icon: "error",
           title: "Erreur",
-          text: "Erreur lors de la suppression de catégorie de domaine entreprise.",
+          text: "Erreur lors de la suppression de type de demande.",
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",
@@ -48,4 +48,4 @@ const deleteCategorieDomaine = async (
     }
   };
 
-  export default deleteCategorieDomaine;
+  export default deleteTypeDemande;

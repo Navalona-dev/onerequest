@@ -6,6 +6,7 @@ import AddCategorieDomaine from "./AddCategorieDomaine";
 import UpdateCategorieDomaine from "./UpdateCategorieDomaine";
 import { Link } from "react-router-dom";
 import deleteCategorieDomaine from "../../../service/DeleteCategorieDomaine";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type CategoryType = {
     id: number;
@@ -21,6 +22,7 @@ const CategorieDomaineComponent = () => {
 
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalUpdate, setShowModalUpdate] = useState(false);
+    const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
     const [currentPage, setCurrentPage] = useState(1);
     const categoriesPerPage = 3;
@@ -64,7 +66,7 @@ const CategorieDomaineComponent = () => {
                     e.preventDefault();
                     setShowModalAdd(true);
                     }}
-                    className="bg-red-500 px-5 py-2 text-white rounded w-full md:w-auto"
+                    className="px-5 py-2 text-white rounded w-full md:w-auto"
                 >
                     {create.upperText}
                 </button>
@@ -113,23 +115,42 @@ const CategorieDomaineComponent = () => {
                                 <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
                                     <td className="px-6 py-4 text-nowrap">
                                         <>
-                                             <a href="#"
+                                            <a href="#"
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                     setSelectedCategorie(item);
                                                     setShowModalUpdate(true);
                                                 }}
-                                                title={edit.upperText}><i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                title={edit.upperText}>
+                                                    <i 
+                                                        className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
+                                                        style={
+                                                            {
+                                                                backgroundColor: codeCouleur?.btnColor
+                                                            }
+                                                        }
+                                                    >
+                                                    </i>
                                             </a>
                                             <a href="#"
                                                onClick={(e) => {
                                                 e.preventDefault();
                                                 deleteCategorieDomaine(item.id);
                                                }}
-                                                title={deleteAction.upperText}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                title={deleteAction.upperText}>
+                                                    <i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                             </a>
                                             <Link to={`/${item.id}/domaine-entreprise`}
-                                                title="Liste domaine entreprise"><i className="bi bi-list-stars bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                title="Liste domaine entreprise">
+                                                    <i 
+                                                        className="bi bi-list-stars bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"
+                                                        style={
+                                                            {
+                                                                backgroundColor: codeCouleur?.btnColor
+                                                            }
+                                                        }
+                                                    >
+                                                    </i>
                                             </Link>
                                         </>
                                        

@@ -4,6 +4,7 @@ import { useLayoutContent } from '../../contexts/admin/LayoutContext';
 import { Link } from "react-router-dom";
 import api from "../../service/Api";
 import UserAdminConnected from "../../hooks/UserAdminConnected";
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 
 type HeaderProps = {
   onToggleMobileSidebar: () => void;
@@ -35,12 +36,13 @@ type UserType = {
 const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
   const { layoutContent, isSidebarCollapsed, setIsSidebarCollapsed } = useLayoutContent();
 
-  const bgColor = layoutContent === "vertical" ? "bg-[#0B1437] admin-header-vertical" : "bg-red-500 admin-header-horizontal";
+  //const bgColor = layoutContent === "vertical" ? "bg-[#0B1437] admin-header-vertical" : "bg-red-500 admin-header-horizontal";
 
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [sites, setSites] = useState<Site[]>([]);
   const [siteCurrent, setSiteCurrent] = useState<Site | null>(null);
   const user = UserAdminConnected() as UserType | null;
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen((prev) => !prev);
@@ -74,7 +76,13 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
 
 
   return (
-    <div className={`${bgColor} text-white p-4 flex justify-between items-center`}>
+    <div 
+      className={`text-white p-4 flex justify-between items-center ${layoutContent === "vertical" ? "admin-header-vertical" : "admin-header-horizontal" }`}
+      style={{
+        backgroundColor: layoutContent === "vertical" ? "" : codeCouleur?.btnColor
+      }}
+      >
+        
       <div>
         <button
           className="block md:hidden text-white text-xl"
@@ -135,7 +143,11 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
                   sites.map((site, idx) => (
                     <div
                       key={idx}
-                      className={`px-3 py-2 text-sm text-center rounded hover:bg-gray-100 cursor-pointer ${site.isCurrent === true ? "bg-red-500 text-white" : ""}`}
+                      className={`px-3 py-2 text-sm text-center rounded hover:bg-gray-100 cursor-pointer `}
+                      style={{
+                        backgroundColor: site.isCurrent === true ? codeCouleur?.btnColor  : "",
+                        color: site.isCurrent === true ? "white" : ""
+                      }}
                       onClick={() => {
                         handleSiteCurrent(site.id);
                         setLocationDropdownOpen(false);

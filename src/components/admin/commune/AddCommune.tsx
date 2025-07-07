@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { store } from "../../../store";
 import api from "../../../service/Api";
 
 interface AddCommuneProps {
@@ -16,6 +17,9 @@ const AddCommune: React.FC<AddCommuneProps> = ({ setShowModal, idRegion }) => {
     });
 
     const [loading, setLoading] = useState(true);
+    const {codeCouleur} = useGlobalActiveCodeCouleur();
+    const state = store.getState();
+    const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
 
     const fieldLabels: { [key: string]: string } = {
         nom: "Nom",
@@ -70,7 +74,11 @@ const AddCommune: React.FC<AddCommuneProps> = ({ setShowModal, idRegion }) => {
 
       return (
         <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
-          <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down">
+          <div className="bg-[#111C44] border rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down"
+          style={{
+            borderColor: codeCouleur?.btnColor
+          }}
+          >
             <h2 className="text-xl font-bold mb-4 text-white">Créer un nouveau commune</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -97,19 +105,19 @@ const AddCommune: React.FC<AddCommuneProps> = ({ setShowModal, idRegion }) => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                  className="text-white px-4 py-2 rounded"
                 >
-                  Enregistrer
+                  {save.upperText}
                 </button>
               </div>
             </form>
     
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg"
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg py-1 px-2 rounded"
               aria-label="Close modal"
             >
-              ×
+              <i className="bi bi-x-circle-fill text-white"></i>
             </button>
           </div>
         </div>

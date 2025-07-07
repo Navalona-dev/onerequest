@@ -16,43 +16,62 @@ import ContentPageFront from './pages/front/ContentPage';
 import LoginPage from './pages/admin/LoginPage';
 import LogoutAdmin from './service/LogoutAdmin';
 import TokenWatcher from './service/TokenWatcher';
+import { useGlobalActiveCodeCouleur } from './hooks/UseGlobalActiveCodeCouleur';
 
 function App() {
-  return (
-    <Provider store={store}>
-      <BrowserRouter>
-      <ThemeProvider>
-        <LayoutContentProvider>
-          <ModuleProvider>
-          <TokenWatcher />
-            <Routes>
-              <Route path="/" element={<ContentPageFront />} />
-              <Route path="/soumettre-demande" element={<ContentPageFront />} />
-              <Route path="/contact" element={<ContentPageFront />} />
-              <Route path="/rendez-vous" element={<ContentPageFront />} />
-              <Route path="/admin/login" element={<LoginPage />} />
-              <Route path="/admin/logout" element={<LogoutAdmin />} />
-              <Route element={<PrivateRouteAdmin />}>
-                <Route path="/admin" element={<ContentPage />} />
-                <Route path="/document" element={<ContentPage />} />
-                <Route path="/report" element={<ContentPage />} />
-                <Route path="/demande" element={<ContentPage />} />
-                <Route path="/code-couleur" element={<ContentPage />} />
-                <Route path="/site" element={<ContentPage />} />
-                <Route path="/user" element={<ContentPage />} />
-                <Route path="/region" element={<ContentPage />} />
-                <Route path="/type-demande" element={<ContentPage />} />
-                <Route path="/categorie-domaine-entreprise" element={<ContentPage />} />
-                <Route path="/:idRegion/commune" element={<ContentPage />} />
-                <Route path="/:idCategorieDomaine/domaine-entreprise" element={<ContentPage />} />
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
-              </Route>
-            </Routes>
-          </ModuleProvider>
-        </LayoutContentProvider>
-      </ThemeProvider>
-    </BrowserRouter>
-    </Provider>
+  return (
+    <>
+    {codeCouleur?.id && (
+      <style>
+        {`
+          button, .btn-list {
+            background-color: ${codeCouleur.btnColor}
+          }
+          button:hover, .btn-list:hover {
+            background-color: ${codeCouleur.btnColorHover}
+          }
+        `}
+      </style>
+    )}
+      <Provider store={store}>
+        <BrowserRouter>
+        <ThemeProvider>
+          <LayoutContentProvider>
+            <ModuleProvider>
+            <TokenWatcher />
+              <Routes>
+                <Route path="/" element={<ContentPageFront />} />
+                <Route path="/soumettre-demande" element={<ContentPageFront />} />
+                <Route path="/contact" element={<ContentPageFront />} />
+                <Route path="/rendez-vous" element={<ContentPageFront />} />
+                <Route path="/inscription" element={<ContentPageFront />} />
+                <Route path="/admin/login" element={<LoginPage />} />
+                <Route path="/admin/logout" element={<LogoutAdmin />} />
+                <Route element={<PrivateRouteAdmin />}>
+                  <Route path="/admin" element={<ContentPage />} />
+                  <Route path="/document" element={<ContentPage />} />
+                  <Route path="/report" element={<ContentPage />} />
+                  <Route path="/demande" element={<ContentPage />} />
+                  <Route path="/code-couleur" element={<ContentPage />} />
+                  <Route path="/site" element={<ContentPage />} />
+                  <Route path="/user" element={<ContentPage />} />
+                  <Route path="/region" element={<ContentPage />} />
+                  <Route path="/type-demande" element={<ContentPage />} />
+                  <Route path="/demande" element={<ContentPage />} />
+                  <Route path="/categorie-domaine-entreprise" element={<ContentPage />} />
+                  <Route path="/:idRegion/commune" element={<ContentPage />} />
+                  <Route path="/:idCategorieDomaine/domaine-entreprise" element={<ContentPage />} />
+
+                </Route>
+              </Routes>
+            </ModuleProvider>
+          </LayoutContentProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+      </Provider>
+    </>
     
   );
 }

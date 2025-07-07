@@ -32,6 +32,9 @@ const FolderCard: React.FC<FolderCardProps> = ({ name, files, selected }) => {
           <button
             onClick={() => setOpen(!open)}
             className="text-right text-xs cursor-pointer"
+            style={{
+              backgroundColor: "transparent"
+            }}
           >
             ⋮
           </button>

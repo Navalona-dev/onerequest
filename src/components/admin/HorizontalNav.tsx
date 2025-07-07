@@ -10,6 +10,7 @@ import {
 import { useTheme } from "../../contexts/admin/ThemeContext";
 import { useModule } from "../../contexts/admin/ModuleContext";
 import { useNavigate } from "react-router-dom";
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 
 // Casting des icônes pour TypeScript
 const FaFolderIcon = FaFolder as React.FC<React.SVGProps<SVGSVGElement>>;
@@ -26,6 +27,7 @@ const HorizontalNav = () => {
   const [demandeOpen, setDemandeOpen] = useState<boolean>(false);
   const [activeMenu, setActiveMenu] = useState<string>("dashboard");
   const { currentModule, setCurrentModule } = useModule();
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
   const handleMenuClick = (menu: string) => {
     setActiveMenu(menu);

@@ -7,6 +7,7 @@ import bgImage from '../../../assets/images/bg-site.png';
 import Pagination from "../Pagination";
 import UpdateRegion from "./UpdateRegion";
 import deleteRegion from "../../../service/DeleteRegion";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type SiteType = {
   id: number;
@@ -31,6 +32,8 @@ const RegionComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const regionsPerPage = 5;
 
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+
   useEffect(() => {
     api.get("/api/regions")
       .then((response) => {
@@ -53,12 +56,12 @@ const RegionComponent = () => {
                 <div>
                   <button
                     onClick={() => setShowModal(true)}
-                    className="bg-red-500 px-5 py-1.5 text-white rounded mr-3"
+                    className="px-5 py-1.5 text-white rounded mr-3"
                   >
                     {create.upperText}
                   </button>
                   <Link to={'/site'}
-                    className="bg-red-500 px-5 py-2 text-white rounded">
+                    className="btn-list px-5 py-2 text-white rounded">
                     Liste site
                   </Link>
 
@@ -87,7 +90,11 @@ const RegionComponent = () => {
                             }}
                             title={edit.upperText}
                           >
-                            <i className="bi bi-pencil-square bg-blue-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                            <i className="bi bi-pencil-square px-1.5 py-1 text-white rounded-3xl mr-3"
+                            style={{
+                              backgroundColor: codeCouleur?.btnColor
+                            }}
+                            ></i>
                           </a>
                           <a href="#"
                           title={deleteAction.upperText}
@@ -100,7 +107,11 @@ const RegionComponent = () => {
                             <i className="bi bi-trash-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
                           </a>
                           <Link to={`/${item.id}/commune`} title="Liste commune">
-                            <i className="bi bi-geo-alt-fill bg-blue-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                            <i className="bi bi-geo-alt-fill px-1.5 py-1 text-white rounded-3xl mr-3"
+                            style={{
+                              backgroundColor: codeCouleur?.btnColor
+                            }}
+                            ></i>
                           </Link>
                           
                         </td>

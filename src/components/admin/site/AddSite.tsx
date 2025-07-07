@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
 import api from "../../../service/Api";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { store } from "../../../store";
 
 interface AddSiteProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,6 +37,9 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
     const [selectedRegionId, setSelectedRegionId] = useState<string>("");
     const [selectedCommuneId, setSelectedCommuneId] = useState<string>("");
     const [checkboxActive, setCheckboxActive] = useState(false);
+    const {codeCouleur} = useGlobalActiveCodeCouleur();
+    const state = store.getState();
+    const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
 
     const fieldLabels: { [key: string]: string } = {
         nom: "Nom",
@@ -137,7 +142,11 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
 
       return (
         <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50 h-[100vh]">
-          <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-y-auto">
+          <div className="bg-[#111C44] border rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-y-auto"
+          style={{
+            borderColor: codeCouleur?.btnColor
+          }}
+          >
             <h2 className="text-xl font-bold mb-4 text-white">Créer un nouveau site</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -286,19 +295,19 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                  className="text-white px-4 py-2 rounded"
                 >
-                  Enregistrer
+                  {save.upperText}
                 </button>
               </div>
             </form>
     
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg"
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg py-1 px-2 rounded"
               aria-label="Close modal"
             >
-              ×
+              <i className="bi bi-x-circle-fill text-white"></i>
             </button>
           </div>
         </div>

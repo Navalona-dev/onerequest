@@ -7,6 +7,7 @@ import deleteUser from "../../../service/DeleteUser";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
 import Pagination from "../Pagination";
 import bgImage from '../../../assets/images/bg-site.png';
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type Privilege = {
     id: number;
@@ -53,6 +54,7 @@ const UserComponent = () => {
     const [searchPrivilege, setSearchPrivilege] = useState("");
 
     const [currentSite, setCurrentSite] = useState<Site | null>(null);
+    const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
     useEffect(() => {
         api.get('/api/sites/current')
@@ -66,27 +68,36 @@ const UserComponent = () => {
         .catch((error) => {
             console.error("Erreur API:", error); // Autres erreurs réseau ou 500
         });
-    })
+    }, []);
 
- useEffect(() => {
-    if(user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true) {
-        //api.get('/api/users')
-        api.get(`/api/sites/${currentSite?.id}/users`)
-        .then((response) => {
-        setUsers(response.data);
-        })
-        .catch((error) => console.error("Erreur API:", error));
-    }else {
-        if (user && user.site) {
-            api.get(`/api/sites/${user.site.id}/users`)
+    useEffect(() => {
+        if (!user) return;
+    
+        // Attendre que currentSite soit bien défini (pour les super_admin)
+        if (
+            user.privileges.some(p => p.title === "super_admin") &&
+            user.isSuperAdmin === true
+        ) {
+            if (!currentSite) return; // NE PAS faire la requête tant que le site n'est pas là
+    
+            api.get(`/api/sites/${currentSite.id}/users`)
                 .then((response) => {
-                    const result = Array.isArray(response.data) ? response.data : [response.data];
-                    setUsers(result);
+                    setUsers(response.data);
                 })
                 .catch((error) => console.error("Erreur API:", error));
+        } else {
+            // Cas normal : user lié à un site
+            if (user.site) {
+                api.get(`/api/sites/${user.site.id}/users`)
+                    .then((response) => {
+                        const result = Array.isArray(response.data) ? response.data : [response.data];
+                        setUsers(result);
+                    })
+                    .catch((error) => console.error("Erreur API:", error));
+            }
         }
-    }
-    }, [user]);
+    }, [user, currentSite]); // ✅ Ajoute currentSite ici aussi
+    
 
     const filteredUsers = users.filter(user => {
         const nomMatch = !searchNom || user.nom.toLowerCase().includes(searchNom.toLowerCase());
@@ -100,7 +111,8 @@ const UserComponent = () => {
         return nomMatch && prenomMatch && emailMatch && siteMatch && privilegeMatch;
     });
     
-      const dataToPaginate = filteredUsers.length > 0 ? filteredUsers : users;
+      //const dataToPaginate = filteredUsers.length > 0 ? filteredUsers : users;
+      const dataToPaginate = filteredUsers;
 
       const totalPages = Math.max(1, Math.ceil(dataToPaginate.length / usersPerPage));
       
@@ -125,7 +137,7 @@ const UserComponent = () => {
                 {user && user.privileges && user.privileges.some(p => p.title === "super_admin" || p.title === "admin_site") ? (
                     <button
                     onClick={() => setShowModal(true)}
-                    className="bg-red-500 px-5 py-2 text-white rounded"
+                    className="px-5 py-2 text-white rounded"
                     >
                     {create.upperText}
                 </button>
@@ -181,90 +193,97 @@ const UserComponent = () => {
                     </div>
                 </div>
             </div>
-            <div className="w-[38vh] md:w-full sm:w-[38vh] h-[55vh] overflow-auto">
-                <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
-                        <tr className="text-nowrap border-b-2 border-gray-700 ...">
-                            <th scope="col" className="px-6 py-3 text-white">
-                                Actions
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-white">
-                                Nom
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-white">
-                                Prénom
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-white">
-                                Adresse e-mail
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-white">
-                                Site
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-white">
-                                Privilèges
-                            </th>
-                            
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentUsers.length > 0 ? (
-                            currentUsers.map((item, index) => (
-                                <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"} text-nowrap`}>
-                                    <th className="px-6 py-4">
-                                    {user && user.privileges && user.privileges.some(p => p.title === "super_admin" || p.title === "admin_site") ? (
-                                        <>
-                                             <a href="#"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    setSelectedUser(item);
-                                                    setShowModalUpdate(true);
-                                                }}
-                                                title={edit.upperText}><i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
-                                            </a>
-                                            <a href="#"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    deleteUser(item.id, setShowModal);
-                                                }}
-                                                title={deleteAction.upperText}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
-                                            </a>
-                                        </>
-                                    ) : null}
-                                       
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        {item.nom} 
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {item.prenom}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {item.email}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {item.site ? (item.site.nom) : null}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {item.privileges.length > 0 ? (
-                                            item.privileges.map((priv, index) => (
-                                            <span key={index}>
-                                                <i className="bi bi-circle-fill icon-priv"></i>{priv.title} <br />
-                                            </span>
-                                            ))
-                                        ) : null}
-                                    </td>
-
-                                </tr>
-                            ))
-                        ) : (
-                            <tr className="bg-[#1c2d55] text-center">
-                                <td colSpan={6} className="px-6 py-4">Aucun enregistrement trouvé</td>
+            <div className="mx-1">
+                <div className="w-[38vh] md:w-full sm:w-[38vh] h-[55vh] overflow-auto">
+                    <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
+                            <tr className="text-nowrap border-b-2 border-gray-700 ...">
+                                <th scope="col" className="px-6 py-3 text-white">
+                                    Actions
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-white">
+                                    Nom
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-white">
+                                    Prénom
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-white">
+                                    Adresse e-mail
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-white">
+                                    Site
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-white">
+                                    Privilèges
+                                </th>
+                                
                             </tr>
-                        )}
+                        </thead>
+                        <tbody>
+                            {currentUsers.length > 0 ? (
+                                currentUsers.map((item, index) => (
+                                    <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"} text-nowrap`}>
+                                        <th className="px-6 py-4">
+                                        {user && user.privileges && user.privileges.some(p => p.title === "super_admin" || p.title === "admin_site") ? (
+                                            <>
+                                                <a href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setSelectedUser(item);
+                                                        setShowModalUpdate(true);
+                                                    }}
+                                                    title={edit.upperText}>
+                                                    <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
+                                                    style={{
+                                                        backgroundColor: codeCouleur?.btnColor
+                                                    }}
+                                                    ></i>
+                                                </a>
+                                                <a href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        deleteUser(item.id, setShowModal);
+                                                    }}
+                                                    title={deleteAction.upperText}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                </a>
+                                            </>
+                                        ) : null}
+                                        
+                                        </th>
+                                        <td className="px-6 py-4">
+                                            {item.nom} 
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {item.prenom}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {item.email}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {item.site ? (item.site.nom) : null}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {item.privileges.length > 0 ? (
+                                                item.privileges.map((priv, index) => (
+                                                <span key={index}>
+                                                    <i className="bi bi-circle-fill icon-priv"></i>{priv.title} <br />
+                                                </span>
+                                                ))
+                                            ) : null}
+                                        </td>
+
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr className="bg-[#1c2d55] text-center">
+                                    <td colSpan={6} className="px-6 py-4">Aucun enregistrement trouvé</td>
+                                </tr>
+                            )}
+                            
                         
-                    
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div className="mx-4 ">
                 <Pagination
@@ -277,19 +296,20 @@ const UserComponent = () => {
         
         {/* Modal */}
         {showModal && <AddUser setShowModal={setShowModal} />}
-            {showModalUpdate && selectedUser && (
-                <UpdateUser
-                    setShowModalUpdate={setShowModalUpdate}
-                    userId={selectedUser.id} // ✅
-                    initialData={{
-                        nom: selectedUser.nom,
-                        prenom: selectedUser.prenom,
-                        email: selectedUser.email,
-                        site: selectedUser.site ?? null,
-                        privileges: selectedUser.privileges,
-                    }}
-                    />
-            )}
+
+        {showModalUpdate && selectedUser && (
+            <UpdateUser
+                setShowModalUpdate={setShowModalUpdate}
+                userId={selectedUser.id} // ✅
+                initialData={{
+                    nom: selectedUser.nom,
+                    prenom: selectedUser.prenom,
+                    email: selectedUser.email,
+                    site: selectedUser.site ?? null,
+                    privileges: selectedUser.privileges,
+                }}
+                />
+        )}
         </>
         
     )

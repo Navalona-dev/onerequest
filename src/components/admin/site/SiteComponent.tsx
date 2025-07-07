@@ -14,6 +14,7 @@ import SelectRegion from "./SelectRegion";
 import { Link } from "react-router-dom";
 import { error } from "console";
 import SelectCommune from "./SelectCommune";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type RegionType = {
   id: number;
@@ -55,7 +56,7 @@ const SiteComponent = () => {
 
   const [searchByRegion, setSearchByRegion] = useState(false);
   const [searchNom, setSearchNom] = useState("");
-
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
   useEffect(() => {
     if (searchByRegion && selectedRegion) {
@@ -102,6 +103,15 @@ const SiteComponent = () => {
   
   return (
     <>
+    {codeCouleur?.id && (
+      <style>
+        {`
+          .btn-search:hover {
+            background-color: #1c2d55 !important
+          }
+        `}
+      </style>
+    )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Table des site */}
         <div className="h-[75vh] overflow-y-auto">
@@ -110,12 +120,12 @@ const SiteComponent = () => {
                 <div>
                   <button
                     onClick={() => setShowModal(true)}
-                    className="bg-red-500 px-5 py-1.5 text-white rounded mr-3"
+                    className="px-5 py-1.5 text-white rounded mr-3"
                   >
                     {create.upperText}
                   </button>
                   <Link to={'/region'}
-                    className="bg-red-500 px-5 py-2 text-white rounded"
+                    className="px-5 py-2 text-white rounded btn-list"
                   >
                     Liste région
                   </Link>
@@ -128,7 +138,7 @@ const SiteComponent = () => {
                       <Listbox value={selectedRegion} onChange={setSelectedRegion}>
                         <div className="relative">
                           <Listbox.Button 
-                          className="bg-[#1c2d55] text-white py-2 text-sm w-full rounded focus:outline-none focus:ring-0 focus:border-transparent">
+                          className="bg-[#1c2d55] text-white py-2 text-sm w-full rounded focus:outline-none focus:ring-0 focus:border-transparent btn-search">
                             {selectedRegion ? selectedRegion.nom : "Région..."}
                           </Listbox.Button>
                           <i 
@@ -144,7 +154,7 @@ const SiteComponent = () => {
                               setSearchByRegion(false);
                               setSelectedRegion(null);
                             }}
-                            className="cursor-pointer bi bi-trash-fill absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-sm"
+                            className="cursor-pointer bi bi-trash-fill absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm"
                           />
 
 
@@ -176,9 +186,7 @@ const SiteComponent = () => {
                       onChange={(e) => setSearchNom(e.target.value)}
                       className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
                                 focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-
-
+                    />  
                     </div>
 
                   </div>
@@ -233,7 +241,11 @@ const SiteComponent = () => {
                             }}
                             title={edit.upperText}
                           >
-                            <i className="bi bi-pencil-square bg-blue-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                            <i className="bi bi-pencil-square px-1.5 py-1 text-white rounded-3xl mr-3"
+                            style={{
+                              backgroundColor: codeCouleur?.btnColor
+                            }}
+                            ></i>
                           </a>
                           <a href="#"
                           onClick={(e) => {

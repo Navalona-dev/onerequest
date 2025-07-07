@@ -8,6 +8,8 @@ import { useModule } from '../../contexts/admin/ModuleContext';
 import { useLocation } from 'react-router-dom';
 import NewsletterBlock from '../../components/front/NewletterBlock';
 import RendezVousPage from './RendezVousPage';
+import RegionPage from '../admin/RegionPage';
+import RegisterPage from './RegisterPage';
 
 export default function ContentPageFront() {
   const { currentModule, setCurrentModule } = useModule();
@@ -17,7 +19,7 @@ export default function ContentPageFront() {
     const path = location.pathname.slice(1); // enlève le "/"
     if (path === "") {
       setCurrentModule("accueil");
-    } else if (["soumettre-demande", "accueil", "contact", "rendez-vous"].includes(path)) {
+    } else if (["soumettre-demande", "accueil", "contact", "rendez-vous", "inscription"].includes(path)) {
       setCurrentModule(path as any);
     }
   }, [location.pathname, setCurrentModule]);
@@ -32,6 +34,8 @@ export default function ContentPageFront() {
           return <ContactPage />;
       case "rendez-vous":
           return <RendezVousPage />;
+      case "inscription":
+        return <RegisterPage />;
       default:
         return <HomePage />;
     }

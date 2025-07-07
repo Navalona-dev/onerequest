@@ -7,6 +7,7 @@ import Pagination from "../Pagination";
 import AddDomaineEntreprise from "./AddDomaineEntreprise";
 import UpdateDomaineEntreprise from "./UpdateDomaineEntreprise";
 import deleteDomaineEntreprise from "../../../service/DeleteDomaineEntreprise";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type DomaineType = {
     id: number;
@@ -36,6 +37,7 @@ const DomaineEntrepriseComponent = () => {
 
     const { idCategorieDomaine } = useParams();
     const [categorie, setCategorie] = useState<CategorieType | null >(null);
+    const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
     useEffect(() => {
         api.get(`/api/categorie_domaine_entreprises/${idCategorieDomaine}`)
@@ -98,14 +100,14 @@ const DomaineEntrepriseComponent = () => {
                             e.preventDefault();
                             setShowModalAdd(true);
                         }}
-                        className="bg-red-500 px-5 py-2 text-white rounded w-full md:w-auto"
+                        className="px-5 py-2 text-white rounded w-full md:w-auto"
                         >
                         {create.upperText}
                         </button>
 
                         <Link
                         to={`/categorie-domaine-entreprise`}
-                        className="bg-red-500 px-5 py-2 text-white rounded text-center w-full md:w-auto"
+                        className="btn-list px-5 py-2 text-white rounded text-center w-full md:w-auto"
                         >
                         Liste catégorie
                         </Link>
@@ -140,7 +142,12 @@ const DomaineEntrepriseComponent = () => {
                                                     setSelectedDomaine(item);
                                                     setShowModalUpdate(true);
                                                 }}
-                                                    title={edit.upperText}><i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                    title={edit.upperText}>
+                                                    <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
+                                                    style={{
+                                                        backgroundColor: codeCouleur?.btnColor
+                                                    }}
+                                                    ></i>
                                                 </a>
                                                 <a href="#"
                                                     onClick={(e) => {

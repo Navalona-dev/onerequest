@@ -6,6 +6,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import TableFileManager from "./TableFileManager";
 
 import { useLayoutContent } from '../../contexts/admin/LayoutContext';
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 
 const FileManagerComponent = () => {
   const handleClick = () => {
@@ -28,6 +29,7 @@ const FileManagerComponent = () => {
   const addClass = layoutContent === "vertical" ? "" : "dashboard-content-horizontal";
   const addHeight = layoutContent === "vertical" ? "max-h-[75vh]" : "max-h-[67vh]";
   const addHeightContent = layoutContent === "vertical" ? "max-h-[70vh]" : "max-h-[65vh]";
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
   const toggleMyDrive = () => {
     setIsMyDriveOpen(!isMyDriveOpen);
@@ -68,7 +70,12 @@ useEffect(() => {
                       setIsMyDriveOpen(!isMyDriveOpen);
                       setActiveMenu('mydrive');
                     }}
-                    className={` w-full text-left flex items-center justify-between ${activeMenu === 'mydrive' ? 'text-red-500' : 'text-white'}`}
+                    className={` w-full text-left flex items-center justify-between`}
+
+                    style={{
+                      backgroundColor: "transparent",
+                      color: activeMenu === 'mydrive' ? codeCouleur?.textColor : 'white'
+                    }}
                   >
                     <span><i className="mr-2 bi bi-folder-fill"></i>My drive</span>
                     <i className={`bi ${isMyDriveOpen ? "bi-caret-down-fill" : "bi-caret-right-fill"}`}></i>
@@ -85,12 +92,20 @@ useEffect(() => {
                 </li>
 
                   <li onClick={() => handleMenuClick('documents')} className="mb-3">
-                    <a href="#" className={`${activeMenu === 'documents' ? 'text-red-500' : 'text-white'}`}>
+                    <a href="#" className={``}
+                    style={{
+                      color: activeMenu === 'documents' ? codeCouleur?.textColor : 'white'
+                    }}
+                    >
                       <i className="mr-2 bi bi-file-earmark-pdf-fill"></i>Document
                     </a>
                   </li>
                   <li onClick={() => handleMenuClick('media')} className="mb-3">
-                    <a href="#" className={`${activeMenu === 'media' ? 'text-red-500' : 'text-white'}`}>
+                    <a href="#" className={``}
+                    style={{
+                      color: activeMenu === 'media' ? codeCouleur?.textColor : 'white'
+                    }}
+                    >
                       <i className="mr-2 bi bi-collection-fill"></i>Media
                     </a>
                   </li>
@@ -128,7 +143,8 @@ useEffect(() => {
                           onClick={toggleDropdown}
                           variant="primary"
                           size="medium"
-                          className="text-white rounded-lg w-40 py-2 btn-primary-outline"
+                          className="text-white rounded-lg w-40 py-2"
+                        
                         >
                           Document <i className="bi bi-caret-down-fill ml-2"></i>
                         </Button>
@@ -147,7 +163,7 @@ useEffect(() => {
                         onClick={handleClick}
                         variant="primary"
                         size="medium"
-                        className="bg-red-500 text-white py-2 rounded-lg px-4"
+                        className="text-white py-2 rounded-lg px-4"
                       >
                         + Créer dossier
                       </Button>
@@ -180,7 +196,7 @@ useEffect(() => {
                           onClick={handleClick}
                           variant="primary"
                           size="medium"
-                          className="bg-red-500 text-white py-2 rounded-lg px-4"
+                          className="text-white py-2 rounded-lg px-4"
                         >
                           + Créer fichier
                         </Button>

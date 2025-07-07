@@ -16,6 +16,7 @@ const Header = () => {
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
   const location = useLocation();
+  const token = sessionStorage.getItem("jwt");
 
   // Toggle dropdown mobile
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
@@ -122,8 +123,36 @@ const Header = () => {
             className="block py-2 px-4 font-semibold"
           >Accueil</a>
 
-            <a href='#' className="block py-2 px-4 hover:text-red-500">À propos</a>
-            <a href='#' className="block py-2 px-4 hover:text-red-500">Services</a>
+            <a href='#' 
+              className="block py-2 px-4"
+              onMouseEnter={() => setHovered("about")}
+               onMouseLeave={() => setHovered(null)}
+              style={{
+                color:
+                  hovered === "about"
+                    ? codeCouleur?.textColorHover
+                    : activeMenu === "about"
+                    ? codeCouleur?.textColor
+                    : "#000",
+              }}
+            >
+                À propos
+            </a>
+            <a href='#' 
+              className="block py-2 px-4"
+              onMouseEnter={() => setHovered("service")}
+               onMouseLeave={() => setHovered(null)}
+              style={{
+                color:
+                  hovered === "service"
+                    ? codeCouleur?.textColorHover
+                    : activeMenu === "service"
+                    ? codeCouleur?.textColor
+                    : "#000",
+              }}
+            >
+              Services
+            </a>
 
             <div className="relative group block py-2 px-4">
               <button
@@ -131,8 +160,19 @@ const Header = () => {
                 className="flex items-center hover:text-red-500 lg:cursor-default"
                 type="button"
                 aria-expanded={isDropdownOpen}
+                onMouseEnter={() => setHovered("page")}
+               onMouseLeave={() => setHovered(null)}
+                style={{
+                  backgroundColor: "transparent",
+                  color:
+                  hovered === "page"
+                    ? codeCouleur?.textColorHover
+                    : activeMenu === "page"
+                    ? codeCouleur?.textColor
+                    : "#000",
+                }}
               >
-                Pages <i className="bi bi-chevron-down ml-1"></i>
+                Pages <i className="bi bi-chevron-down ml-1 text-xs"></i>
               </button>
 
               <div
@@ -163,6 +203,91 @@ const Header = () => {
 
               className="block py-2 px-4"
             >Contact</a>
+
+            <div className="relative group block py-2 px-4">
+              <button
+                onClick={() => setDropdownOpen(!isDropdownOpen)} // toggle au clic
+                className="flex items-center hover:text-red-500 lg:cursor-default"
+                type="button"
+                aria-expanded={isDropdownOpen}
+                onMouseEnter={() => setHovered("account")}
+               onMouseLeave={() => setHovered(null)}
+                style={{
+                  backgroundColor: "transparent",
+                  color:
+                  hovered === "account"
+                    ? codeCouleur?.textColorHover
+                    : activeMenu === "account"
+                    ? codeCouleur?.textColor
+                    : "#000",
+                }}
+              >
+                Mon compte <i className="bi bi-chevron-down ml-1 text-xs"></i>
+              </button>
+
+              <div
+                className={`
+                  absolute bg-white shadow-md rounded z-10
+                  ${isDropdownOpen ? "block w-[30vh]" : "hidden w-[35vh]"}  
+                  group-hover:block
+                `}
+              >
+                {token ? (
+                  <a href='#' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">S'inscrire</a>
+                ) : (
+                  <>
+                    <a href='#' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Se connecter</a>
+                    <a href='#'
+                     className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                     onClick={() => handleMenuClick("inscription")} 
+                     >
+                      S'inscrire
+                    </a>
+                  </>
+                )}
+                
+              </div>
+            </div>
+
+            <div className="relative group block py-2 px-4">
+              <button
+                onClick={() => setDropdownOpen(!isDropdownOpen)} // toggle au clic
+                className="flex items-center lg:cursor-default"
+                type="button"
+                aria-expanded={isDropdownOpen}
+                onMouseEnter={() => setHovered("autre")}
+               onMouseLeave={() => setHovered(null)}
+                style={{
+                  backgroundColor: "transparent",
+                  color:
+                  hovered === "autre"
+                    ? codeCouleur?.textColorHover
+                    : activeMenu === "autre"
+                    ? codeCouleur?.textColor
+                    : "#000",
+                }}
+              >
+                Autre <i className="bi bi-chevron-down ml-1 text-xs"></i>
+              </button>
+
+              <div
+                className={`
+                  absolute bg-white shadow-md rounded z-10
+                  ${isDropdownOpen ? "block w-[30vh]" : "hidden w-[35vh]"}  
+                  group-hover:block
+                `}
+              >
+                
+                <a href='#' 
+                className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleMenuClick("rendez-vous")} 
+                >
+                  Prendre un rendez-vous
+                </a>
+                
+              </div>
+            </div>
+
             <a href='#' onClick={() => handleMenuClick("soumettre-demande")} 
              style={{
               backgroundColor:
@@ -176,7 +301,7 @@ const Header = () => {
             >
               Soumettre une demande
             </a>
-            <a href='#' onClick={() => handleMenuClick("rendez-vous")} 
+            {/*<a href='#' onClick={() => handleMenuClick("rendez-vous")} 
               style={{
                 backgroundColor:
                   hovered === "rendez-vous"
@@ -187,7 +312,7 @@ const Header = () => {
               onMouseLeave={() => setHovered(null)}
               className="mt-2 lg:mt-0 lg:ml-4 text-white px-4 py-2 rounded ">
               Prendre un rendez-vous
-            </a>
+            </a>*/}
           </div>
         </div>
       </nav>

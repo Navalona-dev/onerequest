@@ -7,6 +7,7 @@ import api from "../../../service/Api";
 import AddCommune from "./AddCommune";
 import UpdateCommune from "./UpdateCommune";
 import deleteCommune from "../../../service/DeleteCommune";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type CommuneType = {
     id: number;
@@ -27,8 +28,8 @@ const CommuneComponent = () => {
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalUpdate, setShowModalUpdate] = useState(false);
     const [region, setRegion] = useState<RegionType | null>(null);
-  const [selectedCommune, setSelectedCommune] = useState<CommuneType | null>(null);
-
+    const [selectedCommune, setSelectedCommune] = useState<CommuneType | null>(null);
+    const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
     useEffect(() => {
         api.get(`/api/regions/${idRegion}`)
@@ -64,7 +65,7 @@ const CommuneComponent = () => {
                 </div>
                 <div className="flex flex-col md:flex-row mt-6 justify-center gap-4">
                     <button
-                        className="bg-red-500 px-5 py-1.5 text-white rounded  "
+                        className="px-5 py-1.5 text-white rounded  "
                         onClick={(e) => {
                             e.preventDefault();
                             setShowModalAdd(true);
@@ -75,14 +76,14 @@ const CommuneComponent = () => {
 
                     <Link
                         to="/site"
-                        className="bg-red-500 px-5 py-1 text-white rounded text-center mx-3 "
+                        className="btn-list px-5 py-1 text-white rounded text-center mx-3 "
                     >
                         Liste site
                     </Link>
 
                     <Link
                         to="/region"
-                        className="bg-red-500 px-5 py-1 text-white rounded text-center "
+                        className="btn-list px-5 py-1 text-white rounded text-center "
                     >
                         Liste région
                     </Link>
@@ -113,7 +114,11 @@ const CommuneComponent = () => {
                             }}
                             title={edit.upperText}
                           >
-                            <i className="bi bi-pencil-square bg-blue-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
+                            <i className="bi bi-pencil-square px-1.5 py-1 text-white rounded-3xl mr-3"
+                            style={{
+                              backgroundColor: codeCouleur?.btnColor
+                            }}
+                            ></i>
                           </a>
                           <a href="#"
                           title={deleteAction.upperText}

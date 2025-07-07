@@ -10,6 +10,7 @@ const initialState: ActionTextsState = {
   create: { actionWord: "créer", pastActionWord: "créé", upperText: "Créer" },
   delete: { actionWord: "supprimer", pastActionWord: "supprimé", upperText: "Supprimer" },
   edit: { actionWord: "modifier", pastActionWord: "modifié", upperText: "Modifier" },
+  save: { actionWord: "enregistrer", pastActionWord: "enregistré", upperText: "Enregistrer" },
   addRegion: { actionWord: "ajouter région", pastActionWord: "ajoté région", upperText: "Ajouter région" },
 };
 

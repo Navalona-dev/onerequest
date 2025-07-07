@@ -11,6 +11,7 @@ import UserAdminConnected from "../../../hooks/UserAdminConnected";
 import api from "../../../service/Api";
 import { store } from "../../../store";
 import Pagination from "../Pagination";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type Site = {
   id: number;
@@ -55,6 +56,7 @@ type CodeCouleurType = {
 
 const CodeColor = () => {
   const [siteCount, setSiteCount] = useState(0);
+  const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
   const user = UserAdminConnected() as UserType | null;
 
@@ -127,7 +129,7 @@ const CodeColor = () => {
               <h4 className="font-bold text-white">Liste code couleur</h4>
               <button
                     onClick={() => setShowModal(true)}
-                    className="bg-red-500 px-5 py-2 text-white rounded"
+                    className="px-5 py-2 text-white rounded"
                   >
                     {create.upperText}
                   </button>
@@ -197,7 +199,12 @@ const CodeColor = () => {
                         setShowModalUpdate(true);
                       }}
                       title={edit.upperText}>
-                        <i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl"></i>
+                        <i 
+                        className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl"
+                        style={{
+                          backgroundColor: codeCouleur?.btnColor
+                        }}
+                        ></i>
                       </a>
                     </td>
                     <td className="px-6 py-4">

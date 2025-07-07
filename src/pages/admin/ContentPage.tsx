@@ -18,6 +18,8 @@ import CommunePage from "./CommunePage";
 import CategorieDomaineEntreprise from "./CategorieDomaineEntreprise";
 import DomaineEntreprise from "./DomaineEntreprise";
 import TypeDemandePage from "./TypeDemandePage";
+import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
+import DemandePage from "./DemandePage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -26,6 +28,7 @@ const ContentPage = () => {
 
     const [showCustomizer, setShowCustomizer] = useState(false);
     const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
+    const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
     useEffect(() => {
         const path = location.pathname.replace(/^\/+/, ""); // enlève les slashes initiaux
@@ -40,7 +43,8 @@ const ContentPage = () => {
             "user",
             "region",
             "categorie-domaine-entreprise",
-            "type-demande"
+            "type-demande",
+            "demande"
         ].includes(path)) {
             setCurrentModule(path as any);
         } else if (/^\d+\/commune$/.test(path)) {
@@ -77,6 +81,8 @@ const ContentPage = () => {
                 return <DomaineEntreprise />;
             case "type-demande":
                 return <TypeDemandePage />;
+            case "demande":
+                return <DemandePage />;
             default:
                 return <Dashboard />;
         }
@@ -105,7 +111,7 @@ const ContentPage = () => {
             {!showCustomizer && (
                 <button
                     onClick={() => setShowCustomizer(true)}
-                    className="fixed bottom-4 right-4 z-50 p-2 w-12 h-12 bg-red-500 rounded-full flex items-center justify-center shadow-lg theme-icon"
+                    className="fixed bottom-4 right-4 z-50 p-2 w-12 h-12 rounded-full flex items-center justify-center shadow-lg theme-icon"
                 >
                     <i className="bi bi-gear-fill text-white text-xl animate-spin"></i>
                 </button>
