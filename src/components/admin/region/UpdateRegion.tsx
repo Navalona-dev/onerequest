@@ -91,7 +91,7 @@ const UpdateRegion: React.FC<UpdateRegionProps> = ({ setShowModalUpdate, regionI
               name="nom"
               value={formData.nom}
               onChange={handleChange}
-              className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55]"
+              className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
               required
               autoComplete="off"
             />

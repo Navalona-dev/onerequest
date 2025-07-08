@@ -8,8 +8,15 @@ const TokenWatcher = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const token = sessionStorage.getItem("jwt");
-      if (token && isTokenExpired(token)) {
+      const demandeur = sessionStorage.getItem("demandeur");
+
+      if (token && isTokenExpired(token) && demandeur === "oui") {
         sessionStorage.clear();
+        navigate("/connexion");
+        
+      } else if(token && isTokenExpired(token) && demandeur === "non") {
+        sessionStorage.clear();
+        
         navigate("/admin/login");
       }
     }, 5000); // vérifie toutes les 5 secondes

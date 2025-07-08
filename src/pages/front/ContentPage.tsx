@@ -10,6 +10,7 @@ import NewsletterBlock from '../../components/front/NewletterBlock';
 import RendezVousPage from './RendezVousPage';
 import RegionPage from '../admin/RegionPage';
 import RegisterPage from './RegisterPage';
+import LoginPageFront from './LoginPage';
 
 export default function ContentPageFront() {
   const { currentModule, setCurrentModule } = useModule();
@@ -19,7 +20,7 @@ export default function ContentPageFront() {
     const path = location.pathname.slice(1); // enlève le "/"
     if (path === "") {
       setCurrentModule("accueil");
-    } else if (["soumettre-demande", "accueil", "contact", "rendez-vous", "inscription"].includes(path)) {
+    } else if (["soumettre-demande", "accueil", "contact", "rendez-vous", "inscription", "connexion"].includes(path)) {
       setCurrentModule(path as any);
     }
   }, [location.pathname, setCurrentModule]);
@@ -36,6 +37,8 @@ export default function ContentPageFront() {
           return <RendezVousPage />;
       case "inscription":
         return <RegisterPage />;
+      case "connexion":
+        return <LoginPageFront />;
       default:
         return <HomePage />;
     }

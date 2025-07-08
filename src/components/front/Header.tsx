@@ -233,10 +233,10 @@ const Header = () => {
                 `}
               >
                 {token ? (
-                  <a href='#' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">S'inscrire</a>
+                  <a href='/logout' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Se deconnecter</a>
                 ) : (
                   <>
-                    <a href='#' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Se connecter</a>
+                    <a href='#' onClick={() => handleMenuClick("connexion")}  className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Se connecter</a>
                     <a href='#'
                      className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
                      onClick={() => handleMenuClick("inscription")} 

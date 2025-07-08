@@ -11,10 +11,12 @@ import 'swiper/css/pagination';
 import { Provider } from "react-redux";
 import { store } from "./store";
 import PrivateRouteAdmin from './service/PrivateRouteAdmin';
+import PrivateRouteFront from './service/PrivateRouteFront';
 
 import ContentPageFront from './pages/front/ContentPage';
 import LoginPage from './pages/admin/LoginPage';
 import LogoutAdmin from './service/LogoutAdmin';
+import LogoutFront from './service/LogoutFront';
 import TokenWatcher from './service/TokenWatcher';
 import { useGlobalActiveCodeCouleur } from './hooks/UseGlobalActiveCodeCouleur';
 
@@ -43,10 +45,15 @@ function App() {
             <TokenWatcher />
               <Routes>
                 <Route path="/" element={<ContentPageFront />} />
-                <Route path="/soumettre-demande" element={<ContentPageFront />} />
                 <Route path="/contact" element={<ContentPageFront />} />
-                <Route path="/rendez-vous" element={<ContentPageFront />} />
                 <Route path="/inscription" element={<ContentPageFront />} />
+                <Route path="/connexion" element={<ContentPageFront />} />
+                <Route path="/logout" element={<LogoutFront />} />
+                <Route element={<PrivateRouteFront />}>
+                  <Route path="/soumettre-demande" element={<ContentPageFront />} />
+                  <Route path="/rendez-vous" element={<ContentPageFront />} />
+                </Route>
+
                 <Route path="/admin/login" element={<LoginPage />} />
                 <Route path="/admin/logout" element={<LogoutAdmin />} />
                 <Route element={<PrivateRouteAdmin />}>

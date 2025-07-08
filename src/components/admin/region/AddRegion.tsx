@@ -139,7 +139,7 @@ const AddRegion: React.FC<AddRegionProps> = ({ setShowModal }) => {
                         name={field}
                         value={formData[field as keyof typeof formData]}
                         onChange={handleChange}
-                        className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white"
+                        className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                         autoComplete="off"
                         required
                     />

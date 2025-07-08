@@ -4,7 +4,7 @@ import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCoule
 
 import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const LoginPageFront = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -18,11 +18,12 @@ const LoginPage = () => {
       const response = await api.post("/api/login", { email, password });
       const token = response.data.token;
   
+      // Stock temporairement
       sessionStorage.setItem("jwt", token);
       sessionStorage.setItem("email", email);
-      sessionStorage.setItem("demandeur", "non");
+      sessionStorage.setItem("demandeur", "oui");
   
-      // 👇 Vérifie les privilèges après login
+      // 👉 Récupérer infos user connecté
       const userRes = await api.get(`/api/users/${email}/get-user-admin-connected`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -31,21 +32,22 @@ const LoginPage = () => {
   
       const user = userRes.data;
   
-      const aUniquementDemandeur = user.privileges.length === 1 &&
-        user.privileges[0].title?.toLowerCase() === "demandeur";
+      const aLePrivilegeDemandeur = user.privileges?.some(
+        (priv: any) =>
+          priv.title?.toLowerCase() === "demandeur" || priv.id === 10 // ajuster selon ta base
+      );
   
-      if (aUniquementDemandeur) {
-        // ❌ Bloque l’accès
+      if (!aLePrivilegeDemandeur) {
+        // ❌ Pas autorisé
         sessionStorage.removeItem("jwt");
         sessionStorage.removeItem("email");
-        setError("Vous n’avez pas le droit d’accéder à cette interface.");
+        setError("Vous n'avez pas le droit d'accéder à cette interface.");
         return;
       }
   
-      // ✅ Connexion OK
+      // ✅ OK
       setError(null);
-      navigate("/admin");
-  
+      navigate("/");
     } catch (err) {
       setError("Email ou mot de passe incorrect");
     }
@@ -56,11 +58,7 @@ const LoginPage = () => {
     <>
       <style>
         {`
-          body {
-            background-color: #1c2d55;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          }
+          
 
           .login-container {
             display: flex;
@@ -102,18 +100,13 @@ const LoginPage = () => {
 
           .login-form button {
             width: 100%;
-            padding: 0.8rem;
-            background-color: #1c2d55;
+            padding: 0.5rem;
             color: #fff;
             font-size: 1rem;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-          }
-
-          .login-form button:hover {
-            background-color: #142042;
           }
 
           .login-form .error {
@@ -128,7 +121,7 @@ const LoginPage = () => {
 
       <div className="login-container">
         <form className="login-form" onSubmit={handleSubmit}>
-          <h2>Connexion</h2>
+          <h2 className="text-xl"> <strong>Connexion</strong></h2>
 
           <label>Email :</label>
           <input
@@ -157,4 +150,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default LoginPageFront;
