@@ -11,7 +11,8 @@ const initialState: ActionTextsState = {
   delete: { actionWord: "supprimer", pastActionWord: "supprimé", upperText: "Supprimer" },
   edit: { actionWord: "modifier", pastActionWord: "modifié", upperText: "Modifier" },
   save: { actionWord: "enregistrer", pastActionWord: "enregistré", upperText: "Enregistrer" },
-  addRegion: { actionWord: "ajouter région", pastActionWord: "ajoté région", upperText: "Ajouter région" },
+  addRegion: { actionWord: "ajouter région", pastActionWord: "ajouté région", upperText: "Ajouter région" },
+  fileText: { actionWord: "voir le fichier", pastActionWord: "voir le fichier", upperText: "Voir le fichier" },
 };
 
 const actionTextsSlice = createSlice({

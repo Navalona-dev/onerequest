@@ -52,6 +52,8 @@ function App() {
                 <Route element={<PrivateRouteFront />}>
                   <Route path="/soumettre-demande" element={<ContentPageFront />} />
                   <Route path="/rendez-vous" element={<ContentPageFront />} />
+                  <Route path="/mes-demandes" element={<ContentPageFront />} />
+                  <Route path="/:idDemande/update-demande" element={<ContentPageFront />} />
                 </Route>
 
                 <Route path="/admin/login" element={<LoginPage />} />

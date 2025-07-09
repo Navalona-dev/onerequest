@@ -1,5 +1,5 @@
 // components/BookingSection.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import api from "../../service/Api";
 
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import image3 from '../../assets/images/bg-tutoriel-3.jpeg';
 import CodeColor from "../admin/codeCouleur/CodeColor";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 import Swal from "sweetalert2";
+import { useParams } from "react-router-dom";
 
 type Region = {
   id: number;
@@ -39,24 +40,53 @@ type Dossier = {
   title: string;
 }
 
-type Demande = {
-  
+type Demandeur = {
+  id: number;
+  nom: string;
+  prenom: string;
+  email: string;
+  phone: string;
+  adresse: string;
 }
 
-const DemandeContent: React.FC = () => {
+type Demande = {
+  id: number;
+  site: Site | null;
+  type: TypeDemande | null;
+  objet: string;
+  contenu: string;
+  demandeur: Demandeur;
+  fichier: string;
+  statut: string;
+}
+
+interface FormData {
+  site: string;
+  type: string;
+  fichier: File | null;
+  objet: string;
+  contenu: string;
+  demandeur: string;
+  statut: string;
+}
+
+const DemandeUpdate: React.FC = () => {
   const [user, setUser] = useState<any>(null);
+  const { idDemande } = useParams(); 
+  const [demande, setDemande] = useState<Demande | null>(null);
 
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-      site: "",
-      type: "",
-      fichier: null as File | null,
-      objet: "",
-      contenu: "",
-      demandeur: "",
-      statut: ""
+  const [formData, setFormData] = useState<FormData>({
+    site: '',
+    type: '',
+    fichier: null,
+    objet: '',
+    contenu: '',
+    demandeur: '',
+    statut: '1'
   });
+  
 
   const fieldLabels: { [key: string]: string } = {
     objet: "Objet",
@@ -72,9 +102,21 @@ const DemandeContent: React.FC = () => {
   const [hover, setHover] = useState(false);
   const [typeDemandes, setListeTypeDemande] = useState<TypeDemande[]>([]);
   const [dossiers, setListeDossier] = useState<Dossier[]>([]);
-  const [selectedSiteId, setSelectedSiteId] = useState<string>("");
+  const urlFichier = sessionStorage.getItem('urlFichier');
+  const formInitialized = useRef(false);
 
-  const [selectedTypeId, setSelectedTypeId] = useState<string>("");
+
+  useEffect(() => {
+    if (!idDemande) return;
+  
+    api.get(`/api/demandes/${idDemande}`)
+      .then((res) => {
+        const data = res.data;
+        setDemande(data);
+  })
+      .catch((err) => console.log("Erreur lors du chargement de la demande", err));
+  }, [idDemande]);
+  
 
   useEffect(() => {
     const userConnected = async () => {
@@ -127,15 +169,31 @@ const DemandeContent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!selectedTypeId) return;
+    if (!formData.type) return;
+  
+    api.get(`api/type_demandes/${formData.type}/dossiers-a-fournir`)
+      .then((response) => {
+        setListeDossier(response.data)
+      })
+      .catch((error) => console.log("Erreur API", error));
+  }, [formData.type]);
 
-    api.get(`api/type_demandes/${selectedTypeId}/dossiers-a-fournir`)
-    .then((response) => {
-      setListeDossier(response.data)
-    })
-    .catch((error) => console.log("Erreur API", error))
-  }, [selectedTypeId]);
-
+  useEffect(() => {
+    if (!demande || formInitialized.current) return;
+  
+    setFormData({
+      site: demande.site?.id.toString() || '',
+      type: demande.type?.id.toString() || '',
+      fichier: null,
+      objet: demande.objet || '',
+      contenu: demande.contenu || '',
+      demandeur: demande.demandeur?.id?.toString() || '',
+      statut: demande.statut || '1'
+    });
+  
+    formInitialized.current = true;
+  }, [demande]);
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,31 +206,27 @@ const DemandeContent: React.FC = () => {
       });
       return;
     }
-  
-    const payload = new FormData();
-    payload.append("site", `/api/sites/${formData.site}`);
-    payload.append("type", `/api/type_demandes/${formData.type}`);
-    payload.append("demandeur", `/api/users/${user.id}`);
-    payload.append("statut", "1");
-    payload.append("objet", formData.objet);
-    payload.append("contenu", formData.contenu);
-  
+
+    const formPayload = new FormData();
+    formPayload.append('site', `/api/sites/${formData.site}`);
+    formPayload.append('type', `/api/type_demandes/${formData.type}`);
+    formPayload.append('demandeur', `/api/users/${user.id}`);
+    formPayload.append('statut', '1');
+    formPayload.append('objet', formData.objet);
+    formPayload.append('contenu', formData.contenu);
+
     if (formData.fichier) {
-      payload.append("fichier", formData.fichier);
+      formPayload.append('fichier', formData.fichier);
     }
   
     try {
-      await api.post("/api/demandes", payload, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
-        },
-      });
+      
+      await api.patch(`/api/demandes/${idDemande}`, formPayload);
   
       Swal.fire({
         icon: "success",
         title: "Bon travail!",
-        text: "Demande ajoutée avec succès !",
+        text: "Demande modifiée avec succès !",
         confirmButtonColor: "#7c3aed",
         cancelButtonColor: "#ef4444",
         showCancelButton: true,
@@ -189,7 +243,7 @@ const DemandeContent: React.FC = () => {
       Swal.fire({
         icon: "error",
         title: "Erreur",
-        text: "Erreur lors de l'ajout de la demande.",
+        text: "Erreur lors de la modification de la demande.",
         confirmButtonColor: "#ef4444",
         background: "#1c2d55",
         color: "#fff",
@@ -207,10 +261,10 @@ const DemandeContent: React.FC = () => {
             color: codeCouleur?.textColor
           }}
           className="text-sm font-semibold tracking-wider uppercase">
-            Soumettre une demande
+           Modifier une demande
           </h5>
           <h2 className="text-3xl md:text-5xl font-bold">
-            Envoyez 
+            Mettre à jour 
             <span 
             style={{
               color: codeCouleur?.textColor
@@ -261,6 +315,8 @@ const DemandeContent: React.FC = () => {
 
 
           {/* Form */}
+          
+
           <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-6 rounded shadow">
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             {Object.keys(formData).map((field) =>
@@ -270,11 +326,8 @@ const DemandeContent: React.FC = () => {
                     <label htmlFor="" className="mb-2">Site <sup className="text-red-500">*</sup></label>
                     <select 
                       className="mb-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-2 focus:outline-none focus:ring-0 focus:border-transparent"
-                      value={selectedSiteId}
-                      onChange={(e) => {
-                        setSelectedSiteId(e.target.value);
-                        setFormData((prev) => ({ ...prev, site: e.target.value }));
-                      }}
+                      value={formData.site}
+                      onChange={(e) => setFormData(prev => ({ ...prev, site: e.target.value }))}
                       name="site"
                       required
                       >
@@ -295,10 +348,10 @@ const DemandeContent: React.FC = () => {
                   <label htmlFor="" className="mb-2">Type de dmeande <sup className="text-red-500">*</sup></label>
                   <select 
                     className="mb-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-2 focus:outline-none focus:ring-0 focus:border-transparent"
-                    value={selectedTypeId}
+                    value={formData.type}
                     onChange={(e) => {
-                      setSelectedTypeId(e.target.value);
-                      setFormData((prev) => ({ ...prev, type: e.target.value }));
+                      const value = e.target.value;
+                      setFormData((prev) => ({ ...prev, type: value }));
                     }}
                     name="type"
                     required
@@ -313,7 +366,7 @@ const DemandeContent: React.FC = () => {
                     )
                   }
                   </select>
-                  {selectedTypeId ? (
+                  {formData.type ? (
                     <div className="mb-3">
                       <h5><strong>Voici la liste de dossiers à fournir : </strong></h5>
                       {dossiers.length > 0 ? (
@@ -342,6 +395,21 @@ const DemandeContent: React.FC = () => {
                 ) : field === "fichier" ? (
                  <>
                  <label htmlFor="" className="mb-2">Fichier <sup className="text-red-500">*</sup></label>
+                 {demande?.fichier && (
+                  <div className="mb-2 text-sm text-gray-700">
+                    Fichier actuel :{demande.fichier} <br />
+                    <a
+                      href={`${urlFichier}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      Télécharger
+                    </a>
+                   
+                  </div>
+                )}
+
                  <input
                       type="file"
                       name="fichier"
@@ -353,7 +421,6 @@ const DemandeContent: React.FC = () => {
                         }))
                       }
                       className="mb-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-2 focus:outline-none focus:ring-0 focus:border-transparent" 
-                      required
                     />
 
                  </>
@@ -395,4 +462,4 @@ const DemandeContent: React.FC = () => {
   );
 };
 
-export default DemandeContent;
+export default DemandeUpdate;
