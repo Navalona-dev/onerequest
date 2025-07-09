@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
-import api from "./Api";
+import api from "../Api";
 
-const deleteCommune = async (
-    idCommune: number,
+const deleteUser = async (
+    idSite: number,
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>
   ) => {  
     const result = await Swal.fire({
@@ -20,13 +20,13 @@ const deleteCommune = async (
   
     if (result.isConfirmed) {
       try {
-        const response = await api.delete(`/api/communes/${idCommune}`);
+        const response = await api.delete(`/api/users/${idSite}`);
         console.log("Réponse API:", response.data);
   
         await Swal.fire({
           icon: "success",
           title: "Bon travail!",
-          text: "Commune supprimé avec succès !",
+          text: "Utilisateur supprimé avec succès !",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",
           color: "#fff",
@@ -41,7 +41,7 @@ const deleteCommune = async (
         Swal.fire({
           icon: "error",
           title: "Erreur",
-          text: "Erreur lors de la suppression du commune.",
+          text: "Erreur lors de la suppression d\'utilisateur.",
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",
@@ -50,4 +50,4 @@ const deleteCommune = async (
     }
   };
 
-  export default deleteCommune;
+  export default deleteUser;

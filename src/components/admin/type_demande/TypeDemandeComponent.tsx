@@ -4,7 +4,7 @@ import { store } from "../../../store";
 import Pagination from "../Pagination";
 import AddTypeDemande from "./AddTypeDemande";
 import UpdateTypeDemande from "./UpdateTypeDemande";
-import deleteTypeDemande from "../../../service/DeleteTypeDemande";
+import deleteTypeDemande from "../../../service/admin/DeleteTypeDemande";
 
 type Domaine = {
     id: number;

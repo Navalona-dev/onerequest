@@ -6,7 +6,7 @@ import AddRegion from "./AddRegion";
 import bgImage from '../../../assets/images/bg-site.png';
 import Pagination from "../Pagination";
 import UpdateRegion from "./UpdateRegion";
-import deleteRegion from "../../../service/DeleteRegion";
+import deleteRegion from "../../../service/admin/DeleteRegion";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type SiteType = {

@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
-import api from "./Api";
+import api from "../Api";
 
-const deleteUser = async (
-    idSite: number,
+const deleteRegion = async (
+    idRegion: number,
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>
   ) => {  
     const result = await Swal.fire({
@@ -20,13 +20,13 @@ const deleteUser = async (
   
     if (result.isConfirmed) {
       try {
-        const response = await api.delete(`/api/users/${idSite}`);
+        const response = await api.delete(`/api/regions/${idRegion}`);
         console.log("Réponse API:", response.data);
   
         await Swal.fire({
           icon: "success",
           title: "Bon travail!",
-          text: "Utilisateur supprimé avec succès !",
+          text: "Region supprimée avec succès !",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",
           color: "#fff",
@@ -41,7 +41,7 @@ const deleteUser = async (
         Swal.fire({
           icon: "error",
           title: "Erreur",
-          text: "Erreur lors de la suppression d\'utilisateur.",
+          text: "Erreur lors de la suppression de région.",
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",
@@ -50,4 +50,4 @@ const deleteUser = async (
     }
   };
 
-  export default deleteUser;
+  export default deleteRegion;

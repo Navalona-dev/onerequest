@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import api from "../../../service/Api";
 import AddCommune from "./AddCommune";
 import UpdateCommune from "./UpdateCommune";
-import deleteCommune from "../../../service/DeleteCommune";
+import deleteCommune from "../../../service/admin/DeleteCommune";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type CommuneType = {

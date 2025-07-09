@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Pagination from "../Pagination";
 import AddDomaineEntreprise from "./AddDomaineEntreprise";
 import UpdateDomaineEntreprise from "./UpdateDomaineEntreprise";
-import deleteDomaineEntreprise from "../../../service/DeleteDomaineEntreprise";
+import deleteDomaineEntreprise from "../../../service/admin/DeleteDomaineEntreprise";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type DomaineType = {

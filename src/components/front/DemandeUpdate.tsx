@@ -207,7 +207,7 @@ const DemandeUpdate: React.FC = () => {
       return;
     }
 
-    const formPayload = new FormData();
+    /*const formPayload = new FormData();
     formPayload.append('site', `/api/sites/${formData.site}`);
     formPayload.append('type', `/api/type_demandes/${formData.type}`);
     formPayload.append('demandeur', `/api/users/${user.id}`);
@@ -217,11 +217,20 @@ const DemandeUpdate: React.FC = () => {
 
     if (formData.fichier) {
       formPayload.append('fichier', formData.fichier);
-    }
+    }*/
+
+      const payload = {
+        site: `/api/sites/${formData.site}`,
+        type: `/api/type_demandes/${formData.type}`,
+        demandeur: `/api/users/${user.id}`,
+        statut: "1",
+        objet: formData.objet,
+        contenu: formData.contenu,
+      };
   
     try {
       
-      await api.patch(`/api/demandes/${idDemande}`, formPayload);
+      await api.patch(`/api/demandes/${idDemande}`, payload);
   
       Swal.fire({
         icon: "success",

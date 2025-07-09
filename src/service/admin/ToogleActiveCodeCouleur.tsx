@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
-import api from "./Api";
-import { store } from "../store";
+import api from "../Api";
+import { store } from "../../store";
 
 import { AxiosError } from "axios";
 

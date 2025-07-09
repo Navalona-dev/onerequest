@@ -1,8 +1,9 @@
 import Swal from "sweetalert2";
-import api from "./Api";
+import api from "../Api";
 
-const deleteCategorieDomaine = async (
-    idCategorie: number,
+const deleteCodeCouleur = async (
+    idCode: number,
+    setShowModal: React.Dispatch<React.SetStateAction<boolean>>
   ) => {  
     const result = await Swal.fire({
       title: "Es-tu sûr ?",
@@ -19,18 +20,19 @@ const deleteCategorieDomaine = async (
   
     if (result.isConfirmed) {
       try {
-        const response = await api.delete(`/api/categorie_domaine_entreprises/${idCategorie}`);
+        const response = await api.delete(`/api/code_couleurs/${idCode}`);
         console.log("Réponse API:", response.data);
   
         await Swal.fire({
           icon: "success",
           title: "Bon travail!",
-          text: "Catégorie domaine entreprise supprimée avec succès !",
+          text: "Code couleur supprimé avec succès !",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",
           color: "#fff",
         });
   
+        setShowModal(false);
         window.location.reload();
   
       } catch (error) {
@@ -39,7 +41,7 @@ const deleteCategorieDomaine = async (
         Swal.fire({
           icon: "error",
           title: "Erreur",
-          text: "Erreur lors de la suppression de catégorie de domaine entreprise.",
+          text: "Erreur lors de la suppression du code couleur.",
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",
@@ -48,4 +50,4 @@ const deleteCategorieDomaine = async (
     }
   };
 
-  export default deleteCategorieDomaine;
+  export default deleteCodeCouleur;

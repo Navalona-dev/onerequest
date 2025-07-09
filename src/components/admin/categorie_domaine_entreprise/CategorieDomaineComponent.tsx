@@ -5,7 +5,7 @@ import Pagination from "../Pagination";
 import AddCategorieDomaine from "./AddCategorieDomaine";
 import UpdateCategorieDomaine from "./UpdateCategorieDomaine";
 import { Link } from "react-router-dom";
-import deleteCategorieDomaine from "../../../service/DeleteCategorieDomaine";
+import deleteCategorieDomaine from "../../../service/admin/DeleteCategorieDomaine";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 type CategoryType = {

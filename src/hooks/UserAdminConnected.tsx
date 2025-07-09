@@ -8,6 +8,7 @@ const UserAdminConnected = () => {
     const fetchUser = async () => {
       const token = sessionStorage.getItem("jwt");
       const email = sessionStorage.getItem("email");
+
       api.get(`/api/users/${email}/get-user-admin-connected`)
       .then((response) => {
         setUser(response.data)

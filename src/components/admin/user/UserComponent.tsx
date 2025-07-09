@@ -3,7 +3,7 @@ import api from "../../../service/Api";
 import { store } from "../../../store";
 import AddUser from "./AddUser";
 import UpdateUser from "./UpdateUser";
-import deleteUser from "../../../service/DeleteUser";
+import deleteUser from "../../../service/admin/DeleteUser";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
 import Pagination from "../Pagination";
 import bgImage from '../../../assets/images/bg-site.png';

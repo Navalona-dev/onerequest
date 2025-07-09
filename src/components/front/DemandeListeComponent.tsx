@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../service/Api";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../store";
+import deleteDemandeFront from "../../service/front/DeleteDemande";
 
 type Region = {
     id: number;
@@ -49,7 +50,7 @@ const DemandeListeComponent = () => {
 
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save, fileText } = state.actionTexts;
-
+    
     useEffect(() => {
         const userConnected = async () => {
           try {
@@ -172,6 +173,10 @@ const DemandeListeComponent = () => {
                                 <i className="bi bi-pencil-square"></i>
                             </a>
                             <a href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              deleteDemandeFront(demande.id)
+                            }}
                                 className="py-2 px-2.5 rounded-full mx-2"
                                 title={deleteAction.upperText}
                                 style={{

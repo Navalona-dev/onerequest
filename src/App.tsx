@@ -10,13 +10,13 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Provider } from "react-redux";
 import { store } from "./store";
-import PrivateRouteAdmin from './service/PrivateRouteAdmin';
-import PrivateRouteFront from './service/PrivateRouteFront';
+import PrivateRouteAdmin from './service/admin/PrivateRouteAdmin';
+import PrivateRouteFront from './service/front/PrivateRouteFront';
 
 import ContentPageFront from './pages/front/ContentPage';
 import LoginPage from './pages/admin/LoginPage';
-import LogoutAdmin from './service/LogoutAdmin';
-import LogoutFront from './service/LogoutFront';
+import LogoutAdmin from './service/admin/LogoutAdmin';
+import LogoutFront from './service/front/LogoutFront';
 import TokenWatcher from './service/TokenWatcher';
 import { useGlobalActiveCodeCouleur } from './hooks/UseGlobalActiveCodeCouleur';
 

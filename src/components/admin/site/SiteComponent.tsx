@@ -3,9 +3,9 @@ import { Listbox } from "@headlessui/react";
 import bgImage from '../../../assets/images/bg-site.png';
 import AddSite from "./AddSite";
 import UpdateSite from "./UpdateSite";
-import toggleActiveSite from "../../../service/ToogleActiveSite";
+import toggleActiveSite from "../../../service/admin/ToogleActiveSite";
 
-import deleteSite from "../../../service/DeleteSite";
+import deleteSite from "../../../service/admin/DeleteSite";
 import api from "../../../service/Api";
 import { store } from "../../../store";
 import Pagination from "../Pagination";

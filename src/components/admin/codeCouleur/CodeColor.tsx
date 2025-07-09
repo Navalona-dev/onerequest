@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import bgImage from '../../../assets/images/bg-color.png';
 import AddCodeCouleur from "./AddCodeCouleur";
 import UpdateCodeCouleur from "./UpdateCodeCouleur";
-import toggleActiveCodeCouleur from "../../../service/ToogleActiveCodeCouleur";
+import toggleActiveCodeCouleur from "../../../service/admin/ToogleActiveCodeCouleur";
 
-import deleteCodeCouleur from "../../../service/DeleteCodeCouleur";
+import deleteCodeCouleur from "../../../service/admin/DeleteCodeCouleur";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
 
 import api from "../../../service/Api";

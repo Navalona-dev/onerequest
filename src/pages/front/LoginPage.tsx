@@ -17,24 +17,17 @@ const LoginPageFront = () => {
     try {
       const response = await api.post("/api/login", { email, password });
       const token = response.data.token;
+      const dataUser = response.data.data;
   
       // Stock temporairement
       sessionStorage.setItem("jwt", token);
       sessionStorage.setItem("email", email);
       sessionStorage.setItem("demandeur", "oui");
-  
-      // 👉 Récupérer infos user connecté
-      const userRes = await api.get(`/api/users/${email}/get-user-admin-connected`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      const user = userRes.data;
-  
-      const aLePrivilegeDemandeur = user.privileges?.some(
+      sessionStorage.setItem("dataUser", dataUser);
+
+      const aLePrivilegeDemandeur = dataUser.privileges?.some(
         (priv: any) =>
-          priv.title?.toLowerCase() === "demandeur" || priv.id === 10 // ajuster selon ta base
+          priv.title?.toLowerCase() === "demandeur" || priv.id === 10 
       );
   
       if (!aLePrivilegeDemandeur) {

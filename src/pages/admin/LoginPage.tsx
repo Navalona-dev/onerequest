@@ -17,22 +17,18 @@ const LoginPage = () => {
     try {
       const response = await api.post("/api/login", { email, password });
       const token = response.data.token;
+      const dataUser = response.data.data;
   
       sessionStorage.setItem("jwt", token);
       sessionStorage.setItem("email", email);
       sessionStorage.setItem("demandeur", "non");
-  
+      sessionStorage.setItem("dataUser", dataUser);
+
       // 👇 Vérifie les privilèges après login
-      const userRes = await api.get(`/api/users/${email}/get-user-admin-connected`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+
+      const aUniquementDemandeur = dataUser.privileges.length === 1 &&
+        dataUser.privileges[0].title?.toLowerCase() === "demandeur";
   
-      const user = userRes.data;
-  
-      const aUniquementDemandeur = user.privileges.length === 1 &&
-        user.privileges[0].title?.toLowerCase() === "demandeur";
   
       if (aUniquementDemandeur) {
         // ❌ Bloque l’accès
