@@ -22,8 +22,9 @@ const LoginPage = () => {
       sessionStorage.setItem("jwt", token);
       sessionStorage.setItem("email", email);
       sessionStorage.setItem("demandeur", "non");
-      sessionStorage.setItem("dataUser", dataUser);
+      sessionStorage.setItem("dataUser", JSON.stringify(dataUser));
 
+      
       // 👇 Vérifie les privilèges après login
 
       const aUniquementDemandeur = dataUser.privileges.length === 1 &&

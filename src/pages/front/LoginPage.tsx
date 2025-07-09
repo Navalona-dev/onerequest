@@ -23,7 +23,7 @@ const LoginPageFront = () => {
       sessionStorage.setItem("jwt", token);
       sessionStorage.setItem("email", email);
       sessionStorage.setItem("demandeur", "oui");
-      sessionStorage.setItem("dataUser", dataUser);
+      sessionStorage.setItem("dataUser", JSON.stringify(dataUser));
 
       const aLePrivilegeDemandeur = dataUser.privileges?.some(
         (priv: any) =>

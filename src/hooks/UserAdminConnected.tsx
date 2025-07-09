@@ -1,25 +1,21 @@
-import React, {useState, useEffect} from "react";
-import api from "../service/Api";
+import { useState, useEffect } from "react";
 
-const UserAdminConnected = () => {
-    const [user, setUser] = useState(null);
+const useUserAdminConnected = () => {
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const token = sessionStorage.getItem("jwt");
-      const email = sessionStorage.getItem("email");
+    const raw = sessionStorage.getItem("dataUser");
 
-      api.get(`/api/users/${email}/get-user-admin-connected`)
-      .then((response) => {
-        setUser(response.data)
-      })
-      .catch((error) => console.error("Erreur API:", error));
-    };
-
-    fetchUser();
+    try {
+      const parsed = raw ? JSON.parse(raw) : null;
+      setUser(parsed);
+    } catch (e) {
+      console.error("Erreur JSON.parse sur dataUser :", e);
+      setUser(null);
+    }
   }, []);
 
   return user;
-}
+};
 
-export default UserAdminConnected;
+export default useUserAdminConnected;
