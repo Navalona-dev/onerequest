@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import api from "../../../service/Api";
 import Pagination from "../Pagination";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 
 
 type Site = {
@@ -28,6 +29,7 @@ type Demande = {
     statut: string;
     type: TypeDemande | null;
     demandeur: Demandeur | null;
+    fichier: string;
 }
 
 const DemandeComponent = () => {
@@ -40,13 +42,12 @@ const DemandeComponent = () => {
 
     const [searchStatut, setSearchStatut] = useState("");
     const [searchDemandeur, setSearchDemandeur] = useState("");
-    const [searchType, setSearchType] = useState("");
     const [searchTypeDemande, setSearchTypeDemande] = useState("");
+    const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
     useEffect(() => {
         api.get('/api/demandes/statut')
           .then(response => {
-            console.log("statut",response.data);
             setStatuts(response.data);
           })
           .catch(error => {
@@ -73,6 +74,7 @@ const DemandeComponent = () => {
         if (!currentSite) return; 
         api.get(`/api/sites/${currentSite.id}/demandes`)
         .then((response) => {
+            console.log('Demande', response.data);
             setListeDemande(response.data)
         })
         .catch((error) => console.log("Erreur API", error));
@@ -81,12 +83,11 @@ const DemandeComponent = () => {
     const filteredDemandes = demandes.filter(user => {
         const statutMatch = !searchStatut || user.statut.toLowerCase().includes(searchStatut.toLowerCase());
         const demandeurMatch = !searchDemandeur || user.demandeur?.nom.toLowerCase().includes(searchDemandeur.toLowerCase()) || user.demandeur?.prenom.toLowerCase().includes(searchDemandeur.toLowerCase());
-        const typeMatch = !searchType || user.type?.nom.toLowerCase().includes(searchType.toLowerCase());
+        const typeMatch = !searchTypeDemande || user.type?.nom.toLowerCase().includes(searchTypeDemande.toLowerCase());
 
-        return statutMatch && demandeurMatch;
+        return statutMatch && demandeurMatch && typeMatch;
     });
     
-      //const dataToPaginate = filteredDemandes.length > 0 ? filteredDemandes : users;
       const dataToPaginate = filteredDemandes;
 
       const totalPages = Math.max(1, Math.ceil(dataToPaginate.length / demandesPerPage));
@@ -94,7 +95,7 @@ const DemandeComponent = () => {
       const indexOfLastDemande = currentPage * demandesPerPage;
       const indexOfFirstDemande = indexOfLastDemande - demandesPerPage;
       
-      const currentUsers = dataToPaginate.slice(indexOfFirstDemande, indexOfLastDemande);
+      const currentDemandes = dataToPaginate.slice(indexOfFirstDemande, indexOfLastDemande);
 
       useEffect(() => {
         if (currentPage > totalPages) {
@@ -170,6 +171,9 @@ const DemandeComponent = () => {
                                         Statut
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
+                                        Fichier
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-white">
                                         Objet
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
@@ -179,13 +183,13 @@ const DemandeComponent = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentUsers.length > 0 ? (
-                                    currentUsers.map((item, index) => (
-                                        <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"} text-nowrap`}>
-                                            <th className="px-6 py-4">
+                                {currentDemandes.length > 0 ? (
+                                    currentDemandes.map((item, index) => (
+                                        <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
+                                            <th className="px-6 py-4 text-nowrap">
                                             
                                             </th>
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-4 text-nowrap">
                                                 {item.demandeur?.nom} {item.demandeur?.prenom} <br />
                                                 <span 
                                                     style={{
@@ -197,8 +201,19 @@ const DemandeComponent = () => {
                                             <td className="px-6 py-4">
                                                 {item.type?.nom}
                                             </td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-4 text-nowrap">
                                                 {item.statut}
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <a 
+                                                href={`${item.fichier}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="underline"
+                                                style={{
+                                                    color: codeCouleur?.textColor
+                                                }}
+                                                >Voir</a>
                                             </td>
                                             <td className="px-6 py-4">
                                                 {item.objet}
@@ -211,7 +226,7 @@ const DemandeComponent = () => {
                                     ))
                                 ) : (
                                     <tr className="bg-[#1c2d55] text-center">
-                                        <td colSpan={6} className="px-6 py-4">Aucun enregistrement trouvé</td>
+                                        <td colSpan={7} className="px-6 py-4">Aucun enregistrement trouvé</td>
                                     </tr>
                                 )}
                                 
