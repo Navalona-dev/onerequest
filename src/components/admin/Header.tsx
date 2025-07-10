@@ -36,8 +36,6 @@ type UserType = {
 const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
   const { layoutContent, isSidebarCollapsed, setIsSidebarCollapsed } = useLayoutContent();
 
-  //const bgColor = layoutContent === "vertical" ? "bg-[#0B1437] admin-header-vertical" : "bg-red-500 admin-header-horizontal";
-
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [sites, setSites] = useState<Site[]>([]);
   const [siteCurrent, setSiteCurrent] = useState<Site | null>(null);

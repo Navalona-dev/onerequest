@@ -1,0 +1,19 @@
+{
+    "menu": {
+      "home": "Home",
+      "about": "About",
+      "services": "Services",
+      "pages": "Pages",
+      "contact": "Contact",
+      "account": "My Account",
+      "submit": "Submit a Request",
+      "login": "Login",
+      "register": "Register",
+      "logout": "Logout",
+      "myRequests": "My Requests",
+      "appointment": "Book an Appointment",
+      "testimonial": "Testimonials"
+
+    }
+  }
+  

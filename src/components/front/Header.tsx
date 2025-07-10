@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { publicApi } from '../../service/publicApi';
+import { useTranslation } from "react-i18next";
 
 import { useGlobalActiveCodeCouleur } from '../../hooks/UseGlobalActiveCodeCouleur';
+
+type Langue = {
+  id: number;
+  titleFr: string;
+  titleEn: string;
+  icon: string;
+  isActive: boolean;
+  indice: string;
+}
 
 const Header = () => {
   const navigate = useNavigate();
@@ -17,6 +28,17 @@ const Header = () => {
 
   const location = useLocation();
   const token = sessionStorage.getItem("jwt");
+  const [langues, setListeLangue] = useState<Langue[]>([]);
+  const [langueActive, setLangueActive] = useState<Langue | null>(null);
+  const [langueCurrent, setLangueCurrent] = useState<Langue | null>(null);
+  const { t, i18n } = useTranslation();
+
+  const getLangLabel = (lang: Langue): string => {
+    if (!langueActive) return "";
+    if (langueActive.indice === "fr") return lang.titleFr;
+    if (langueActive.indice === "en") return lang.titleEn;
+    return "";
+  };
 
   // Toggle dropdown mobile
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
@@ -53,8 +75,40 @@ const Header = () => {
       }
     }
   }, [location.pathname]);
+
+  const handleLangueCurrent = async (langueId: number) => {
+    try {
+      const response = await publicApi.patch(`/api/langues/${langueId}/set-active`, 
+        {
+          headers: {
+            'Content-Type': 'application/merge-patch+json'
+          }
+        }
+      );
+      setLangueCurrent(response.data);
+      i18n.changeLanguage(response.data.indice);
+      window.location.reload();
+    } catch (error) {
+      console.error("Erreur API:", error);
+    }
+  };
+
+  useEffect(() => {
+    publicApi.get('/api/langues/get-is-active')
+    .then((response) => {
+      setLangueActive(response.data);
+      i18n.changeLanguage(response.data.indice);
+    })
+    .catch((error) => console.log("Erreur API", error));
+  }, []);
   
-  
+  useEffect(() => {
+    publicApi.get('/api/langues/public')
+    .then((response) => {
+      setListeLangue(response.data)
+    })
+    .catch((error) => console.log("Erreur API", error));
+  }, []);
 
   return (
     <>
@@ -98,7 +152,7 @@ const Header = () => {
             style={{
               backgroundColor: codeCouleur?.btnColor
             }}
-            className="text-4xl font-bold text-white px-6 py-3 [clip-path:polygon(0_0,100%_0,90%_100%,0_100%)]">
+            className="text-2xl font-bold text-white px-6 py-3 [clip-path:polygon(0_0,100%_0,90%_100%,0_100%)]">
             ONEREQUEST
           </a>
 
@@ -121,7 +175,7 @@ const Header = () => {
                   : "#000",
             }}
             className="block py-2 px-4 font-semibold"
-          >Accueil</a>
+          >{t("menu.home")}</a>
 
             <a href='#' 
               className="block py-2 px-4"
@@ -136,7 +190,7 @@ const Header = () => {
                     : "#000",
               }}
             >
-                À propos
+                {t("menu.about")}
             </a>
             <a href='#' 
               className="block py-2 px-4"
@@ -151,7 +205,7 @@ const Header = () => {
                     : "#000",
               }}
             >
-              Services
+              {t("menu.services")}
             </a>
 
             <div className="relative group block py-2 px-4">
@@ -172,7 +226,7 @@ const Header = () => {
                     : "#000",
                 }}
               >
-                Pages <i className="bi bi-chevron-down ml-1 text-xs"></i>
+                {t("menu.pages")} <i className="bi bi-chevron-down ml-1 text-xs"></i>
               </button>
 
               <div
@@ -184,7 +238,7 @@ const Header = () => {
               >
                 <a href='/#tutoriel' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Tutoriel</a>
                 <a href='/#service' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Service</a>
-                <a href='/#testimonial' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Testimonials</a>
+                <a href='/#testimonial' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">{t("menu.testimonial")}</a>
               </div>
             </div>
             
@@ -202,7 +256,7 @@ const Header = () => {
               }}
 
               className="block py-2 px-4"
-            >Contact</a>
+            >{t("menu.contact")}</a>
 
             <div className="relative group block py-2 px-4">
               <button
@@ -222,7 +276,7 @@ const Header = () => {
                     : "#000",
                 }}
               >
-                Mon compte <i className="bi bi-chevron-down ml-1 text-xs"></i>
+                {t("menu.account")} <i className="bi bi-chevron-down ml-1 text-xs"></i>
               </button>
 
               <div
@@ -234,18 +288,18 @@ const Header = () => {
               >
                 {token ? (
                   <>
-                  <a href='#' onClick={() => handleMenuClick("mes-demandes")} className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Mes demandes</a>
-                  <a href='/logout' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Se deconnecter</a>
+                  <a href='#' onClick={() => handleMenuClick("mes-demandes")} className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">{t("menu.myRequests")}</a>
+                  <a href='/logout' className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">{t("menu.logout")}</a>
                   
                   </>
                 ) : (
                   <>
-                    <a href='#' onClick={() => handleMenuClick("connexion")}  className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Se connecter</a>
+                    <a href='#' onClick={() => handleMenuClick("connexion")}  className="block px-4 py-2 hover:bg-gray-100 cursor-pointer">{t("menu.login")}</a>
                     <a href='#'
                      className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
                      onClick={() => handleMenuClick("inscription")} 
                      >
-                      S'inscrire
+                      {t("menu.register")}
                     </a>
                   </>
                 )}
@@ -286,8 +340,52 @@ const Header = () => {
                 className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
                 onClick={() => handleMenuClick("rendez-vous")} 
                 >
-                  Prendre un rendez-vous
+                  {t("menu.appointment")}
                 </a>
+                
+              </div>
+            </div>
+
+            <div className="relative group block py-2 px-4">
+              <button
+                onClick={() => setDropdownOpen(!isDropdownOpen)} // toggle au clic
+                className="flex items-center lg:cursor-default"
+                type="button"
+                aria-expanded={isDropdownOpen}
+                onMouseEnter={() => setHovered("langue")}
+               onMouseLeave={() => setHovered(null)}
+                style={{
+                  backgroundColor: "transparent",
+                  color:
+                  hovered === "langue"
+                    ? codeCouleur?.textColorHover
+                    : activeMenu === "langue"
+                    ? codeCouleur?.textColor
+                    : "#000",
+                }}
+              >
+                 <span className='mr-2'>{langueActive?.icon}</span> <span>{langueActive && getLangLabel(langueActive)}</span> <i className="bi bi-chevron-down ml-1 text-xs"></i>
+              </button>
+
+              <div
+                className={`
+                  absolute bg-white shadow-md rounded z-10
+                  ${isDropdownOpen ? "block w-[30vh]" : "hidden w-[35vh]"}  
+                  group-hover:block
+                `}
+              >
+                {langues.map((item, index) => (
+                  <a href='#' 
+                  key={item.id}
+                  className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => (
+                    handleLangueCurrent(item.id)
+                  )}
+                  >
+                    {item.icon} 
+                    <span className='ml-2'>{getLangLabel(item)}</span>
+                  </a>
+                ))}
                 
               </div>
             </div>
@@ -303,20 +401,9 @@ const Header = () => {
              onMouseLeave={() => setHovered(null)}
             className="mt-2 lg:mt-0 lg:ml-4 text-white px-4 py-2"
             >
-              Soumettre une demande
+              {t("menu.submit")}
             </a>
-            {/*<a href='#' onClick={() => handleMenuClick("rendez-vous")} 
-              style={{
-                backgroundColor:
-                  hovered === "rendez-vous"
-                    ? codeCouleur?.btnColorHover
-                    : codeCouleur?.btnColor,
-              }}
-              onMouseEnter={() => setHovered("rendez-vous")}
-              onMouseLeave={() => setHovered(null)}
-              className="mt-2 lg:mt-0 lg:ml-4 text-white px-4 py-2 rounded ">
-              Prendre un rendez-vous
-            </a>*/}
+            
           </div>
         </div>
       </nav>
