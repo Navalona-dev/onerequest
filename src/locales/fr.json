@@ -13,6 +13,20 @@
       "myRequests": "Mes demandes",
       "appointment": "Prendre un rendez-vous",
       "testimonial": "Témoignages"
+      
+    },
+    "about": {
+      "aboutus": "À propos de nous",
+      "anneeexperience": "Année d'expérience",
+      "annee": "Année",
+      "experience": "d'Expérience",
+      "demande1": "Demandes Administratives",
+      "demande2": "Demandes Techniques",
+      "demande3": "Demandes Commerciales",
+      "demande4": "Demandes Personnalisées",
+      "demande5": "Autres Types de Demandes",
+      "mailus": "Contacter-nous par mail",
+      "contactus": "Contacter nous par téléphone"
     }
   }
   

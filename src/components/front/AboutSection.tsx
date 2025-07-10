@@ -1,17 +1,54 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
 import useInView from '../../hooks/useInView';
-
 import About1 from '../../assets/images/about-1.png';
 import About2 from '../../assets/images/about-2.png';
-
 import { useGlobalActiveCodeCouleur } from '../../hooks/UseGlobalActiveCodeCouleur';
+import { publicApi } from '../../service/publicApi';
+import { useTranslation } from "react-i18next";
+
+type AboutSection = {
+    id: number;
+    titleFr: string;
+    titleEn: string;
+    descriptionFr: string;
+    descriptionEn: string;
+}
+
+type Langue = {
+    id: number;
+    titleFr: string;
+    titleEn: string;
+    icon: string;
+    isActive: boolean;
+    indice: string;
+  }
+  
 
 const AboutSection = () => {
     const [leftRef, leftVisible] = useInView();
     const [rightRef, rightVisible] = useInView();
-
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+    const [abouts, setListeAbout] = useState<AboutSection[]>([]);
+
+    const [langueActive, setLangueActive] = useState<Langue | null>(null);
+    const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    publicApi.get('/api/langues/get-is-active')
+    .then((response) => {
+      setLangueActive(response.data)
+      i18n.changeLanguage(response.data.indice);
+    })
+    .catch((error) => console.log("Erreur API", error));
+  }, []);
+
+    useEffect(() => {
+        publicApi.get('/api/about_sections/liste')
+        .then((response) => {
+            setListeAbout(response.data)
+        })
+        .catch((error) => console.log("Erreur API", error))
+    }, []);
     
     return(
         <div className="py-20 px-4 max-w-7xl mx-auto">
@@ -45,18 +82,32 @@ const AboutSection = () => {
                 }}
                 className="text-sm font-semibold uppercase"
 
-                >À propos de nous</p>
-                <h1 
-                    style={{
-                        color: codeCouleur?.bgColor
-                    }}
-                    className="text-4xl md:text-5xl font-bold"
-                >
-                    We Are Leader In Industrial Market</h1>
-                <p className="text-gray-600">
-                    Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos.
-                    Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet.
-                </p>
+                >{t("about.aboutus")}</p>
+                {abouts.map((item, index) => (
+                    <>
+                    <h1 
+                        style={{
+                            color: codeCouleur?.bgColor
+                        }}
+                        className="text-4xl md:text-5xl font-bold"
+                    >
+                    {langueActive?.indice === "fr" ? item.titleFr : langueActive?.indice === "en" ? item.titleEn : ""}
+                    </h1>
+                    <div
+                        className="text-gray-600"
+                        dangerouslySetInnerHTML={{
+                            __html:
+                            langueActive?.indice === "fr"
+                                ? item.descriptionFr
+                                : langueActive?.indice === "en"
+                                ? item.descriptionEn
+                                : "",
+                        }}
+                    />
+
+                    </>
+                ))}
+                
 
                 <div className="flex items-center gap-6 bg-gray-50 p-6 rounded-lg shadow">
                     <div 
@@ -71,35 +122,35 @@ const AboutSection = () => {
                         }}
                         className="text-5xl font-bold"
                         >25</h1>
-                        <p className="text-lg">Years of</p>
-                        <p className="text-lg">Experience</p>
+                        <p className="text-lg">{t("about.annee")}</p>
+                        <p className="text-lg">{t("about.experience")}</p>
                     </div>
                     <div className="space-y-2">
                     <p><i 
                     style={{
                         color: codeCouleur?.textColor
                     }}
-                    className="bi bi-check-all mr-2 text-xl"></i>Power & Energy</p>
+                    className="bi bi-check-all mr-2 text-xl"></i>{t("about.demande1")}</p>
                     <p><i 
                     style={{
                         color: codeCouleur?.textColor
                     }}
-                    className="bi bi-check-all mr-2 text-xl"></i>Civil Engineering</p>
+                    className="bi bi-check-all mr-2 text-xl"></i>{t("about.demande2")}</p>
                     <p><i 
                     style={{
                         color: codeCouleur?.textColor
                     }}
-                    className="bi bi-check-all mr-2 text-xl"></i>Chemical Engineering</p>
+                    className="bi bi-check-all mr-2 text-xl"></i>{t("about.demande3")}</p>
                     <p><i 
                     style={{
                         color: codeCouleur?.textColor
                     }}
-                    className="bi bi-check-all mr-2 text-xl"></i>Mechanical Engineering</p>
+                    className="bi bi-check-all mr-2 text-xl"></i>{t("about.demande4")}</p>
                     <p><i 
                     style={{
                         color: codeCouleur?.textColor
                     }}
-                    className="bi bi-check-all mr-2 text-xl"></i>Oil & Gas Engineering</p>
+                    className="bi bi-check-all mr-2 text-xl"></i>{t("about.demande5")}</p>
                     </div>
                 </div>
 
@@ -113,7 +164,7 @@ const AboutSection = () => {
                         <i className="bi bi-envelope-open-fill text-white text-xl"></i>
                     </div>
                     <div>
-                        <p className="text-sm text-gray-500">Email us</p>
+                        <p className="text-sm text-gray-500">{t("about.mailus")}</p>
                         <h5 className="text-lg font-semibold">info@example.com</h5>
                     </div>
                     </div>
@@ -126,7 +177,7 @@ const AboutSection = () => {
                         <i className="bi bi-telephone-fill text-white text-xl"></i>
                     </div>
                     <div>
-                        <p className="text-sm text-gray-500">Call us</p>
+                        <p className="text-sm text-gray-500">{t("about.contactus")}</p>
                         <h5 className="text-lg font-semibold">+012 345 6789</h5>
                     </div>
                     </div>

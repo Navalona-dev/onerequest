@@ -375,16 +375,19 @@ const Header = () => {
                 `}
               >
                 {langues.map((item, index) => (
-                  <a href='#' 
+                  <a
+                  href="#"
                   key={item.id}
                   className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => (
-                    handleLangueCurrent(item.id)
-                  )}
-                  >
-                    {item.icon} 
-                    <span className='ml-2'>{getLangLabel(item)}</span>
-                  </a>
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLangueCurrent(item.id);
+                  }}
+                >
+                  {item.icon}
+                  <span className='ml-2'>{getLangLabel(item)}</span>
+                </a>
+                
                 ))}
                 
               </div>

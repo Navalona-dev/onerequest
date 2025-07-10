@@ -14,6 +14,19 @@
       "appointment": "Book an Appointment",
       "testimonial": "Testimonials"
 
+    },
+    "about": {
+      "aboutus": "About us",
+      "anneeexperience": "Years of Experience",
+      "annee": "Years",
+      "experience": "of Experience",
+      "demande1": "Administrative Requests",
+      "demande2": "Technical Requests",
+      "demande3": "Commercial Requests",
+      "demande4": "Custom Requests",
+      "demande5": "Other Types of Requests",
+       "mailus": "Email us",
+      "contactus": "Call us"
     }
   }
   
