@@ -7,6 +7,7 @@ import 'swiper/css/pagination';
 import { useGlobalActiveCodeCouleur } from '../../hooks/UseGlobalActiveCodeCouleur';
 import { publicApi } from '../../service/publicApi';
 import { useTranslation } from "react-i18next";
+import { useLangueActive } from '../../hooks/useLangueActive';
 
 type HeroSection = {
   id: number;
@@ -30,17 +31,8 @@ const HeroSection = () => {
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
   const [hover, setHover] = useState(false);
   const [heroSections, setListeHeroSection] = useState<HeroSection[]>([]);
-  const [langueActive, setLangueActive] = useState<Langue | null>(null);
+  const {langueActive, setLangueActive} = useLangueActive();
   const { t, i18n } = useTranslation();
-
-  useEffect(() => {
-    publicApi.get('/api/langues/get-is-active')
-    .then((response) => {
-      setLangueActive(response.data)
-      i18n.changeLanguage(response.data.indice);
-    })
-    .catch((error) => console.log("Erreur API", error));
-  }, []);
 
   useEffect(() => {
     publicApi.get('/api/hero_sections/liste')

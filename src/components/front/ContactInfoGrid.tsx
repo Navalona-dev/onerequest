@@ -1,10 +1,14 @@
 // ContactInfoGrid.tsx
 import React, { useState } from "react";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 export const ContactInfoGrid: React.FC = () => {
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
   const [hover, setHover] = useState<string | null>(null);
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
 
   return (
     <div className="py-12">
@@ -19,7 +23,7 @@ export const ContactInfoGrid: React.FC = () => {
               }}
               className="bi bi-telephone-fill text-3xl"></i>
             </div>
-            <h4 className="mb-2 text-xl font-semibold">Numéro téléphone</h4>
+            <h4 className="mb-2 text-xl font-semibold">{t('contact.numero')}</h4>
             <p className="mb-1">+012 345 67890</p>
             <p className="mb-4">+012 345 67891</p>
             <a
@@ -31,7 +35,7 @@ export const ContactInfoGrid: React.FC = () => {
               onMouseLeave={() => setHover(null)}
               className="inline-flex items-center rounded px-4 py-2 text-white"
             >
-              Appellez <i className="bi bi-arrow-right ms-2"></i>
+              {t("contact.call")} <i className="bi bi-arrow-right ms-2"></i>
             </a>
           </div>
 
@@ -44,7 +48,7 @@ export const ContactInfoGrid: React.FC = () => {
               }}
               className="bi bi-envelope-paper-fill text-3xl"></i>
             </div>
-            <h4 className="mb-2 text-xl font-semibold">Adresse e-mail</h4>
+            <h4 className="mb-2 text-xl font-semibold">{t("contact.mail")}</h4>
             <p className="mb-1">info@example.com</p>
             <p className="mb-4">support@example.com</p>
             <a
@@ -56,7 +60,7 @@ export const ContactInfoGrid: React.FC = () => {
               onMouseLeave={() => setHover(null)}
               className="inline-flex items-center rounded px-4 py-2 text-white"
             >
-              Envoyer mail <i className="bi bi-arrow-right ms-2"></i>
+              {t("contact.sendmail")} <i className="bi bi-arrow-right ms-2"></i>
             </a>
           </div>
 
@@ -69,7 +73,7 @@ export const ContactInfoGrid: React.FC = () => {
               }}
               className="bi bi-geo-alt-fill text-3xl"></i>
             </div>
-            <h4 className="mb-2 text-xl font-semibold">Adresse officielle</h4>
+            <h4 className="mb-2 text-xl font-semibold">{t("contact.officiel")}</h4>
             <p className="mb-1">123 Main Street</p>
             <p className="mb-4">Your City, Country</p>
             <a

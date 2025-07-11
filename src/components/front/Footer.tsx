@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
+import { useTranslation } from "react-i18next";
+import { publicApi } from "../../service/publicApi";
+import { error } from "console";
+import { useLangueActive } from "../../hooks/useLangueActive";
+
+type Service = {
+    id: number;
+    titleFr: string;
+    titleEn: string;
+}
 
 const Footer = () => {
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+    const { t, i18n } = useTranslation();
+    const [services, setListeService] = useState<Service[]>([]);
+    const {langueActive} = useLangueActive();
+
+    useEffect(() => {
+        publicApi.get('/api/services/liste')
+        .then((response) => {
+            setListeService(response.data)
+        })
+        .catch((error) => console.log("Erreur API", error))
+    }, []);
 
     return(
         <footer className="bg-gray-900 text-gray-300 mt-10 pt-12 footer">
@@ -26,7 +47,7 @@ const Footer = () => {
                 className="rounded-lg p-5">
                     <h1 className="text-white text-2xl font-bold mb-3 uppercase">ONEREQUEST</h1>
                     <p className="text-white text-sm">
-                    Pour toute demande d’information, de partenariat ou d’assistance, n'hésitez pas à nous contacter. Notre équipe est à votre écoute.
+                        {t("footer.desc")}
                     </p>
                 </div>
 
@@ -56,11 +77,10 @@ const Footer = () => {
                     }}
                     className="section-title text-xl uppercase mb-4 font-semibold">Informations</h6>
                     <ul className="space-y-2">
-                    <li><a href="#" className="hover:text-white transition">À propos</a></li>
+                    <li><a href="#" className="hover:text-white transition">{t("menu.about")}</a></li>
                     <li><a href="#" className="hover:text-white transition">Contact</a></li>
-                    <li><a href="#" className="hover:text-white transition">Politique de confidentialité</a></li>
-                    <li><a href="#" className="hover:text-white transition">Conditions générales</a></li>
-                    <li><a href="#" className="hover:text-white transition">Support</a></li>
+                    <li><a href="#" className="hover:text-white transition">{t("menu.politique")}</a></li>
+                    <li><a href="#" className="hover:text-white transition">{t("menu.condition")}</a></li>
                     </ul>
                 </div>
 
@@ -72,11 +92,9 @@ const Footer = () => {
                     }}
                     className="section-title text-xl uppercase mb-4 font-semibold">Services</h6>
                     <ul className="space-y-2">
-                    <li><a href="#" className="hover:text-white transition">Restauration</a></li>
-                    <li><a href="#" className="hover:text-white transition">Bien-être</a></li>
-                    <li><a href="#" className="hover:text-white transition">Sport & Loisirs</a></li>
-                    <li><a href="#" className="hover:text-white transition">Événementiel</a></li>
-                    <li><a href="#" className="hover:text-white transition">Salle de sport</a></li>
+                        {services.map((item, index) => (
+                            <li className="hover:text-white transition"> {langueActive?.indice === "fr" ? item.titleFr : langueActive?.indice === "en" ? item.titleEn : ""} </li>
+                        ))}
                     </ul>
                 </div>
                 </div>
@@ -86,11 +104,11 @@ const Footer = () => {
             <div className="border-t border-gray-700 py-4 text-sm copyright">
                 <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-4 space-y-2 md:space-y-0">
                 <div className="text-center md:text-left">
-                    &copy; <span className="text-white font-semibold">ATDM</span>, Tous droits réservés.
-                    Conçu par <a href="https://www.visco-consulting.com/" target="blank" className="text-white underline hover:text-red-500">VAL IT-SOLUTIONS CONSULTING</a>
+                    &copy; <span className="text-white font-semibold">ONEREQUEST</span>, {t("footer.desc1")}
+                    . {t("footer.desc2")} <a href="https://www.visco-consulting.com/" target="blank" className="text-white underline hover:text-red-500">VAL IT-SOLUTIONS CONSULTING</a>
                 </div>
                 <div className="flex space-x-4 footer-menu">
-                    <a href="#" className="hover:text-white">Accueil</a>
+                    <a href="/" className="hover:text-white">{t("menu.home")}</a>
                     <a href="#" className="hover:text-white">Cookies</a>
                     <a href="#" className="hover:text-white">Aide</a>
                     <a href="#" className="hover:text-white">FAQ</a>

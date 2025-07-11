@@ -1,9 +1,14 @@
 import React, {useState} from "react";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 const NewsletterBlock = () => {
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
     const [hover, setHover] = useState(false);
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
+
     return(
         <div className="container mx-auto mt-12 newsletter">
         
@@ -12,7 +17,7 @@ const NewsletterBlock = () => {
                 <div className="border rounded-lg text-center p-1">
                     <div className="bg-white rounded-lg px-6 py-12">
                     <h4 className="text-xl font-semibold mb-4">
-                        Abonnez-vous à notre  
+                        {t("newsletter.title")}
                         <span 
                         style={{
                             color: codeCouleur?.textColor
@@ -22,7 +27,7 @@ const NewsletterBlock = () => {
                     <div className="relative mx-auto max-w-md">
                         <input
                         type="text"
-                        placeholder="Entrez votre email"
+                        placeholder={`${t("newsletter.mail")}`}
                         className="form-input w-full py-3 pl-4 pr-20 border border-gray-300 rounded-lg focus:outline-none"
                         />
                         <button
@@ -35,7 +40,7 @@ const NewsletterBlock = () => {
                         onMouseLeave={() => setHover(false)}
                         className="absolute top-2 right-1 btn-news text-white px-4 py-2 rounded-lg text-sm transition"
                         >
-                        S'inscrire
+                        {t("newsletter.subscribe")}
                         </button>
                     </div>
                     </div>

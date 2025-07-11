@@ -12,7 +12,11 @@
       "logout": "Logout",
       "myRequests": "My Requests",
       "appointment": "Book an Appointment",
-      "testimonial": "Testimonials"
+      "testimonial": "Testimonials",
+      "politique": "Privacy Policy",
+      "condition": "Terms and Conditions",
+      "callus": "Call Us",
+      "followus": "Follow Us"
 
     },
     "about": {
@@ -27,6 +31,46 @@
       "demande5": "Other Types of Requests",
        "mailus": "Email us",
       "contactus": "Call us"
+    },
+    "tutoriel": {
+      "title": "Learn how to use the application step by step.",
+      "videoshow": "Show video"
+
+    },
+    "newsletter": {
+      "title": "Subscribe to our",
+      "mail": "Enter your email",
+      "subscribe": "Subscribe"
+
+    },
+    "footer": {
+      "desc": "For any request for information, partnership, or assistance, feel free to contact us. Our team is here to help you.",
+      "desc1": "All rights reserved",
+      "desc2": "Designed by"
+    },
+    "pageblock": {
+      "title1": "Fast Request Processing",
+      "title2": "Personalized tracking at every step",
+      "title3": "A responsive and available team",
+      "title4": "Commitment to quality and reliability"
+    },
+    "contact": {
+      "numero": "Phone number",
+      "mail": "Email address",
+      "officiel": "Official address",
+      "call": "Call",
+      "sendmail": "Send mail",
+      "direction": "Direction",
+      "callus": "Call Us",
+      "title": "Do you have a question, a request, or need assistance?",
+      "desc": "Our team is here to provide you with a quick and personalized response. Feel free to fill out the form below or write to us directly — we will get back to you as soon as possible.",
+      "form1": "Your name",
+      "objet": "Subject",
+      "message": "Enter your message here",
+      "sendmessage": "Send message"
+
+
     }
+
   }
   

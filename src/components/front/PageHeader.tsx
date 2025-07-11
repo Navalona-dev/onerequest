@@ -2,13 +2,17 @@
 import React from "react";
 import bgpageheader from "../../assets/images/hero-bg-5.png";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 const PageHeader: React.FC<{ title: string; breadcrumbs: string[] }> = ({
   title,
   breadcrumbs,
 }) => {
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
-  
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
+
   return (
     <div
       className={`

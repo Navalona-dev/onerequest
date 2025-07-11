@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { publicApi } from '../../service/publicApi';
 import { useTranslation } from "react-i18next";
+import api from '../../service/Api';
+import { useLangueActive } from '../../hooks/useLangueActive';
 
 import { useGlobalActiveCodeCouleur } from '../../hooks/UseGlobalActiveCodeCouleur';
 
@@ -28,17 +30,17 @@ const Header = () => {
 
   const location = useLocation();
   const token = sessionStorage.getItem("jwt");
+  const email = sessionStorage.getItem("email");
   const [langues, setListeLangue] = useState<Langue[]>([]);
-  const [langueActive, setLangueActive] = useState<Langue | null>(null);
-  const [langueCurrent, setLangueCurrent] = useState<Langue | null>(null);
+  const {langueActive, setLangueActive} = useLangueActive()
   const { t, i18n } = useTranslation();
 
   const getLangLabel = (lang: Langue): string => {
-    if (!langueActive) return "";
-    if (langueActive.indice === "fr") return lang.titleFr;
-    if (langueActive.indice === "en") return lang.titleEn;
-    return "";
+    if (!langueActive) return lang.titleFr;
+  
+    return langueActive.indice === "fr" ? lang.titleFr : lang.titleEn;
   };
+  
 
   // Toggle dropdown mobile
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
@@ -77,31 +79,35 @@ const Header = () => {
   }, [location.pathname]);
 
   const handleLangueCurrent = async (langueId: number) => {
-    try {
-      const response = await publicApi.patch(`/api/langues/${langueId}/set-active`, 
-        {
-          headers: {
-            'Content-Type': 'application/merge-patch+json'
-          }
-        }
-      );
-      setLangueCurrent(response.data);
-      i18n.changeLanguage(response.data.indice);
-      window.location.reload();
-    } catch (error) {
-      console.error("Erreur API:", error);
+    const selectedLangue = langues.find((l) => l.id === langueId);
+    if (!selectedLangue) return;
+      
+    // Appliquer immédiatement
+    i18n.changeLanguage(selectedLangue.indice);
+    setLangueActive(selectedLangue);
+    sessionStorage.setItem("langueActive", JSON.stringify(selectedLangue));
+
+    // Si connecté, enregistrer côté serveur (optionnel)
+    if (token) {
+      try {
+        
+        const response = await api.get(`/api/users/${email}/get-user-admin-connected`);
+        const userId = response.data.id;
+  
+        await api.patch(`/api/users/${userId}/set-langue`, {
+          langueId: langueId
+        }, {
+          headers: { 'Content-Type': 'application/json' }
+        });
+      } catch (error) {
+        console.error("Erreur lors de la sauvegarde de la langue côté serveur:", error);
+      }
     }
+  
+    // Recharge si nécessaire
+    window.location.reload();
   };
 
-  useEffect(() => {
-    publicApi.get('/api/langues/get-is-active')
-    .then((response) => {
-      setLangueActive(response.data);
-      i18n.changeLanguage(response.data.indice);
-    })
-    .catch((error) => console.log("Erreur API", error));
-  }, []);
-  
   useEffect(() => {
     publicApi.get('/api/langues/public')
     .then((response) => {
@@ -121,7 +127,7 @@ const Header = () => {
         >
         <div className="mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-8 ps-5 ml-12">
-            <span>Follow Us : </span>
+            <span>{t("menu.followus")} : </span>
             <a href="#"><i className="bi bi-facebook"></i></a>
             <a href="#"><i className="bi bi-twitter"></i></a>
             <a href="#"><i className="bi bi-linkedin"></i></a>
@@ -140,7 +146,7 @@ const Header = () => {
             className="absolute left-0 top-0 h-full w-6 [clip-path:polygon(0_0,100%_0,0_100%)]"
             ></div>
             <i className="bi bi-telephone-fill mr-2 text-lg"></i>
-            <span className="font-semibold">Call Us: +012 345 6789</span>
+            <span className="font-semibold">{t('menu.callus')}: +012 345 6789</span>
           </div>
         </div>
       </div>

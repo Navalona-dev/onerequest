@@ -12,7 +12,11 @@
       "logout": "Se déconnecter",
       "myRequests": "Mes demandes",
       "appointment": "Prendre un rendez-vous",
-      "testimonial": "Témoignages"
+      "testimonial": "Témoignages",
+      "politique": "Politique de confidentialité",
+      "condition": "Conditions générales",
+      "callus": "Appellez-nous",
+      "followus": "Suivez-nous"
       
     },
     "about": {
@@ -27,6 +31,41 @@
       "demande5": "Autres Types de Demandes",
       "mailus": "Contacter-nous par mail",
       "contactus": "Contacter nous par téléphone"
+    },
+    "tutoriel": {
+      "title": "Apprenez à utiliser l'application étape par étape.",
+      "videoshow": "Voir la vidéo"
+    },
+    "newsletter": {
+      "title": "Abonnez-vous à notre  ",
+      "mail": "Entrez votre email",
+      "subscribe": "S'abonner"
+    },
+    "footer": {
+      "desc": "Pour toute demande d’information, de partenariat ou d’assistance, n'hésitez pas à nous contacter. Notre équipe est à votre écoute.",
+      "desc1": "Tous droits réservés",
+      "desc2": "Conçu par"
+    },
+    "pageblock": {
+      "title1": "Traitement rapide des demandes",
+      "title2": "Suivi personnalisé à chaque étape",
+      "title3": "Équipe à l'écoute et disponible",
+      "title4": "Engagement qualité et fiabilité"
+    },
+    "contact": {
+      "numero": "Numéro téléphone",
+      "mail": "Adresse e-mail",
+      "officiel": "Adresse officielle",
+      "call": "Appellez",
+      "sendmail": "Envoyez mail",
+      "direction": "Direction",
+      "callus": "Contactez-nous",
+      "title": "Vous avez une question, une demande ou besoin d’assistance ?",
+      "desc": "Notre équipe est à votre écoute pour vous apporter une réponse rapide et personnalisée. N’hésitez pas à remplir le formulaire ci-dessous ou à nous écrire directement — nous vous répondrons dans les plus brefs délais.",
+      "form1": "Votre nom",
+      "objet": "objet",
+      "message": "Saisissez ici votre message",
+      "sendmessage": "Envoyez message"
     }
   }
   

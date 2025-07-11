@@ -1,8 +1,12 @@
 import React from "react";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 const PageBlock = () => {
     const {codeCouleur,loading} = useGlobalActiveCodeCouleur();
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
 
     return(
         <div className="w-full py-12 bg-white page-block shadow-md animate-fade-in">
@@ -24,16 +28,16 @@ const PageBlock = () => {
                 {/* Cette div occupe 4 colonnes sur 5 */}
                 <div className="md:col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div className="page-block-card">
-                    <p className="text-gray-700 font-medium">Traitement rapide des demandes</p>
+                    <p className="text-gray-700 font-medium">{t("pageblock.title1")}</p>
                 </div>
                 <div className="page-block-card">
-                    <p className="text-gray-700 font-medium">Suivi personnalisé à chaque étape</p>
+                    <p className="text-gray-700 font-medium">{t("pageblock.title2")}</p>
                 </div>
                 <div className="page-block-card">
-                    <p className="text-gray-700 font-medium">Équipe à l'écoute et disponible</p>
+                    <p className="text-gray-700 font-medium">{t("pageblock.title3")}</p>
                 </div>
                 <div className="page-block-card">
-                    <p className="text-gray-700 font-medium">Engagement qualité et fiabilité</p>
+                    <p className="text-gray-700 font-medium">{t("pageblock.title4")}</p>
                 </div>
                 </div>
 

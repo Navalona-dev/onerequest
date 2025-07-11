@@ -5,6 +5,7 @@ import About2 from '../../assets/images/about-2.png';
 import { useGlobalActiveCodeCouleur } from '../../hooks/UseGlobalActiveCodeCouleur';
 import { publicApi } from '../../service/publicApi';
 import { useTranslation } from "react-i18next";
+import { useLangueActive } from '../../hooks/useLangueActive';
 
 type AboutSection = {
     id: number;
@@ -30,17 +31,9 @@ const AboutSection = () => {
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
     const [abouts, setListeAbout] = useState<AboutSection[]>([]);
 
-    const [langueActive, setLangueActive] = useState<Langue | null>(null);
+    const {langueActive, setLangueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
 
-  useEffect(() => {
-    publicApi.get('/api/langues/get-is-active')
-    .then((response) => {
-      setLangueActive(response.data)
-      i18n.changeLanguage(response.data.indice);
-    })
-    .catch((error) => console.log("Erreur API", error));
-  }, []);
 
     useEffect(() => {
         publicApi.get('/api/about_sections/liste')
@@ -84,28 +77,28 @@ const AboutSection = () => {
 
                 >{t("about.aboutus")}</p>
                 {abouts.map((item, index) => (
-                    <>
-                    <h1 
-                        style={{
-                            color: codeCouleur?.bgColor
-                        }}
-                        className="text-4xl md:text-5xl font-bold"
-                    >
-                    {langueActive?.indice === "fr" ? item.titleFr : langueActive?.indice === "en" ? item.titleEn : ""}
-                    </h1>
-                    <div
-                        className="text-gray-600"
-                        dangerouslySetInnerHTML={{
-                            __html:
-                            langueActive?.indice === "fr"
-                                ? item.descriptionFr
-                                : langueActive?.indice === "en"
-                                ? item.descriptionEn
-                                : "",
-                        }}
-                    />
+                     <div key={item.id}>
+                     <h1 
+                         style={{
+                             color: codeCouleur?.bgColor
+                         }}
+                         className="text-4xl md:text-5xl font-bold"
+                     >
+                     {langueActive?.indice === "fr" ? item.titleFr : langueActive?.indice === "en" ? item.titleEn : ""}
+                     </h1>
+                     <div
+                         className="text-gray-600"
+                         dangerouslySetInnerHTML={{
+                             __html:
+                             langueActive?.indice === "fr"
+                                 ? item.descriptionFr
+                                 : langueActive?.indice === "en"
+                                 ? item.descriptionEn
+                                 : "",
+                         }}
+                     />
+                 </div>
 
-                    </>
                 ))}
                 
 
