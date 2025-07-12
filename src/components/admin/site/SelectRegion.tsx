@@ -6,6 +6,8 @@ import { AxiosError } from "axios";
 import { error } from "console";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type RegionType = {
   id: number;
@@ -48,6 +50,8 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       const { name, value, multiple } = e.target;
@@ -239,7 +243,7 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
                   type="submit"
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
                 >
-                  {save.upperText}
+                  {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
                 </button>
               </div>
             </form>

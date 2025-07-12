@@ -7,11 +7,15 @@ import UpdateCategorieDomaine from "./UpdateCategorieDomaine";
 import { Link } from "react-router-dom";
 import deleteCategorieDomaine from "../../../service/admin/DeleteCategorieDomaine";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type CategoryType = {
     id: number;
     nom: string;
     description: string;
+    nomEn: string;
+    descriptionEn: string;
 }
 const CategorieDomaineComponent = () => {
     const state = store.getState();
@@ -26,6 +30,8 @@ const CategorieDomaineComponent = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const categoriesPerPage = 3;
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         api.get('/api/categorie_domaine_entreprises')
@@ -59,7 +65,7 @@ const CategorieDomaineComponent = () => {
         <>
         <div className="h-[69vh] overflow-y-auto m-4">
             <div className="color-header px-4 flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-3">
-                <h4 className="font-bold text-white text-lg">Liste catégorie domaine entreprise</h4>
+                <h4 className="font-bold text-white text-lg">{t("listecatdomainetitle")}</h4>
 
                 <button
                     onClick={(e) => {
@@ -68,26 +74,25 @@ const CategorieDomaineComponent = () => {
                     }}
                     className="px-5 py-2 text-white rounded w-full md:w-auto"
                 >
-                    {create.upperText}
+                    {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                 </button>
             </div>
 
 
             <div className="card my-6 px-5 mx-12 border border-gray-700 py-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="w-full">
-                     
-                    </div>
-
                     <div className="relative w-full">
                     <input
                       type="text"
-                      placeholder="Nom..."
+                      placeholder={`${t("nom")}...`}
                       value={searchNom}
                       onChange={(e) => setSearchNom(e.target.value)}
                       className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
                                 focus:outline-none focus:ring-0 focus:border-transparent"
                     />
+                    </div>
+                    <div className="w-full">
+                     
                     </div>
 
                   </div>
@@ -101,7 +106,7 @@ const CategorieDomaineComponent = () => {
                                 Actions
                             </th>
                             <th scope="col" className="px-6 py-3 text-white">
-                                Titre
+                                {langueActive?.indice === "fr" ? "Titre" : langueActive?.indice === "en" ? "Title" : ""}
                             </th>
                             <th scope="col" className="px-6 py-3 text-white">
                                 Description
@@ -121,7 +126,7 @@ const CategorieDomaineComponent = () => {
                                                     setSelectedCategorie(item);
                                                     setShowModalUpdate(true);
                                                 }}
-                                                title={edit.upperText}>
+                                                title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
                                                     <i 
                                                         className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
                                                         style={
@@ -137,7 +142,7 @@ const CategorieDomaineComponent = () => {
                                                 e.preventDefault();
                                                 deleteCategorieDomaine(item.id);
                                                }}
-                                                title={deleteAction.upperText}>
+                                                title={langueActive?.indice === "fr" ? deleteAction.fr.upperText: langueActive?.indice === "en" ? deleteAction.en.upperText : ""}>
                                                     <i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                             </a>
                                             <Link to={`/${item.id}/domaine-entreprise`}
@@ -156,17 +161,17 @@ const CategorieDomaineComponent = () => {
                                        
                                     </td>
                                     <td className="px-6 py-4 ">
-                                        {item.nom}
+                                        {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {item.description}
+                                        {langueActive?.indice === "fr" ? item.description : langueActive?.indice === "en" ? item.descriptionEn : ""}
                                     </td>
 
                                 </tr>
                             ))
                         ) : (
                             <tr className="bg-[#1c2d55] text-center">
-                                <td colSpan={3} className="px-6 py-4">Aucun enregistrement trouvé</td>
+                                <td colSpan={3} className="px-6 py-4">{t("nodata")}</td>
                             </tr>
                         )}
                         
@@ -196,7 +201,9 @@ const CategorieDomaineComponent = () => {
                     categorieId={selectedCategorie.id}
                     initialData={{
                         nom: selectedCategorie.nom,
-                        description: selectedCategorie.description
+                        description: selectedCategorie.description,
+                        nomEn: selectedCategorie.nomEn,
+                        descriptionEn: selectedCategorie.descriptionEn
                     }}
                  />
             )}

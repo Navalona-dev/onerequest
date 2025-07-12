@@ -8,6 +8,8 @@ import UserAdminConnected from "../../../hooks/UserAdminConnected";
 import Pagination from "../Pagination";
 import bgImage from '../../../assets/images/bg-site.png';
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type Privilege = {
     id: number;
@@ -121,6 +123,9 @@ const UserComponent = () => {
       
       const currentUsers = dataToPaginate.slice(indexOfFirstUser, indexOfLastUser);
 
+      const {langueActive} = useLangueActive();
+      const { t, i18n } = useTranslation();
+
       useEffect(() => {
         if (currentPage > totalPages) {
           setCurrentPage(1);
@@ -139,7 +144,7 @@ const UserComponent = () => {
                     onClick={() => setShowModal(true)}
                     className="px-5 py-2 text-white rounded"
                     >
-                    {create.upperText}
+                    {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                 </button>
                 ) : null}
                 
@@ -232,7 +237,7 @@ const UserComponent = () => {
                                                         setSelectedUser(item);
                                                         setShowModalUpdate(true);
                                                     }}
-                                                    title={edit.upperText}>
+                                                    title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
                                                     <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
                                                     style={{
                                                         backgroundColor: codeCouleur?.btnColor
@@ -244,7 +249,7 @@ const UserComponent = () => {
                                                         e.preventDefault();
                                                         deleteUser(item.id, setShowModal);
                                                     }}
-                                                    title={deleteAction.upperText}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                    title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
                                             </>
                                         ) : null}

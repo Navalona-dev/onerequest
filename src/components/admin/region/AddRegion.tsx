@@ -5,6 +5,8 @@ import api from "../../../service/Api";
 import { AxiosError } from "axios";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 interface AddRegionProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,7 +27,9 @@ const AddRegion: React.FC<AddRegionProps> = ({ setShowModal }) => {
       const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
       const state = store.getState();
       const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
-  
+      const {langueActive} = useLangueActive();
+      const { t, i18n } = useTranslation();
+
       const listeSite = async () => {
         try {
           const response = await api.get("/api/sites");
@@ -179,7 +183,7 @@ const AddRegion: React.FC<AddRegionProps> = ({ setShowModal }) => {
                   type="submit"
                   className="text-white px-4 py-2 rounded "
                 >
-                  {save.upperText}
+                  {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
                 </button>
               </div>
             </form>

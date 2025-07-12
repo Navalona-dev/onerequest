@@ -4,6 +4,8 @@ import api from "../../../service/Api";
 import { AxiosError } from "axios";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 export interface Privilege {
     id: number;
@@ -37,6 +39,8 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ setShowModalUpdate, userId, ini
         privileges: initialData.privileges.map(p => `/api/privileges/${p.id}`), 
       });
       
+      const {langueActive} = useLangueActive();
+      const { t, i18n } = useTranslation();
 
   const fieldLabels: { [key: string]: string } = {
     nom: "Nom",
@@ -241,7 +245,7 @@ const listePrivilege = async () => {
               type="submit"
               className="text-white px-4 py-2 rounded"
             >
-              {edit.upperText}
+              {langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
             </button>
           </div>
         </form>

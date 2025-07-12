@@ -5,12 +5,17 @@ import { useLayoutContent } from '../../contexts/admin/LayoutContext';
 import Button from "./Button";
 import Pagination from "./Pagination";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
+
 
 const DashboardAccount = () => {
     const { layoutContent } = useLayoutContent();
     const addClass = layoutContent === "vertical" ? "" : "stat-card-content-horizontal";
     const addClassContent = layoutContent === "vertical" ? "" : "dashboard-content-horizontal";
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+    const { t, i18n } = useTranslation();
+    const {langueActive} = useLangueActive();
     
     return(
         <>
@@ -28,12 +33,12 @@ const DashboardAccount = () => {
         )}
             <div className={`${addClassContent}`}>
                 <div className="flex items-center justify-between w-full my-4 header-dashboard pb-3">
-                    <h3 className="font-bold mx-4 text-white">DASHBOARD</h3>
+                    <h3 className="font-bold mx-4 text-white uppercase">{t("sidebar.dashboard")}</h3>
                     <div className="flex gap-2 mr-5">
                         <ul className="flex flex-row font-medium space-x-2 rtl:space-x-reverse text-sm">
-                            <li className="text-gray-300"><a href="#"></a>Dashboard</li>
+                            <li className="text-gray-300"><a href="#"></a>{t('sidebar.dashboard')}</li>
                             <li><i className="bi bi-caret-right-fill text-gray-500"></i></li>
-                            <li className="text-gray-600">Dashboard</li>
+                            <li className="text-gray-600">{t('sidebar.dashboard')}</li>
                         </ul>
                     </div>
                 </div>

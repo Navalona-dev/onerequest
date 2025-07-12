@@ -4,6 +4,9 @@ import api from "../../../service/Api";
 import CodeColor from "../codeCouleur/CodeColor";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
+import { Description } from "@headlessui/react";
 
 interface UpdateCategorieProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
@@ -11,6 +14,8 @@ interface UpdateCategorieProps {
   initialData: {
     nom: string;
     description: string;
+    nomEn: string;
+    descriptionEn: string;
   };
  
 }
@@ -18,16 +23,22 @@ interface UpdateCategorieProps {
 const UpdateCategorieDomaine: React.FC<UpdateCategorieProps> = ({ setShowModalUpdate, categorieId, initialData }) => {
   const [formData, setFormData] = useState({
     nom: initialData.nom,
+    nomEn: initialData.nomEn,
     description: initialData.description,
+    descriptionEn: initialData.descriptionEn
   });
 
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
   const state = store.getState();
   const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
 
   const fieldLabels: { [key: string]: string } = {
-    nom: "Nom",
-    description: "Description",
+    nom: langueActive?.indice === "fr" ? "Titre en français" : langueActive?.indice === "en" ? "Title in french" : "",
+    nomEn: langueActive?.indice === "fr" ? "Titre en anglais" : langueActive?.indice === "en" ? "Title in english" : "",
+    description: langueActive?.indice === "fr" ? "Description en français" : langueActive?.indice === "en" ? "Description in french" : "",
+    descriptionEn: langueActive?.indice === "fr" ? "Description en anglais" : langueActive?.indice === "en" ? "Description in english" : ""
   };
 
   const handleChange = (
@@ -90,40 +101,50 @@ const UpdateCategorieDomaine: React.FC<UpdateCategorieProps> = ({ setShowModalUp
         <h2 className="text-xl font-bold mb-4 text-white">Modifier la catégorie domaine</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-400 mb-1">Nom</label>
-            <input
-              type="text"
-              name="nom"
-              value={formData.nom}
-              onChange={handleChange}
-              className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
-              required
-              autoComplete="off"
-            />
-          </div>
+          {Object.keys(formData).map((field) =>
+              <div key={field}>
+                <label className="block text-gray-400 mb-1">
+                  {fieldLabels[field] || field}
+                  {(field === "prenom") ? (
+                      <sup></sup>
+                ) : (
+                  <sup className="text-red-500">*</sup>
+                  
+                )}
+                </label>
+              {field === "description" || field === "descriptionEn" ? (
+                  <textarea
+                  name={field}
+                  value={formData[field as keyof typeof formData]}
+                  onChange={handleChange}
+                  className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                  required
+                  rows={4}
+                />
+              ) : (
+                  <input
+                      type="text"
+                      name={field}
+                      value={formData[field as keyof typeof formData]}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
+                      autoComplete="off"
+                      required
+                  />
+              )}
+              </div>
+          )}
 
-            <div>
-              <label className="block text-gray-400 mb-1">Description</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
-                required
-                rows={4}
-              />
-            </div>
 
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="text-white px-4 py-2 rounded"
+                className="text-white px-4 py-2 rounded "
               >
-                {edit.upperText}
+                {langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
               </button>
             </div>
-          </form>
+        </form>
 
 
         <button

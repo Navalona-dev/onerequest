@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import api from "../../../service/Api";
 import { store } from "../../../store";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 interface AddCodeCouleurProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
@@ -45,16 +47,18 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
    
   });
 
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
+
   const fieldLabels: { [key: string]: string } = {
-    site: "Site",
-    bgColor: "Couleur de fond",
-    textColor: "Couleur du texte",
-    btnColor: "Couleur du bouton",
-    colorOne: "Couleur 1",
-    colorTwo: "Couleur 2",
-    textColorHover: "Couleur du text en survol",
-    btnColorHover: "Couleur du bouton en survole",
-    libelle: "Libelle"
+    libelle: "Libelle",
+    bgColor: t("bgcolor"),
+    textColor: t("textcolor"),
+    btnColor: t("btncolor"),
+    colorOne: t("colorone"),
+    colorTwo: t("colortwo"),
+    textColorHover: t("textcolorhover"),
+    btnColorHover: t("btncolorhover"),
   };
 
   const [siteListe, setSiteListe] = useState<Site[]>([]);
@@ -122,7 +126,7 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
         borderColor: codeCouleur?.btnColor
       }}
       >
-        <h2 className="text-xl font-bold mb-4 text-white">Modifier le code couleur</h2>
+        <h2 className="text-xl font-bold mb-4 text-white">{t("updatecodecouleurtitle")}</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {Object.keys(formData).map((field) => (
             <div key={field}>
@@ -148,7 +152,7 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
 
           <div className="flex justify-end">
             <button type="submit" className="text-white px-4 py-2 rounded">
-              {edit.upperText}
+              {langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
             </button>
           </div>
         </form>

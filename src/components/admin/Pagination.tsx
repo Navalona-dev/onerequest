@@ -66,9 +66,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
                 <button
                   disabled={currentPage === 1}
                   onClick={() => onPageChange(currentPage - 1)}
-                  className="flex items-center justify-center px-3 h-8 ms-0 border border-e-0 border-red-500 rounded-s-lg hover:bg-[#1c2d55] text-white disabled:opacity-50"
+                  className="flex items-center justify-center px-3 h-8 ms-0 border border-e-0 rounded-s-lg hover:bg-[#1c2d55] text-white disabled:opacity-50"
                   style={{
-                    backgroundColor: "transparent"
+                    backgroundColor: "transparent",
+                    borderColor: codeCouleur?.btnColor
                   }}
                 >
                   <span className="sr-only">Previous</span>
@@ -101,9 +102,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => onPageChange(currentPage + 1)}
-                  className="flex items-center justify-center px-3 h-8 border border-red-500 rounded-e-lg hover:bg-[#1c2d55] text-white disabled:opacity-50"
+                  className="flex items-center justify-center px-3 h-8 border rounded-e-lg hover:bg-[#1c2d55] text-white disabled:opacity-50"
                   style={{
-                    backgroundColor: "transparent"
+                    backgroundColor: "transparent",
+                    borderColor: codeCouleur?.btnColor
                   }}
                 >
                   <span className="sr-only">Next</span>

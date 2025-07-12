@@ -16,7 +16,8 @@
       "politique": "Politique de confidentialité",
       "condition": "Conditions générales",
       "callus": "Appellez-nous",
-      "followus": "Suivez-nous"
+      "followus": "Suivez-nous",
+      "demande": "Demande"
       
     },
     "about": {
@@ -66,6 +67,91 @@
       "objet": "objet",
       "message": "Saisissez ici votre message",
       "sendmessage": "Envoyez message"
-    }
+    },
+    "login": {
+      "password": "Mot de passe",
+      "mailtext": "Entrez votre adresse e-mail",
+      "pwdtext": "Entrez votre mot de passe",
+      "mail": "Adresse e-mail",
+      "btn": "Se connecter",
+      "title": "Connexion"
+    },
+    "register": {
+      "nom": "Nom",
+      "prenom": "Prénom",
+      "mail": "Adresse e-mail",
+      "password": "Mot de passe",
+      "pwdConfirm": "Confirmation mot de passe",
+      "phone": "Numéro de téléphone",
+      "adresse": "Adresse",
+      "accountexist": "Vous avez déjà un compte",
+      "login": "se connecter",
+      "btn": "S'inscrire",
+      "title": "Inscrivez-vous"
+    },
+    "demande": {
+      "objet": "Objet",
+      "contenu": "Contenu",
+      "demandeur": "Demandeur",
+      "type": "Type de demande",
+      "site": "Site",
+      "fichier": "Fichier",
+      "title": "Soumettre une demande",
+      "title1": "Envoyez ",
+      "title2": "votre demande",
+      "title3": "maintenant",
+      "selectsite": "Selectionner un site",
+      "nonsite": "Aucun site trouvé",
+      "selecttype": "Selectionner un type de demande",
+      "nontype": "Aucun type de demande trouvé",
+      "dossiertitle": "Voici la liste de dossiers à fournir",
+      "dossierdesc": "Tous ces dossiers doivent être dans un seul fichier PDF. En suivant son ordre chronologique",
+      "updatetitle": "Modifier une demande",
+      "title4": "Mettre à jour ",
+      "fichiernow": "Fichier actuel",
+      "download": "Télécharger",
+      "btnupdate": "Modifier demande"
+    },
+    "sidebar": {
+      "dashboard": "Tableau de bord",
+      "demande": "Demande",
+      "codecouleur": "Code couleur",
+      "catentreprise": "Catégorie entreprise",
+      "user": "Utilisateur",
+      "liste": "Liste",
+      "type": "Type",
+      "refuse": "Réfusée",
+      "annule": "Annulée",
+      "enattente": "En attente",
+      "valide": "Validée",
+      "accepte": "Acceptée"
+    },
+    "header": {
+      "search": "Recherche"
+    },
+    "nodata": "Aucun enregistrement trouvé",
+    "listecatdomainetitle": "Liste catégorie domaine entreprise",
+    "nom": "Nom",
+    "domaine": "Domaine",
+    "listetypedemande": "Liste type de demande",
+    "demandeur": "Demandeur",
+    "typedemande": "Type de demande",
+    "fichier": "Fichier",
+    "objet": "Objet",
+    "contenu": "Contenu",
+    "listedemande": "Liste de demande",
+    "selectstatut": "Sélectionner un statut",
+    "addcategorie": "Créer une nouvelle catégorie",
+    "titre" : "Titre",
+    "addcodecouleur": "Créer un nouveau code couleur",
+    "bgcolor": "Couleur de fond",
+    "textcolor" : "Couleur du texte",
+    "textcolorhover": "Couleur du text en survol",
+    "btncolor": "Couleur du bouton",
+    "btncolorhover": "Couleur du bouton en survole",
+    "colorone": "Couleur 1",
+    "colortwo": "Couleur 2",
+    "updatecodecouleurtitle": "Modifier le code couleur",
+    "btnlisteregion": "Liste région"
   }
   

@@ -3,6 +3,9 @@ import Swal from "sweetalert2";
 
 import api from "../../../service/Api";
 import { AxiosError } from "axios";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
+import { store } from "../../../store";
 
 interface AddTypeDemandeProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,6 +17,11 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
         nom: "",
         description: "",
     });
+
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
+    const state = store.getState();
+    const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
 
     const fieldLabels: { [key: string]: string } = {
         domaine: "Domaine d'entreprise",
@@ -172,7 +180,7 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
                   type="submit"
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
                 >
-                  Enregistrer
+                  {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
                 </button>
               </div>
             </form>

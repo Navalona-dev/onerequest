@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import { store } from "../../../store";
 import api from "../../../service/Api";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 interface AddCodeCouleurProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,18 +15,25 @@ const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
         libelle: "",
         bgColor: "",
         textColor: "",
+        textColorHover: "",
         btnColor: "",
+        btnColorHover: "",
         colorOne: "",
         colorTwo: "",
     });
 
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
+
     const fieldLabels: { [key: string]: string } = {
         libelle: "Libelle",
-        bgColor: "Couleur de fond",
-        textColor: "Couleur du texte",
-        btnColor: "Couleur du bouton",
-        colorOne: "Couleur 1",
-        colorTwo: "Couleur 2",
+        bgColor: t("bgcolor"),
+        textColor: t("textcolor"),
+        btnColor: t("btncolor"),
+        colorOne: t("colorone"),
+        colorTwo: t("colortwo"),
+        textColorHover: t("textcolorhover"),
+        btnColorHover: t("btncolorhover"),
       };
 
     const [siteListe, setSiteListe] = useState<{ id: number; nom?: string; libelle?: string }[]>([]);
@@ -99,7 +108,7 @@ const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
             borderColor: codeCouleur?.btnColor
           }}
           >
-            <h2 className="text-xl font-bold mb-4 text-white">Créer un nouveau code couleur</h2>
+            <h2 className="text-xl font-bold mb-4 text-white">{t("addcodecouleur")}</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
             {Object.keys(formData).map((field) => (
@@ -132,7 +141,7 @@ const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
                   type="submit"
                   className="text-white px-4 py-2 rounded"
                 >
-                  {save.upperText}
+                  {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
                 </button>
               </div>
             </form>

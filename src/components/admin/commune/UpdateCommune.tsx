@@ -3,7 +3,8 @@ import Swal from "sweetalert2";
 import api from "../../../service/Api";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
-import CodeColor from "../codeCouleur/CodeColor";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 interface UpdateCommuneProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,6 +21,9 @@ const UpdateCommune: React.FC<UpdateCommuneProps> = ({ setShowModalUpdate, commu
     nom: initialData.nom,
     district: initialData.district,
   });
+
+  const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
 
   const fieldLabels: { [key: string]: string } = {
     nom: "Nom",
@@ -118,7 +122,7 @@ const UpdateCommune: React.FC<UpdateCommuneProps> = ({ setShowModalUpdate, commu
                 type="submit"
                 className="text-white px-4 py-2 rounded"
               >
-                {edit.upperText}
+                {langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
               </button>
             </div>
           </form>

@@ -24,7 +24,7 @@ const Header = () => {
   const [hover, setHover] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
 
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
@@ -32,7 +32,7 @@ const Header = () => {
   const token = sessionStorage.getItem("jwt");
   const email = sessionStorage.getItem("email");
   const [langues, setListeLangue] = useState<Langue[]>([]);
-  const {langueActive, setLangueActive} = useLangueActive()
+  const {langueActive, setLangueActive} = useLangueActive();
   const { t, i18n } = useTranslation();
 
   const getLangLabel = (lang: Langue): string => {
@@ -42,8 +42,10 @@ const Header = () => {
   };
   
 
-  // Toggle dropdown mobile
-  const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
+  const toggleDropdown = (menu: string) => {
+    setDropdownOpen(prev => prev === menu ? null : menu);
+  };
+  
 
   const handleMenuClick = (menu: string) => {
     localStorage.setItem("activeMenu", menu); // sauvegarde
@@ -216,10 +218,9 @@ const Header = () => {
 
             <div className="relative group block py-2 px-4">
               <button
-                onClick={() => setDropdownOpen(!isDropdownOpen)} // toggle au clic
+                onClick={() => toggleDropdown("page")}
                 className="flex items-center hover:text-red-500 lg:cursor-default"
                 type="button"
-                aria-expanded={isDropdownOpen}
                 onMouseEnter={() => setHovered("page")}
                onMouseLeave={() => setHovered(null)}
                 style={{
@@ -238,7 +239,7 @@ const Header = () => {
               <div
                 className={`
                   absolute bg-white shadow-md rounded z-10
-                  ${isDropdownOpen ? "block w-[30vh]" : "hidden w-[35vh]"}  
+                  ${dropdownOpen === "page" ? "block w-[35vh]" : "hidden w-[35vh]"}  
                   group-hover:block
                 `}
               >
@@ -266,10 +267,9 @@ const Header = () => {
 
             <div className="relative group block py-2 px-4">
               <button
-                onClick={() => setDropdownOpen(!isDropdownOpen)} // toggle au clic
+                onClick={() => toggleDropdown("account")}
                 className="flex items-center hover:text-red-500 lg:cursor-default"
                 type="button"
-                aria-expanded={isDropdownOpen}
                 onMouseEnter={() => setHovered("account")}
                onMouseLeave={() => setHovered(null)}
                 style={{
@@ -288,7 +288,7 @@ const Header = () => {
               <div
                 className={`
                   absolute bg-white shadow-md rounded z-10
-                  ${isDropdownOpen ? "block w-[30vh]" : "hidden w-[35vh]"}  
+                  ${dropdownOpen === "account" ? "block w-[35vh]" : "hidden w-[35vh]"}  
                   group-hover:block
                 `}
               >
@@ -315,10 +315,9 @@ const Header = () => {
 
             <div className="relative group block py-2 px-4">
               <button
-                onClick={() => setDropdownOpen(!isDropdownOpen)} // toggle au clic
+                onClick={() => toggleDropdown("autre")}
                 className="flex items-center lg:cursor-default"
                 type="button"
-                aria-expanded={isDropdownOpen}
                 onMouseEnter={() => setHovered("autre")}
                onMouseLeave={() => setHovered(null)}
                 style={{
@@ -337,7 +336,7 @@ const Header = () => {
               <div
                 className={`
                   absolute bg-white shadow-md rounded z-10
-                  ${isDropdownOpen ? "block w-[30vh]" : "hidden w-[35vh]"}  
+                  ${dropdownOpen === "autre" ? "block w-[35vh]" : "hidden w-[35vh]"}  
                   group-hover:block
                 `}
               >
@@ -354,10 +353,9 @@ const Header = () => {
 
             <div className="relative group block py-2 px-4">
               <button
-                onClick={() => setDropdownOpen(!isDropdownOpen)} // toggle au clic
+                onClick={() => toggleDropdown("langue")}
                 className="flex items-center lg:cursor-default"
                 type="button"
-                aria-expanded={isDropdownOpen}
                 onMouseEnter={() => setHovered("langue")}
                onMouseLeave={() => setHovered(null)}
                 style={{
@@ -376,7 +374,7 @@ const Header = () => {
               <div
                 className={`
                   absolute bg-white shadow-md rounded z-10
-                  ${isDropdownOpen ? "block w-[30vh]" : "hidden w-[35vh]"}  
+                  ${dropdownOpen === "langue" ? "block w-[35vh]" : "hidden w-[35vh]"}  
                   group-hover:block
                 `}
               >

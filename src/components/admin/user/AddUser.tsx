@@ -4,6 +4,8 @@ import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCo
 import { store } from "../../../store";
 import api from "../../../service/Api";
 import { AxiosError } from "axios";
+import { useTranslation } from "react-i18next";
+import { useLangueActive } from "../../../hooks/useLangueActive";
 
 interface AddUserProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,6 +27,9 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
         email: "Adresse e-mail",
         privileges: "Privilèges"
       };
+
+      const {langueActive} = useLangueActive();
+      const { t, i18n } = useTranslation();
 
       const [siteListe, setSiteListe] = useState<{ id: number; nom?: string; libelle?: string }[]>([]);
       const [privilegeListe, setPrivilegeListe] = useState<{ id: number; title?: string; description?: string }[]>([]);
@@ -221,7 +226,7 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                   type="submit"
                   className="text-white px-4 py-2 rounded"
                 >
-                  {save.upperText}
+                  {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
                 </button>
               </div>
             </form>

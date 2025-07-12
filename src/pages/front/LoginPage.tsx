@@ -3,12 +3,16 @@ import api from "../../service/Api";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 
 import { useNavigate } from "react-router-dom";
+import { useLangueActive } from "../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 const LoginPageFront = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const { codeCouleur, loading } = useGlobalActiveCodeCouleur();
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
 
   const navigate = useNavigate();
 
@@ -114,21 +118,21 @@ const LoginPageFront = () => {
 
       <div className="login-container">
         <form className="login-form" onSubmit={handleSubmit}>
-          <h2 className="text-xl"> <strong>Connexion</strong></h2>
+          <h2 className="text-xl"> <strong>{t("login.title")}</strong></h2>
 
-          <label>Email :</label>
+          <label>{t("login.mail")} :</label>
           <input
             type="email"
-            placeholder="Entrez votre email"
+            placeholder={t("login.mailtext")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          <label>Mot de passe :</label>
+          <label>{t("login.password")} :</label>
           <input
             type="password"
-            placeholder="Entrez votre mot de passe"
+            placeholder={t("login.pwdtext")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -136,7 +140,7 @@ const LoginPageFront = () => {
 
           {error && <div className="error">{error}</div>}
 
-          <button type="submit">Se connecter</button>
+          <button type="submit">{t("login.btn")}</button>
         </form>
       </div>
     </>

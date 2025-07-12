@@ -2,7 +2,8 @@ import React, {useState, useEffect} from "react";
 import api from "../../../service/Api";
 import Pagination from "../Pagination";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
-
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type Site = {
     id: number;
@@ -20,6 +21,7 @@ type Demandeur = {
 type TypeDemande = {
     id: number;
     nom: string;
+    nomEn: string;
 }
 
 type Demande = {
@@ -27,6 +29,7 @@ type Demande = {
     objet: string;
     contenu: string;
     statut: string;
+    statutEn: string;
     type: TypeDemande | null;
     demandeur: Demandeur | null;
     fichier: string;
@@ -35,7 +38,6 @@ type Demande = {
 const DemandeComponent = () => {
     const [demandes, setListeDemande] = useState<Demande[]>([]);
     const [currentSite, setCurrentSite] = useState<Site | null>(null);
-    const [statuts, setStatuts] = useState<{ [key: number]: string }>({});
 
     const [currentPage, setCurrentPage] = useState(1);
     const demandesPerPage = 5;
@@ -44,6 +46,12 @@ const DemandeComponent = () => {
     const [searchDemandeur, setSearchDemandeur] = useState("");
     const [searchTypeDemande, setSearchTypeDemande] = useState("");
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
+    const [statuts, setStatuts] = useState<{ statut: { [key: number]: string }; statutEn: { [key: number]: string } }>({
+        statut: {},
+        statutEn: {}
+    });    
 
     useEffect(() => {
         api.get('/api/demandes/statut')
@@ -103,12 +111,11 @@ const DemandeComponent = () => {
         }
       }, [currentPage, totalPages]);
 
-
     return(
         <>
             <div className="h-[69vh] overflow-y-auto mt-5">
                 <div className="color-header px-4 flex justify-between items-center mb-3">
-                    <h4 className="font-bold text-white">Liste de demande</h4>
+                    <h4 className="font-bold text-white">{t("listedemande")}</h4>
                 </div>
 
                 <div className="card my-6 px-5 mx-10 border border-gray-700 py-5">
@@ -121,19 +128,24 @@ const DemandeComponent = () => {
                                         focus:outline-none focus:ring-0 focus:border-transparent"
                             >
                             <option value="" disabled>
-                                Sélectionner un statut
+                                {t("selectstatut")}
                             </option>
-                            {Object.entries(statuts).map(([key, label]) => (
+                            {Object.entries(
+                                langueActive?.indice === "fr" ? statuts.statut || {} 
+                                : langueActive?.indice === "en" ? statuts.statutEn || {} 
+                                : {}
+                            ).map(([key, label]) => (
                                 <option key={key} value={label}>
-                                     {label}
+                                    {label}
                                 </option>
                             ))}
+
                         </select>
 
                         </div>
                         <div className="w-full">
                             <input type="text" name="" id="" 
-                            placeholder="Demandeur..."
+                            placeholder={`${t("demandeur")}...`}
                             value={searchDemandeur}
                             onChange={(e) => setSearchDemandeur(e.target.value)}
                             className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
@@ -142,7 +154,7 @@ const DemandeComponent = () => {
                         </div>
                         <div className="w-full">
                             <input type="text" name="" id="" 
-                            placeholder="Type de demande..."
+                            placeholder={`${t("typedemande")}...`}
                             value={searchTypeDemande}
                             onChange={(e) => setSearchTypeDemande(e.target.value)}
                             className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
@@ -157,27 +169,27 @@ const DemandeComponent = () => {
                     <div className="w-[38vh] md:w-full sm:w-[38vh] h-[55vh] overflow-auto">
                         <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
-                                <tr className="text-nowrap border-b-2 border-gray-700 ...">
+                                <tr className="text-nowrap border-b-2 border-gray-700 text-center ...">
                                     <th scope="col" className="px-6 py-3 text-white">
                                         Actions
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        Demandeur
+                                        {t("demandeur")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        Type de demande
+                                        {t("typedemande")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
                                         Statut
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        Fichier
+                                        {t("fichier")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        Objet
+                                        {t("objet")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        Contenu
+                                        {t("contenu")}
                                     </th>
                                     
                                 </tr>
@@ -199,10 +211,10 @@ const DemandeComponent = () => {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                {item.type?.nom}
+                                                {langueActive?.indice === "fr" ? item.type?.nom : langueActive?.indice === "en" ? item.type?.nomEn : ""}
                                             </td>
                                             <td className="px-6 py-4 text-nowrap">
-                                                {item.statut}
+                                                {langueActive?.indice === "fr" ? item.statut : langueActive?.indice === "en" ? item.statutEn : ""}
                                             </td>
                                             <td className="px-6 py-4 text-center">
                                                 <a 

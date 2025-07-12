@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 import { error } from "console";
 import SelectCommune from "./SelectCommune";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type RegionType = {
   id: number;
@@ -57,6 +59,9 @@ const SiteComponent = () => {
   const [searchByRegion, setSearchByRegion] = useState(false);
   const [searchNom, setSearchNom] = useState("");
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     if (searchByRegion && selectedRegion) {
@@ -122,7 +127,7 @@ const SiteComponent = () => {
                     onClick={() => setShowModal(true)}
                     className="px-5 py-1.5 text-white rounded mr-3"
                   >
-                    {create.upperText}
+                    {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                   </button>
                   <Link to={'/region'}
                     className="px-5 py-2 text-white rounded btn-list"
@@ -217,7 +222,7 @@ const SiteComponent = () => {
                               setShowModal
                             )
                           }}
-                          className={`${item.isActive ? '' : 'hidden'}`} title={deactivate.upperText}>
+                          className={`${item.isActive ? '' : 'hidden'}`} title={langueActive?.indice === "fr" ? deactivate.fr.upperText : langueActive?.indice === "en" ? deactivate.en.upperText : ""}>
                             <i className="bi bi-check-circle-fill bg-green-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
                           </a>
                           <a href="#" 
@@ -229,7 +234,7 @@ const SiteComponent = () => {
                               setShowModal
                             )
                           }}
-                          className={`${!item.isActive ? '' : 'hidden'}`} title={activate.upperText}>
+                          className={`${!item.isActive ? '' : 'hidden'}`} title={langueActive?.indice === "fr" ? activate.fr.upperText : langueActive?.indice === "en" ? activate.en.upperText : ""}>
                             <i className="bi bi-x-circle-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
                           </a>
                           <a
@@ -239,7 +244,7 @@ const SiteComponent = () => {
                               setSelectedSite(item);
                               setShowModalUpdate(true);
                             }}
-                            title={edit.upperText}
+                            title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
                           >
                             <i className="bi bi-pencil-square px-1.5 py-1 text-white rounded-3xl mr-3"
                             style={{
@@ -252,7 +257,7 @@ const SiteComponent = () => {
                             e.preventDefault();
                             deleteSite(item.id, setShowModal);
                           }}
-                          title={deleteAction.upperText}>
+                          title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}>
                             <i className="bi bi-trash-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
                           </a>
                           
@@ -269,7 +274,7 @@ const SiteComponent = () => {
                                 setSelectedSite(item)
                                 setShowModalSelectRegion(true);
                               }}
-                              title={addRegion.upperText}
+                              title={langueActive?.indice === "fr" ? addRegion.fr.upperText : langueActive?.indice === "en" ? addRegion.en.upperText : ""}
                               >
                                 <i className="bi bi-plus-circle-fill text-blue-500"></i>
                               </a>

@@ -8,6 +8,8 @@ import Pagination from "../Pagination";
 import UpdateRegion from "./UpdateRegion";
 import deleteRegion from "../../../service/admin/DeleteRegion";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type SiteType = {
   id: number;
@@ -33,6 +35,8 @@ const RegionComponent = () => {
   const regionsPerPage = 5;
 
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     api.get("/api/regions")
@@ -58,7 +62,7 @@ const RegionComponent = () => {
                     onClick={() => setShowModal(true)}
                     className="px-5 py-1.5 text-white rounded mr-3"
                   >
-                    {create.upperText}
+                    {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                   </button>
                   <Link to={'/site'}
                     className="btn-list px-5 py-2 text-white rounded">
@@ -88,7 +92,7 @@ const RegionComponent = () => {
                               setSelectedRegion(item);
                               setShowModalUpdate(true);
                             }}
-                            title={edit.upperText}
+                            title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
                           >
                             <i className="bi bi-pencil-square px-1.5 py-1 text-white rounded-3xl mr-3"
                             style={{
@@ -97,7 +101,7 @@ const RegionComponent = () => {
                             ></i>
                           </a>
                           <a href="#"
-                          title={deleteAction.upperText}
+                          title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}
                           onClick={(e) => {
                             e.preventDefault();
                             deleteRegion(item.id , setShowModal);

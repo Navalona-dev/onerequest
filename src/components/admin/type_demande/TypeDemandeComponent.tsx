@@ -5,10 +5,13 @@ import Pagination from "../Pagination";
 import AddTypeDemande from "./AddTypeDemande";
 import UpdateTypeDemande from "./UpdateTypeDemande";
 import deleteTypeDemande from "../../../service/admin/DeleteTypeDemande";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type Domaine = {
     id: number;
     libelle: string;
+    libelleEn: string;
 }
 
 type TypeDemande = {
@@ -17,6 +20,8 @@ type TypeDemande = {
     domaine: Domaine;
     description: string;
     isActive: boolean;
+    nomEn: string;
+    descriptionEn: string;
 }
 
 const TypeDemandeComponent = () => {
@@ -41,7 +46,7 @@ const TypeDemandeComponent = () => {
 
     const filteredTypes = typeDemandes.filter(type => {
         const nomMatch = !searchNom || type.nom.toLowerCase().includes(searchNom.toLowerCase());
-        const domaineMatch = !searchDomaine || type.domaine.libelle.toLowerCase().includes(searchDomaine.toLowerCase());
+        const domaineMatch = !searchDomaine || type.domaine.libelle.toLowerCase() || type.domaine.libelleEn.toLowerCase().includes(searchDomaine.toLowerCase());
     
         return nomMatch && domaineMatch;
     });
@@ -56,6 +61,9 @@ const TypeDemandeComponent = () => {
       const currentTypeDemandes = dataToPaginate.slice(indexOfFirstType, indexOfLastType);
       const [selectedType, setSelectedType] = useState<TypeDemande | null>(null);
 
+      const {langueActive} = useLangueActive();
+      const { t, i18n } = useTranslation();
+
       useEffect(() => {
         if (currentPage > totalPages) {
           setCurrentPage(1);
@@ -67,7 +75,7 @@ const TypeDemandeComponent = () => {
         <>
              <div className="h-[69vh] overflow-y-auto overflow-x-auto px-3 py-4">
                 <div className="color-header px-4 flex justify-between items-center mb-3">
-                    <h4 className="font-bold text-white">Liste type de demande</h4>
+                    <h4 className="font-bold text-white">{t("listetypedemande")}</h4>
                     <button
                     onClick={(e) => {
                         e.preventDefault();
@@ -75,7 +83,7 @@ const TypeDemandeComponent = () => {
                     }}
                         className="bg-red-500 px-5 py-2 text-white rounded"
                         >
-                        {create.upperText}
+                        {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                     </button>
                     
                 </div>
@@ -83,7 +91,7 @@ const TypeDemandeComponent = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="w-full">
                         <input type="text" name="" id="" 
-                        placeholder="Nom..."
+                        placeholder={`${t("nom")}...`}
                         value={searchNom}
                         onChange={(e) => setSearchNom(e.target.value)}
                         className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
@@ -92,7 +100,7 @@ const TypeDemandeComponent = () => {
                     </div>
                     <div className="w-full">
                         <input type="text" name="" id="" 
-                        placeholder="Domaine..."
+                        placeholder={`${t("domaine")}...`}
                         value={searchDomaine}
                         onChange={(e) => setSearchDomaine(e.target.value)}
                         className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
@@ -109,10 +117,10 @@ const TypeDemandeComponent = () => {
                                     Actions
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
-                                    Nom
+                                    {t("nom")}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
-                                    Domaine
+                                    {t("domaine")}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
                                     Description
@@ -132,33 +140,33 @@ const TypeDemandeComponent = () => {
                                                     setSelectedType(item);
                                                     setShowModalUpdate(true);
                                                 }}
-                                                    title={edit.upperText}><i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                    title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}><i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
                                                 <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
                                                         deleteTypeDemande(item.id);
                                                     }}
-                                                    title={deleteAction.upperText}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                    title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
                                             </>
                                         
                                         </th>
                                         <td className="px-6 py-4">
-                                            {item.nom} 
+                                            {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""} 
                                         </td>
                                         <td className="px-6 py-4">
-                                            {item.domaine.libelle} 
+                                            {langueActive?.indice === "fr" ? item.domaine.libelle : langueActive?.indice === "en" ? item.domaine.libelleEn : ""} 
                                         </td>
                                         <td className="px-6 py-4">
-                                            {item.description}
+                                            {langueActive?.indice === "fr" ? item.description : langueActive?.indice === "en" ? item.descriptionEn : ""}
                                         </td>
 
                                     </tr>
                                 ))
                             ) : (
                                 <tr className="bg-[#1c2d55] text-center">
-                                    <td colSpan={4} className="px-6 py-4">Aucun enregistrement trouvé</td>
+                                    <td colSpan={4} className="px-6 py-4">{t("nodata")}</td>
                                 </tr>
                             )}
                             

@@ -8,6 +8,8 @@ import AddCommune from "./AddCommune";
 import UpdateCommune from "./UpdateCommune";
 import deleteCommune from "../../../service/admin/DeleteCommune";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type CommuneType = {
     id: number;
@@ -30,6 +32,8 @@ const CommuneComponent = () => {
     const [region, setRegion] = useState<RegionType | null>(null);
     const [selectedCommune, setSelectedCommune] = useState<CommuneType | null>(null);
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         api.get(`/api/regions/${idRegion}`)
@@ -71,7 +75,7 @@ const CommuneComponent = () => {
                             setShowModalAdd(true);
                         }}
                     >
-                        {create.upperText}
+                        {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                     </button>
 
                     <Link
@@ -112,7 +116,7 @@ const CommuneComponent = () => {
                                 setSelectedCommune(item);
                                 setShowModalUpdate(true);
                             }}
-                            title={edit.upperText}
+                            title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
                           >
                             <i className="bi bi-pencil-square px-1.5 py-1 text-white rounded-3xl mr-3"
                             style={{
@@ -121,7 +125,7 @@ const CommuneComponent = () => {
                             ></i>
                           </a>
                           <a href="#"
-                          title={deleteAction.upperText}
+                          title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}
                           onClick={(e) => {
                             e.preventDefault();
                             deleteCommune(item.id, setShowModalAdd);

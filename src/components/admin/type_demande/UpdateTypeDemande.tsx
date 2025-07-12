@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import api from "../../../service/Api";
 import { AxiosError } from "axios";
-
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
+import { store } from "../../../store";
   
   export interface Domaine {
     id: number;
@@ -26,6 +28,10 @@ const UpdateTypeDemande: React.FC<UpdateTypeProps> = ({ setShowModalUpdate, type
         description: initialData.description,
       });
       
+      const {langueActive} = useLangueActive();
+      const { t, i18n } = useTranslation();
+      const state = store.getState();
+      const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
 
   const fieldLabels: { [key: string]: string } = {
     nom: "Titre",
@@ -184,7 +190,7 @@ const handleChange = (
               type="submit"
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
             >
-              Modifier
+              {langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
             </button>
           </div>
         </form>

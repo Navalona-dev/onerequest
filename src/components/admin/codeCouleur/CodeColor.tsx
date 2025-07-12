@@ -12,6 +12,8 @@ import api from "../../../service/Api";
 import { store } from "../../../store";
 import Pagination from "../Pagination";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type Site = {
   id: number;
@@ -57,7 +59,8 @@ type CodeCouleurType = {
 const CodeColor = () => {
   const [siteCount, setSiteCount] = useState(0);
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
-
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
   const user = UserAdminConnected() as UserType | null;
 
   const countSite = async () => {
@@ -131,7 +134,7 @@ const CodeColor = () => {
                     onClick={() => setShowModal(true)}
                     className="px-5 py-2 text-white rounded"
                   >
-                    {create.upperText}
+                    {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                   </button>
                 
               </div>
@@ -166,7 +169,7 @@ const CodeColor = () => {
                           setShowModal
                         )
                       }}
-                      className={`${item.isActive ? '' : 'hidden'}`} title={deactivate.upperText}>
+                      className={`${item.isActive ? '' : 'hidden'}`} title={langueActive?.indice === "fr" ? deactivate.fr.upperText : langueActive?.indice === "en" ? deactivate.en.upperText : ""}>
                         <i className="bi bi-check-circle-fill bg-green-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                       </a>
                       <a href="#" 
@@ -178,7 +181,7 @@ const CodeColor = () => {
                           setShowModal
                         )
                       }}
-                      className={`${!item.isActive ? '' : 'hidden'}`} title={activate.upperText}>
+                      className={`${!item.isActive ? '' : 'hidden'}`} title={langueActive?.indice === "fr" ? activate.fr.upperText : langueActive?.indice === "en" ? activate.en.upperText : ""}>
                         <i className="bi bi-x-circle-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                       </a>
                       <a
@@ -187,7 +190,7 @@ const CodeColor = () => {
                           e.preventDefault();
                           deleteCodeCouleur(item.id , setShowModal);
                         }}
-                        title={deleteAction.upperText}
+                        title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}
                       >
                         <i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                       </a>
@@ -198,7 +201,7 @@ const CodeColor = () => {
                         setSelectedCodeCouleur(item);
                         setShowModalUpdate(true);
                       }}
-                      title={edit.upperText}>
+                      title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
                         <i 
                         className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl"
                         style={{

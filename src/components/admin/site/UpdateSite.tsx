@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import api from "../../../service/Api";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 interface UpdateSiteProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,6 +30,9 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
     nom: "Nom",
     description: "Description",
   };
+
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -120,7 +125,7 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
                 type="submit"
                 className="text-white px-4 py-2 rounded"
               >
-                {edit.upperText}
+                {langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
               </button>
             </div>
           </form>

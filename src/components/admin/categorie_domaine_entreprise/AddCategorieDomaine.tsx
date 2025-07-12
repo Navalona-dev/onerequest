@@ -4,6 +4,8 @@ import api from "../../../service/Api";
 import Swal from "sweetalert2";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 interface AddCategorieDomaineProps {
     setShowModalAdd: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,12 +14,19 @@ interface AddCategorieDomaineProps {
   const AddCategorieDomaine: React.FC<AddCategorieDomaineProps> = ({ setShowModalAdd }) => {
       const [formData, setFormData] = useState({
           nom: "",
+          nomEn: "",
           description: "",
+          descriptionEn: ""
       });
 
+      const {langueActive} = useLangueActive();
+      const { t, i18n } = useTranslation();
+
       const fieldLabels: { [key: string]: string } = {
-        nom: "Titre",
-        description: "Description",
+        nom: langueActive?.indice === "fr" ? "Titre en français" : langueActive?.indice === "en" ? "Title in french" : "",
+        nomEn: langueActive?.indice === "fr" ? "Titre en anglais" : langueActive?.indice === "en" ? "Title in english" : "",
+        description: langueActive?.indice === "fr" ? "Description en français" : langueActive?.indice === "en" ? "Description in french" : "",
+        descriptionEn: langueActive?.indice === "fr" ? "Description en anglais" : langueActive?.indice === "en" ? "Description in english" : ""
       };
 
       const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
@@ -107,7 +116,7 @@ interface AddCategorieDomaineProps {
                 }}
               >
                 
-                <h2 className="text-xl font-bold mb-4 text-white">Créer une nouvelle catégorie</h2>
+                <h2 className="text-xl font-bold mb-4 text-white">{t("addcategorie")}</h2>
         
                 <form onSubmit={handleSubmit} className="space-y-4">
                 {Object.keys(formData).map((field) =>
@@ -121,7 +130,7 @@ interface AddCategorieDomaineProps {
                         
                       )}
                       </label>
-                    {field === "description" ? (
+                    {field === "description" || field === "descriptionEn" ? (
                         <textarea
                         name={field}
                         value={formData[field as keyof typeof formData]}
@@ -138,7 +147,7 @@ interface AddCategorieDomaineProps {
                             onChange={handleChange}
                             className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                             autoComplete="off"
-                            required={field === "nom" || field === "email"}
+                            required
                         />
                     )}
                     </div>
@@ -150,7 +159,7 @@ interface AddCategorieDomaineProps {
                       type="submit"
                       className="text-white px-4 py-2 rounded "
                     >
-                      {save.upperText}
+                      {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
                     </button>
                   </div>
                 </form>

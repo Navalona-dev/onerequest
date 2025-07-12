@@ -16,7 +16,8 @@ import { useLayoutContent } from "../../contexts/admin/LayoutContext";
 import UserAdminConnected from "../../hooks/UserAdminConnected";
 import api from "../../service/Api";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
-
+import { useLangueActive } from "../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type SidebarProps = {
   onCloseMobileSidebar: () => void;
@@ -70,6 +71,8 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
   const { currentModule, setCurrentModule } = useModule();
   const { isSidebarCollapsed } = useLayoutContent();
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+  const { t, i18n } = useTranslation();
+  const {langueActive} = useLangueActive();
 
   const handleMenuClick = (menu: string) => {
     setActiveMenu(menu);
@@ -168,7 +171,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <span className="icon-sidebar">
               <i className="bi bi-house-fill"></i>
               </span>
-              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Dashboards</span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.dashboard")}</span>
             </li>
 
             <li
@@ -192,7 +195,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <span className="icon-sidebar">
               <i className="bi bi-tags-fill"></i>
               </span>
-              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Categorie entreprise</span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.catentreprise")}</span>
             </li>
 
             {/* Dropdown */}
@@ -218,7 +221,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
                   <span className="icon-sidebar">
                   <i className="bi bi-lock-fill"></i>
                   </span>
-                  <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Demande</span>
+                  <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.demande")}</span>
                 </div>
                 {!isSidebarCollapsed && (
                   demandeOpen ? <i className="bi bi-chevron-up text-xs"></i> : <i className="bi bi-chevron-down text-xs"></i>
@@ -257,12 +260,12 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
                       setDemandeOpen(true);
                     }}
                   >
-                    <i className="mr-2 text-xs bi bi-circle"></i>Liste
+                    <i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.liste")}
                   </li>
-                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Réfusée</li>
-                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>En attente</li>
-                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Acceptée</li>
-                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>Validée</li>
+                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.refuse")}</li>
+                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.enattente")}</li>
+                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.accepte")}</li>
+                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.valide")}</li>
                 </ul>
               )}
             </li>
@@ -278,7 +281,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <span className="icon-sidebar">
               <i className="bi bi-palette-fill"></i>
               </span>
-              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Code couleur</span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.codecouleur")}</span>
             </li>
             <li
                 className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
@@ -306,7 +309,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <span className="icon-sidebar">
               <i className="bi bi-people-fill"></i>
               </span>
-              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Utilisateur</span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.user")}</span>
             </li>
           </ul>
         </nav>

@@ -4,6 +4,8 @@ import Swal from "sweetalert2";
 import api from "../../../service/Api";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 interface AddSiteProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -40,6 +42,8 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
     const {codeCouleur} = useGlobalActiveCodeCouleur();
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
 
     const fieldLabels: { [key: string]: string } = {
         nom: "Nom",
@@ -297,7 +301,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                   type="submit"
                   className="text-white px-4 py-2 rounded"
                 >
-                  {save.upperText}
+                  {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
                 </button>
               </div>
             </form>

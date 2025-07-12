@@ -7,11 +7,14 @@ import { AxiosError } from "axios";
 const toggleActiveCodeCouleur = async (
   idCode: number,
   isActive: boolean,
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
+  langue: "fr" | "en" = "fr" 
 ) => {
   // Lecture directe du texte depuis le store (en fonction de isActive)
   const state = store.getState();
-  const { actionWord, pastActionWord } = state.actionTexts[isActive ? "deactivate" : "activate"];
+  const { actionWord, pastActionWord } =
+  state.actionTexts[isActive ? "deactivate" : "activate"][langue];
+
 
   const result = await Swal.fire({
     title: `Es-tu sûr ?`,

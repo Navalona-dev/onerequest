@@ -8,6 +8,8 @@ import AddDomaineEntreprise from "./AddDomaineEntreprise";
 import UpdateDomaineEntreprise from "./UpdateDomaineEntreprise";
 import deleteDomaineEntreprise from "../../../service/admin/DeleteDomaineEntreprise";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type DomaineType = {
     id: number;
@@ -38,6 +40,8 @@ const DomaineEntrepriseComponent = () => {
     const { idCategorieDomaine } = useParams();
     const [categorie, setCategorie] = useState<CategorieType | null >(null);
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         api.get(`/api/categorie_domaine_entreprises/${idCategorieDomaine}`)
@@ -102,7 +106,7 @@ const DomaineEntrepriseComponent = () => {
                         }}
                         className="px-5 py-2 text-white rounded w-full md:w-auto"
                         >
-                        {create.upperText}
+                        {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                         </button>
 
                         <Link
@@ -142,7 +146,7 @@ const DomaineEntrepriseComponent = () => {
                                                     setSelectedDomaine(item);
                                                     setShowModalUpdate(true);
                                                 }}
-                                                    title={edit.upperText}>
+                                                    title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
                                                     <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
                                                     style={{
                                                         backgroundColor: codeCouleur?.btnColor
@@ -154,7 +158,7 @@ const DomaineEntrepriseComponent = () => {
                                                         e.preventDefault();
                                                         deleteDomaineEntreprise(item.id)
                                                     }}
-                                                    title={deleteAction.upperText}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                    title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
                                             
                                             </>

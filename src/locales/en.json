@@ -16,8 +16,8 @@
       "politique": "Privacy Policy",
       "condition": "Terms and Conditions",
       "callus": "Call Us",
-      "followus": "Follow Us"
-
+      "followus": "Follow Us",
+      "demande": "Request"
     },
     "about": {
       "aboutus": "About us",
@@ -69,8 +69,92 @@
       "message": "Enter your message here",
       "sendmessage": "Send message"
 
+    },
+    "login": {
+      "password": "Password",
+      "mailtext": "Enter your email address",
+      "pwdtext": "Enter your password",
+      "mail": "Email address",
+      "btn": "Login",
+      "title": "Login"
+    },
+    "register": {
+      "nom": "Last name",
+      "prenom": "First name",
+      "mail": "Email address",
+      "password": "Password",
+      "pwdConfirm": "Confirm password",
+      "phone": "Phone number",
+      "adresse": "Address",
+      "accountexist": "Already have an account",
+      "login": "Log in",
+      "btn": "Sign up",
+      "title": "Sign Up"
+    },
+    "demande": {
+      "objet": "Subject",
+      "contenu": "Content",
+      "demandeur": "Requester",
+      "type": "Request type",
+      "site": "Site",
+      "fichier": "File",
+      "title": "Submit a request",
+      "title1": "Send ",
+      "title2": "your request",
+      "title3": "now",
+      "selectsite": "Select a site",
+      "nonsite": "No site found",
+      "selecttype": "Select a request type",
+      "nontype": "No request type found",
+      "dossiertitle": "Here is the list of documents to provide",
+      "dossierdesc": "All these documents must be in a single PDF file, in chronological order",
+      "updatetitle": "Edit a request",
+      "title4": "Update",
+      "fichiernow": "File now",
+      "download": "Download",
+      "btnupdate": "Update request"
+    },
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "demande": "Request",
+      "codecouleur": "Color Code",
+      "catentreprise": "Company Category",
+      "user": "User",
+      "liste": "List",
+      "type": "Type",
+      "refuse": "Refused",
+      "annule": "Cancelled",
+      "enattente": "Pending",
+      "valide": "Validated",
+      "accepte": "Accepted"
+    },
+    "header": {
+      "search": "Search"
+    },
+    "nodata": "No records found",
+    "listecatdomainetitle": "List of Company Domain Categories",
+    "nom": "Name",
+    "domaine": "Domain",
+    "listetypedemande": "Request Type List",
+    "demandeur": "Requester",
+    "typedemande": "Request Type",
+    "fichier": "File",
+    "objet": "Subject",
+    "contenu": "Content",
+    "listedemande": "Request List",
+    "selectstatut": "Select a Status",
+    "addcategorie": "Create a new category",
+    "titre": "Title",
+    "addcodecouleur": "Create a new color code",
+    "bgcolor": "Background color",
+    "textcolor": "Text color",
+    "textcolorhover": "Text color on hover",
+    "btncolor": "Button color",
+    "btncolorhover": "Button color on hover",
+    "colorone": "Color 1",
+    "colortwo": "Color 2",
+    "updatecodecouleurtitle": "Update color code"
 
-    }
 
   }
   

@@ -3,6 +3,8 @@ import api from "../../service/Api";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../store";
 import deleteDemandeFront from "../../service/front/DeleteDemande";
+import { useLangueActive } from "../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type Region = {
     id: number;
@@ -30,6 +32,7 @@ type TypeDemande = {
     id: number;
     nom: string;
     dossierAFournirs: Dossier[] | [];
+    nomEn: string;
 }
 
 type Demande = {
@@ -40,6 +43,7 @@ type Demande = {
     site: Site | null;
     type: TypeDemande | null;
     statut: string;
+    statutEn: string;
 }
 
 const DemandeListeComponent = () => {
@@ -50,7 +54,9 @@ const DemandeListeComponent = () => {
 
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save, fileText } = state.actionTexts;
-    
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
+
     useEffect(() => {
         const userConnected = async () => {
           try {
@@ -127,7 +133,7 @@ const DemandeListeComponent = () => {
                             <p className="text-xs text-gray-500 my-2">
                               {demande.site?.nom} ({demande.site?.region?.nom} / {demande.site?.commune?.nom})
                             </p>
-                            <p className="text-sm text-gray-600">{demande.type?.nom}</p>
+                            <p className="text-sm text-gray-600">{langueActive?.indice === "fr" ? demande.type?.nom : langueActive?.indice === "en" ? demande.type?.nomEn : ""}</p>
                             <p className="text-xs text-gray-500 my-2 line-clamp-2">{demande.contenu || "Aucun contenu."}</p>
                           </div>
                           <p>
@@ -135,7 +141,7 @@ const DemandeListeComponent = () => {
                               className="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm"
                               style={{ backgroundColor: codeCouleur?.btnColorHover }}
                             >
-                              {demande.statut}
+                              {langueActive?.indice === "fr" ? demande.statut : langueActive?.indice === "en" ? demande.statutEn : ""}
                             </span>
                           </p>
                         </div>
@@ -153,7 +159,7 @@ const DemandeListeComponent = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="py-2 px-2.5 rounded-full mx-2"
-                                title={fileText.upperText}                                
+                                title={langueActive?.indice === "fr" ? fileText.fr.upperText : langueActive?.indice === "en" ? fileText.en.upperText : ""}                                
                                 style={{
                                     backgroundColor: codeCouleur?.btnColorHover
                                 }}
@@ -165,7 +171,7 @@ const DemandeListeComponent = () => {
                                 setUrlFichier(demande.fichier);
                             }}
                                 className="py-2 px-2.5 rounded-full mx-2"
-                                title={edit.upperText}
+                                title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
                                 style={{
                                     backgroundColor: codeCouleur?.btnColorHover
                                 }}
@@ -178,7 +184,7 @@ const DemandeListeComponent = () => {
                               deleteDemandeFront(demande.id)
                             }}
                                 className="py-2 px-2.5 rounded-full mx-2"
-                                title={deleteAction.upperText}
+                                title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}
                                 style={{
                                     backgroundColor: codeCouleur?.btnColorHover
                                 }}

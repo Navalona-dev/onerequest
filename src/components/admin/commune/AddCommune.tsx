@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
 import api from "../../../service/Api";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 interface AddCommuneProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,6 +22,8 @@ const AddCommune: React.FC<AddCommuneProps> = ({ setShowModal, idRegion }) => {
     const {codeCouleur} = useGlobalActiveCodeCouleur();
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
 
     const fieldLabels: { [key: string]: string } = {
         nom: "Nom",
@@ -107,7 +111,7 @@ const AddCommune: React.FC<AddCommuneProps> = ({ setShowModal, idRegion }) => {
                   type="submit"
                   className="text-white px-4 py-2 rounded"
                 >
-                  {save.upperText}
+                  {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
                 </button>
               </div>
             </form>

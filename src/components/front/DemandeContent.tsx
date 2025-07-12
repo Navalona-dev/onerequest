@@ -10,6 +10,8 @@ import image3 from '../../assets/images/bg-tutoriel-3.jpeg';
 import CodeColor from "../admin/codeCouleur/CodeColor";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 import Swal from "sweetalert2";
+import { useLangueActive } from "../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 type Region = {
   id: number;
@@ -32,11 +34,13 @@ type Site = {
 type TypeDemande = {
   id: number;
   nom: string;
+  nomEn: string;
 }
 
 type Dossier = {
   id: number;
   title: string;
+  titleEn: string;
 }
 
 type Demande = {
@@ -45,7 +49,8 @@ type Demande = {
 
 const DemandeContent: React.FC = () => {
   const [user, setUser] = useState<any>(null);
-
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -59,12 +64,12 @@ const DemandeContent: React.FC = () => {
   });
 
   const fieldLabels: { [key: string]: string } = {
-    objet: "Objet",
-    contenu: "Contenu",
-    demandeur: "Demandeur",
-    type: "Type de demande",
-    site: "Site",
-    fichier: "Fichier"
+    objet: t("demande.objet"),
+    contenu: t("demande.contenu"),
+    demandeur: t("demande.demandeur"),
+    type: t("demande.type"),
+    site: t("demande.site"),
+    fichier: t("demande.fichier")
   };
 
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
@@ -207,15 +212,15 @@ const DemandeContent: React.FC = () => {
             color: codeCouleur?.textColor
           }}
           className="text-sm font-semibold tracking-wider uppercase">
-            Soumettre une demande
+            {t("demande.title")}
           </h5>
           <h2 className="text-3xl md:text-5xl font-bold">
-            Envoyez 
+            {t("demande.title1")}
             <span 
             style={{
               color: codeCouleur?.textColor
             }}
-            className=""> votre demande</span> maintenant
+            className="">{t("demande.title2")}</span> {t("demande.title3")}
           </h2>
         </div>
 
@@ -267,7 +272,7 @@ const DemandeContent: React.FC = () => {
               <div key={field}>
                 {field === "site" ? (
                   <>
-                    <label htmlFor="" className="mb-2">Site <sup className="text-red-500">*</sup></label>
+                    <label htmlFor="" className="mb-2">{t("demande.site")} <sup className="text-red-500">*</sup></label>
                     <select 
                       className="mb-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-2 focus:outline-none focus:ring-0 focus:border-transparent"
                       value={selectedSiteId}
@@ -278,13 +283,13 @@ const DemandeContent: React.FC = () => {
                       name="site"
                       required
                       >
-                      <option value="" disabled>Selectionner un site</option>
+                      <option value="" disabled>{t("demande.selectsite")}</option>
                       {sites.length > 0 ? (
                         sites.map((item, index) => (
                           <option value={item.id} key={item.id}> {item.nom} ({item.region?.nom} / {item.commune?.nom}) </option>
                         ))
                       ) : (
-                        <option value="" disabled>Aucun site trouvé</option>
+                        <option value="" disabled>{t("demande.nonsite")}</option>
                       )
                       
                       }
@@ -292,7 +297,7 @@ const DemandeContent: React.FC = () => {
                   </>
                 ) : field === "type" ? (
                   <>
-                  <label htmlFor="" className="mb-2">Type de dmeande <sup className="text-red-500">*</sup></label>
+                  <label htmlFor="" className="mb-2">{t("demande.type")} <sup className="text-red-500">*</sup></label>
                   <select 
                     className="mb-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-2 focus:outline-none focus:ring-0 focus:border-transparent"
                     value={selectedTypeId}
@@ -303,25 +308,27 @@ const DemandeContent: React.FC = () => {
                     name="type"
                     required
                     >
-                    <option value="" disabled>Selectionner un type de demande</option>
+                    <option value="" disabled>{t("demande.selecttype")}</option>
                     {typeDemandes.length > 0 ? (
                       typeDemandes.map((item, index) => (
-                        <option value={item.id} key={item.id}> {item.nom} </option>
+                        <option value={item.id} key={item.id}> {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""} </option>
                       ))
                     ) : (
-                      <option value="" disabled>Aucun type de demande trouvé</option>
+                      <option value="" disabled>{t("demande.nontype")}</option>
                     )
                   }
                   </select>
                   {selectedTypeId ? (
                     <div className="mb-3">
-                      <h5><strong>Voici la liste de dossiers à fournir : </strong></h5>
+                      <h5><strong>{t("demande.dossiertitle")} : </strong></h5>
                       {dossiers.length > 0 ? (
                         dossiers.map((dossier, index) => (
-                          <p className="mt-2" key={index}><i className="bi bi-record-circle-fill mr-1 text-xs"></i>{dossier.title}</p>
+                          <p className="mt-2" key={index}><i className="bi bi-record-circle-fill mr-1 text-xs"></i>
+                            {langueActive?.indice === "fr" ? dossier.title : langueActive?.indice === "en" ? dossier.titleEn  : ""}
+                          </p>
                         ))
                       ) : null}
-                      <p className="bg-gray-200 px-3 py-1 my-2">Tos ces dossiers doivent être dans un seul fichier PDF. En suivant son ordre chronologique</p>
+                      <p className="bg-gray-200 px-3 py-1 my-2">{t("demande.dossierdesc")}</p>
                     </div>
                   ) : null}
                   </>
@@ -341,7 +348,7 @@ const DemandeContent: React.FC = () => {
                   </>
                 ) : field === "fichier" ? (
                  <>
-                 <label htmlFor="" className="mb-2">Fichier <sup className="text-red-500">*</sup></label>
+                 <label htmlFor="" className="mb-2">{t("demande.fichier")} <sup className="text-red-500">*</sup></label>
                  <input
                       type="file"
                       name="fichier"
@@ -360,11 +367,11 @@ const DemandeContent: React.FC = () => {
 
                 ) : field === "objet" ? (
                   <>
-                    <label htmlFor="" className="mb-2">Objet</label>
+                    <label htmlFor="" className="mb-2">{t("demande.objet")}</label>
                     <input
                       type="text"
                       name="objet"
-                      placeholder="Objet"
+                      placeholder={t("demande.objet")}
                       value={formData.objet}
                       onChange={handleChange}
                       className="mb-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-2 focus:outline-none focus:ring-0 focus:border-transparent" 
@@ -386,7 +393,7 @@ const DemandeContent: React.FC = () => {
               onMouseLeave={() => setHover(false)}
               className="text-white w-full py-2 rounded font-semibold transition"
             >
-              SOUMETTRE LA DEMANDE
+             {t("demande.title")}
             </button>
           </form>
         </div>

@@ -4,6 +4,9 @@ import Swal from "sweetalert2";
 import api from "../../service/Api";
 import { publicApi } from "../../service/publicApi";
 import { useNavigate } from "react-router-dom";
+import { useLangueActive } from "../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
+
 
 const RegisterForm = () => {
 
@@ -21,19 +24,21 @@ const RegisterForm = () => {
   const { codeCouleur } = useGlobalActiveCodeCouleur();
   const primaryColor = codeCouleur?.btnColor || "#9A00FF";
   const navigate = useNavigate();
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const fieldLabels: { [key: string]: string } = {
-    nom: "Nom",
-    prenom: "Prénom",
-    email: "Adresse e-mail",
-    password: "Mot de passe",
-    confirmPassword: "Confirmation mot de passe",
-    phone: "Téléphone",
-    adresse: "Adresse",
+    nom: t("register.nom"),
+    prenom: t("register.prenom"),
+    email: t("register.mail"),
+    password: t("register.password"),
+    confirmPassword: t("register.pwdConfirm"),
+    phone: t("register.phone"),
+    adresse: t("register.adresse"),
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,7 +99,7 @@ const RegisterForm = () => {
   return (
     <div className="flex justify-center mt-12 mb-24">
       <div className="bg-white w-full max-w-lg rounded-xl shadow-lg p-8 border border-gray-200">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Inscription</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">{t("register.title")}</h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           {Object.keys(formData).map((field) =>
             <div key={field}>
@@ -124,12 +129,12 @@ const RegisterForm = () => {
 
           <div className="my-3">
             <p className="text-center">
-              Vous avez déjà un compte? 
+              {t("register.accountexist")}
               <span className="ml-3" 
               style={{
                 color: codeCouleur?.textColor
               }}>
-              <a href="/connexion" >Se connecter</a></span>
+              <a href="/connexion" >{t("register.btn")}</a></span>
             </p>
           </div>
           

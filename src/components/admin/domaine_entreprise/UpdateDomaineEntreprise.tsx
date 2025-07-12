@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import api from "../../../service/Api";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
+import { useLangueActive } from "../../../hooks/useLangueActive";
+import { useTranslation } from "react-i18next";
 
 interface UpdateDomaineEntrepriseProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,6 +30,8 @@ const UpdateDomaineEntreprise: React.FC<UpdateDomaineEntrepriseProps> = ({ setSh
   const {codeCouleur} = useGlobalActiveCodeCouleur();
   const state = store.getState();
   const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
+  const {langueActive} = useLangueActive();
+  const { t, i18n } = useTranslation();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -116,7 +120,7 @@ const UpdateDomaineEntreprise: React.FC<UpdateDomaineEntrepriseProps> = ({ setSh
                 type="submit"
                 className="text-white px-4 py-2 rounded"
               >
-                Modifier
+                {langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
               </button>
             </div>
           </form>
