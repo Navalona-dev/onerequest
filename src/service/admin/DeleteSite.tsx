@@ -3,6 +3,7 @@ import api from "../Api";
 
 const deleteSite = async (
     idSite: number,
+    langueActive: "fr" | "en" | null = "fr",
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>
   ) => {  
     const result = await Swal.fire({
@@ -25,7 +26,8 @@ const deleteSite = async (
   
         await Swal.fire({
           icon: "success",
-          title: "Bon travail!",
+          title: langueActive === "fr" ? "Bon travail!" : 
+            langueActive === "en" ? "Good job !" : "",
           text: "Site supprimé avec succès !",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",

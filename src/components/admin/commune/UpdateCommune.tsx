@@ -60,7 +60,8 @@ const UpdateCommune: React.FC<UpdateCommuneProps> = ({ setShowModalUpdate, commu
       Swal.fire({
         icon: "success",
         title: "Succès",
-        text: "Commune mis à jour avec succès.",
+        text: langueActive?.indice === "fr" ? "Commune mis à jour avec succès." : 
+        langueActive?.indice === "en" ? "Commune updated successfully." : "",
         confirmButtonColor: "#7c3aed",
         background: "#1c2d55",
         color: "#fff",
@@ -73,7 +74,8 @@ const UpdateCommune: React.FC<UpdateCommuneProps> = ({ setShowModalUpdate, commu
       Swal.fire({
         icon: "error",
         title: "Erreur",
-        text: "Une erreur est survenue lors de la mise à jour.",
+        text: langueActive?.indice === "fr" ? "Une erreur est survenue lors de la mise à jour." : 
+        langueActive?.indice === "en" ? "" : "An error occurred during the update.",
         confirmButtonColor: "#ef4444",
         background: "#1c2d55",
         color: "#fff",

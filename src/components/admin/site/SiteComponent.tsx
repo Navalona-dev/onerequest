@@ -132,7 +132,7 @@ const SiteComponent = () => {
                   <Link to={'/region'}
                     className="px-5 py-2 text-white rounded btn-list"
                   >
-                    Liste région
+                    {t("btnlisteregion")}
                   </Link>
                 </div>
               </div>
@@ -144,7 +144,7 @@ const SiteComponent = () => {
                         <div className="relative">
                           <Listbox.Button 
                           className="bg-[#1c2d55] text-white py-2 text-sm w-full rounded focus:outline-none focus:ring-0 focus:border-transparent btn-search">
-                            {selectedRegion ? selectedRegion.nom : "Région..."}
+                            {selectedRegion ? selectedRegion.nom : `${t("region")}...`}
                           </Listbox.Button>
                           <i 
                             onClick={() => {
@@ -186,7 +186,7 @@ const SiteComponent = () => {
                     <div className="relative w-full">
                     <input
                       type="text"
-                      placeholder="Nom..."
+                      placeholder={`${t("nom")}...`}
                       value={searchNom}
                       onChange={(e) => setSearchNom(e.target.value)}
                       className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
@@ -202,9 +202,9 @@ const SiteComponent = () => {
                   <thead className="text-xs text-white uppercase">
                     <tr className="text-nowrap border-b border-gray-700">
                       <th className="px-6 py-3">Actions</th>
-                      <th className="px-6 py-3">Nom</th>
-                      <th className="px-6 py-3">Région</th>
-                      <th className="px-6 py-3">Commune / District</th>
+                      <th className="px-6 py-3">{t("nom")}</th>
+                      <th className="px-6 py-3">{t("region")}</th>
+                      <th className="px-6 py-3">{t("commune")} / District</th>
                       <th className="px-6 py-3">Description</th>
                     </tr>
                   </thead>
@@ -255,7 +255,9 @@ const SiteComponent = () => {
                           <a href="#"
                           onClick={(e) => {
                             e.preventDefault();
-                            deleteSite(item.id, setShowModal);
+                            if (langueActive) {
+                              deleteSite(item.id, langueActive.indice as "fr" | "en", setShowModal);
+                            }
                           }}
                           title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}>
                             <i className="bi bi-trash-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>

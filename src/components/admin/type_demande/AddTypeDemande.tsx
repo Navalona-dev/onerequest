@@ -24,12 +24,12 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
 
     const fieldLabels: { [key: string]: string } = {
-        domaine: "Domaine d'entreprise",
-        nom: "Titre",
-        description: "Déscription",
+        domaine: t("domaineentreprise"),
+        nom: t("title"),
+        description: "Description",
       };
 
-      const [domaineListe, setDomaineListe] = useState<{ id: number; libelle?: string }[]>([]);
+      const [domaineListe, setDomaineListe] = useState<{ id: number; libelle?: string; libelleEn: string }[]>([]);
 
     const listeDomaine = async () => {
       try {
@@ -59,8 +59,10 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
     
           Swal.fire({
             icon: "success",
-            title: "Bon travail!",
-            text: "Type de demande ajouté avec succès !",
+            title: langueActive?.indice === "fr" ? "Bon travail!" : 
+            langueActive?.indice === "en" ? "Good job !" : "",
+            text: langueActive?.indice === "fr" ? "Type de demande ajouté avec succès !" : 
+            langueActive?.indice === "en" ? "Request type added successfully!" : "",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -76,7 +78,8 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
         } catch (err) {
             const error = err as AxiosError<{ message?: string }>;
           
-            let errorMessage = `Erreur lors de l\'ajout de type de demande.`;
+            let errorMessage = langueActive?.indice === "fr" ? "Erreur lors de l'ajout de type de demande." : 
+            langueActive?.indice === "en" ? "An error occurred while adding the request type." : "";
           
             if (error.response) {
               // Si une réponse est retournée par le backend
@@ -89,11 +92,14 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
               } else if (status == 400) {
               }
               else if (status === 404) {
-                errorMessage = "Type de demande introuvable.";
+                errorMessage = langueActive?.indice === "fr" ? "Type de demande introuvable." : 
+                langueActive?.indice === "en" ? "Request type not found" : "";
               } else if (status === 401) {
-                errorMessage = "Non autorisé. Veuillez vous reconnecter.";
+                errorMessage = langueActive?.indice === "fr" ? "Non autorisé. Veuillez vous reconnecter." : 
+                langueActive?.indice === "en" ? "Unauthorized. Please log in again." : "";
               } else if (status === 500) {
-                errorMessage = "Erreur serveur. Réessayez plus tard.";
+                errorMessage = langueActive?.indice === "fr" ? "Erreur serveur. Réessayez plus tard." : 
+                langueActive?.indice === "en" ? "Server error. Please try again later." : "";
               }
               // Tu peux rajouter d'autres cas ici si besoin
             } else {
@@ -124,7 +130,7 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
       return (
         <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
           <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down">
-            <h2 className="text-xl font-bold mb-4 text-white">Créer un nouveau utilisateur</h2>
+            <h2 className="text-xl font-bold mb-4 text-white">{t("addtypedemandetitle")}</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
             {Object.keys(formData).map((field) =>
@@ -142,10 +148,10 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
                         className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
                         required
                     >
-                        <option value="" disabled>Selectionner une domaine</option>
+                        <option value="" disabled>{t("selectdomaine")}</option>
                         {domaineListe.map((item) => (
                         <option key={item.id} value={`/api/domaine_entreprises/${item.id}`} className="mt-3">
-                            {item.libelle}
+                            {langueActive?.indice === "fr" ? item.libelle : langueActive?.indice === "en" ? item.libelleEn : ""}
                         </option>
                         ))}
                     </select>
@@ -187,10 +193,10 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
     
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg"
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg py-1 px-2 rounded"
               aria-label="Close modal"
             >
-              ×
+              <i className="bi bi-x-circle-fill text-white"></i>
             </button>
           </div>
         </div>

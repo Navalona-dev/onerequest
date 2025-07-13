@@ -153,7 +153,7 @@ const UserComponent = () => {
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="w-full">
                         <input type="text" name="" id="" 
-                        placeholder="Nom..."
+                        placeholder={`${t("nom")}...`}
                         value={searchNom}
                         onChange={(e) => setSearchNom(e.target.value)}
                         className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
@@ -162,7 +162,7 @@ const UserComponent = () => {
                     </div>
                     <div className="w-full">
                         <input type="text" name="" id="" 
-                        placeholder="E-mail..."
+                        placeholder={`${t("mail")}...`}
                         value={searchMail}
                         onChange={(e) => setSearchMail(e.target.value)}
                         className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
@@ -180,7 +180,7 @@ const UserComponent = () => {
                     </div>
                     <div className="w-full">
                         <input type="text" name="" id="" 
-                        placeholder="Prénom..."
+                        placeholder={`${t("prenom")}...`}
                         value={searchPrenom}
                         onChange={(e) => setSearchPrenom(e.target.value)}
                         className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
@@ -189,7 +189,7 @@ const UserComponent = () => {
                     </div>
                     <div className="w-full">
                         <input type="text" name="" id="" 
-                        placeholder="Privilège..."
+                        placeholder={`${t("privilege")}`}
                         value={searchPrivilege}
                         onChange={(e) => setSearchPrivilege(e.target.value)}
                         className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
@@ -207,19 +207,19 @@ const UserComponent = () => {
                                     Actions
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
-                                    Nom
+                                    {t("nom")}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
-                                    Prénom
+                                    {t("prenom")}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
-                                    Adresse e-mail
+                                    {t("mail")}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
                                     Site
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
-                                    Privilèges
+                                    {t("privilege")}
                                 </th>
                                 
                             </tr>
@@ -247,8 +247,10 @@ const UserComponent = () => {
                                                 <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
-                                                        deleteUser(item.id, setShowModal);
-                                                    }}
+                                                        if (langueActive) {
+                                                            deleteUser(item.id, langueActive.indice as "fr" | "en", setShowModal);
+                                                        }
+                                                      }}
                                                     title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
                                             </>

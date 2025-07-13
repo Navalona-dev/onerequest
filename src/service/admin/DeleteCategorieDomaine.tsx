@@ -3,7 +3,10 @@ import api from "../Api";
 
 const deleteCategorieDomaine = async (
     idCategorie: number,
+    langueActive: "fr" | "en" | null = "fr"
+
   ) => {  
+    
     const result = await Swal.fire({
       title: "Es-tu sûr ?",
       text: "Cette action est irréversible !",
@@ -24,7 +27,8 @@ const deleteCategorieDomaine = async (
   
         await Swal.fire({
           icon: "success",
-          title: "Bon travail!",
+          title: langueActive === "fr" ? "Bon travail!" : 
+            langueActive === "en" ? "Good job !" : "",
           text: "Catégorie domaine entreprise supprimée avec succès !",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",

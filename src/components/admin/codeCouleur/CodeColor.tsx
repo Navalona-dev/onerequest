@@ -188,8 +188,11 @@ const CodeColor = () => {
                         href="#"
                         onClick={(e) => {
                           e.preventDefault();
-                          deleteCodeCouleur(item.id , setShowModal);
+                          if (langueActive) {
+                            deleteCodeCouleur(item.id, langueActive.indice as "fr" | "en", setShowModal);
+                          }
                         }}
+                        
                         title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}
                       >
                         <i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>

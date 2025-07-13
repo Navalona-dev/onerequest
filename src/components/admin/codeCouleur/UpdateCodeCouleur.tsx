@@ -94,8 +94,10 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
       );
       Swal.fire({
         icon: "success",
-        title: "Bon travail!",
-        text: "Code couleur mis à jour avec succès !",
+        title: langueActive?.indice === "fr" ? "Bon travail!" : 
+            langueActive?.indice === "en" ? "Good job !" : "",
+        text: langueActive?.indice === "fr" ? "Code couleur mis à jour avec succès !" : 
+        langueActive?.indice === "en" ? "Color code updated successfully!" : "",
         confirmButtonColor: "#7c3aed",
         cancelButtonColor: "#ef4444",
         showCancelButton: true,
@@ -111,7 +113,8 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
       Swal.fire({
         icon: "error",
         title: "Erreur",
-        text: "Erreur lors de la mise à jour du code couleur.",
+        text: langueActive?.indice === "fr" ? "Erreur lors de la mise à jour du code couleur." : 
+        langueActive?.indice === "en" ? "Error updating the color code." : "",
         confirmButtonColor: "#ef4444",
         background: "#1c2d55",
         color: "#fff",

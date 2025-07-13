@@ -102,9 +102,12 @@ const RegionComponent = () => {
                           </a>
                           <a href="#"
                           title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}
+                         
                           onClick={(e) => {
                             e.preventDefault();
-                            deleteRegion(item.id , setShowModal);
+                            if (langueActive) {
+                              deleteRegion(item.id, langueActive.indice as "fr" | "en", setShowModal);
+                            }
                           }}
                           >
                             

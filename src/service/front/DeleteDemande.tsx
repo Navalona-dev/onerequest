@@ -3,6 +3,7 @@ import api from "../Api";
 
 const deleteDemandeFront = async (
     idDemande: number,
+    langueActive: "fr" | "en" | null = "fr",
   ) => {  
     const result = await Swal.fire({
       title: "Es-tu sûr ?",
@@ -24,7 +25,8 @@ const deleteDemandeFront = async (
   
         await Swal.fire({
           icon: "success",
-          title: "Bon travail!",
+          title: langueActive === "fr" ? "Bon travail!" : 
+            langueActive === "en" ? "Good job !" : "",
           text: "Demande supprimée avec succès !",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",

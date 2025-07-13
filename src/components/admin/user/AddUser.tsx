@@ -20,16 +20,16 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
         privileges: [] as string[]
     });
 
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
+
     const fieldLabels: { [key: string]: string } = {
         site: "Site",
-        nom: "Nom",
-        prenom: "Prénom",
-        email: "Adresse e-mail",
-        privileges: "Privilèges"
+        nom: t("nom"),
+        prenom: t("prenom"),
+        email: t("mail"),
+        privileges: t("privileges")
       };
-
-      const {langueActive} = useLangueActive();
-      const { t, i18n } = useTranslation();
 
       const [siteListe, setSiteListe] = useState<{ id: number; nom?: string; libelle?: string }[]>([]);
       const [privilegeListe, setPrivilegeListe] = useState<{ id: number; title?: string; description?: string }[]>([]);
@@ -81,8 +81,10 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
     
           Swal.fire({
             icon: "success",
-            title: "Bon travail!",
-            text: "Utilisateur ajouté avec succès !",
+            title: langueActive?.indice === "fr" ? "Bon travail!" : 
+            langueActive?.indice === "en" ? "Good job !" : "",
+            text: langueActive?.indice === "fr" ? "Utilisateur ajouté avec succès !" : 
+            langueActive?.indice === "en" ? "User added successfully!" : "",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -98,7 +100,8 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
         } catch (err) {
             const error = err as AxiosError<{ message?: string }>;
           
-            let errorMessage = `Erreur lors de l\'ajout d\'utilisateur.`;
+            let errorMessage = langueActive?.indice === "fr" ? "Erreur lors de l'ajout d'un utilisateur." : 
+            langueActive?.indice === "en" ? "Error while adding user." : "";
           
             if (error.response) {
               // Si une réponse est retournée par le backend
@@ -109,14 +112,18 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
               if (backendMessage) {
                 errorMessage = backendMessage;
               } else if (status == 400) {
-                errorMessage = "Un compte avec cet email existe déjà.";
+                errorMessage = langueActive?.indice === "fr" ? "Un compte avec cet email existe déjà." : 
+                langueActive?.indice === "en" ? "An account with this email already exists." : "";
               }
               else if (status === 404) {
-                errorMessage = "Utilisateur introuvable.";
+                errorMessage = langueActive?.indice === "fr" ? "Utilisateur introuvable." : 
+                langueActive?.indice === "en" ? "User not found" : "";
               } else if (status === 401) {
-                errorMessage = "Non autorisé. Veuillez vous reconnecter.";
+                errorMessage = langueActive?.indice === "fr" ? "Non autorisé. Veuillez vous reconnecter." : 
+                langueActive?.indice === "en" ? "Unauthorized. Please log in again." : "";
               } else if (status === 500) {
-                errorMessage = "Erreur serveur. Réessayez plus tard.";
+                errorMessage = langueActive?.indice === "fr" ? "Erreur serveur. Réessayez plus tard." : 
+                langueActive?.indice === "en" ? "Server error. Please try again later." : "";
               }
               // Tu peux rajouter d'autres cas ici si besoin
             } else {
@@ -158,7 +165,7 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
             borderColor: codeCouleur?.btnColor
           }}
           >
-            <h2 className="text-xl font-bold mb-4 text-white">Créer un nouveau utilisateur</h2>
+            <h2 className="text-xl font-bold mb-4 text-white">{t("useraddtitle")}</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
             {Object.keys(formData).map((field) =>
@@ -181,7 +188,7 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                         className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
                         required
                     >
-                        <option value="" disabled>Selectionner un privilège</option>
+                        <option value="" disabled>{t("selecetpriv")}</option>
                         {privilegeListe.map((priv) => (
                         <option key={priv.id} value={`/api/privileges/${priv.id}`} className="mt-3">
                             {priv.title}
@@ -198,7 +205,7 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                         className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
                         required
                     >
-                        <option value="" disabled>Selectionner un site</option>
+                        <option value="" disabled>{t("selectsite")}</option>
                         {siteListe.map((site) => (
                         <option key={site.id} value={`/api/sites/${site.id}`}>
                             {site.nom}

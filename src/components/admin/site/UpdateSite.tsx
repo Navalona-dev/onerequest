@@ -64,7 +64,8 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
       Swal.fire({
         icon: "success",
         title: "Succès",
-        text: "Site mis à jour avec succès.",
+        text: langueActive?.indice === "fr" ? "Site mis à jour avec succès." : 
+        langueActive?.indice === "en" ? "Site updated successfully." : "",
         confirmButtonColor: "#7c3aed",
         background: "#1c2d55",
         color: "#fff",
@@ -77,7 +78,8 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
       Swal.fire({
         icon: "error",
         title: "Erreur",
-        text: "Une erreur est survenue lors de la mise à jour.",
+        text: langueActive?.indice === "fr" ? "Une erreur est survenue lors de la mise à jour." : 
+        langueActive?.indice === "en" ? "An error occurred during the update." : "",
         confirmButtonColor: "#ef4444",
         background: "#1c2d55",
         color: "#fff",
@@ -92,11 +94,11 @@ const UpdateSite: React.FC<UpdateSiteProps> = ({ setShowModalUpdate, siteId, ini
         borderColor: codeCouleur?.btnColor
       }}
       >
-        <h2 className="text-xl font-bold mb-4 text-white">Modifier le site</h2>
+        <h2 className="text-xl font-bold mb-4 text-white">{t("updatesitetitle")}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-400 mb-1">Nom</label>
+            <label className="block text-gray-400 mb-1">{t("nom")}</label>
             <input
               type="text"
               name="nom"

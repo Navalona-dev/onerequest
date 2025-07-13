@@ -46,9 +46,9 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
     const { t, i18n } = useTranslation();
 
     const fieldLabels: { [key: string]: string } = {
-        nom: "Nom",
-        region: "Région",
-        commune: "Commune",
+        nom: t("nom"),
+        region: t("region"),
+        commune: t("commune"),
         description: "Description",
       };
 
@@ -96,7 +96,9 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
         } else if (!checkboxActive && selectedRegionId) {
           payload.region_id = parseInt(selectedRegionId);
         } else {
-          Swal.fire({ icon: "error", text: "Veuillez sélectionner ou saisir une région." });
+          Swal.fire({ icon: "error", text: langueActive?.indice === "fr" ? "Veuillez sélectionner ou saisir une région." : 
+            langueActive?.indice === "en" ? "Please select or enter a region." : ""
+           });
           return;
         }
 
@@ -107,7 +109,9 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
         } else if (!checkboxActive && selectedCommuneId) {
           payload.commune_id = parseInt(selectedCommuneId);
         } else {
-          Swal.fire({ icon: "error", text: "Veuillez saisir la commune et le district." });
+          Swal.fire({ icon: "error", text: langueActive?.indice === "fr" ? "Veuillez saisir la commune et le district." : 
+            langueActive?.indice === "en" ? "Please enter the commune and the district." : ""
+           });
           return;
         }
 
@@ -117,8 +121,10 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
     
           Swal.fire({
             icon: "success",
-            title: "Bon travail!",
-            text: "Site ajouté avec succès !",
+            title: langueActive?.indice === "fr" ? "Bon travail!" : 
+            langueActive?.indice === "en" ? "Good job !" : "",
+            text: langueActive?.indice === "fr" ? "Site ajouté avec succès !" : 
+            langueActive?.indice === "en" ? "Site added successfully!" : "",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -135,7 +141,8 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
           Swal.fire({
             icon: "error",
             title: "Erreur",
-            text: "Erreur lors de l'ajout du site.",
+            text: langueActive?.indice === "fr" ? "Erreur lors de l'ajout du site." : 
+            langueActive?.indice === "en" ? "Error occurred while adding the site." : "",
             confirmButtonColor: "#ef4444",
             background: "#1c2d55",
             color: "#fff",
@@ -151,7 +158,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
             borderColor: codeCouleur?.btnColor
           }}
           >
-            <h2 className="text-xl font-bold mb-4 text-white">Créer un nouveau site</h2>
+            <h2 className="text-xl font-bold mb-4 text-white">{t("addsitetitle")}</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
             {Object.keys(formData).map((field) =>
@@ -193,7 +200,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                         setSelectedRegionId(e.target.value);
                       }}
                       className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent">
-                        <option value="" disabled>Sélectionner une région</option>
+                        <option value="" disabled>{t("selectregion")}</option>
                         {regions.length > 0 ? (
                           regions.map((region) => (
                             <option value={region.id}>{region.nom}</option>
@@ -211,7 +218,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                             checked={checkboxActive}
                             onChange={() => setCheckboxActive((prev) => !prev)}
                           />
-                          <label htmlFor="is_not_in_list" className="text-white ml-3">Région non trouvée ?</label>
+                          <label htmlFor="is_not_in_list" className="text-white ml-3">{t("regionnotfound")} ?</label>
                         </div>
 
                       {/* Champ de nouvelle région */}
@@ -226,7 +233,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                               className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                               autoComplete="off"
                               required
-                              placeholder="Nom de la nouvelle région"
+                              placeholder={t("newregiontitle")}
                             />
                           </div>
                           
@@ -243,7 +250,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                         setSelectedCommuneId(e.target.value);
                       }}
                       className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent">
-                        <option value="" disabled>Sélectionner une commune</option>
+                        <option value="" disabled>{t("selectcommune")}</option>
                         {communes.length > 0 ? (
                           communes.map((commune) => (
                             <option value={commune.id}>{commune.nom}</option>
@@ -262,7 +269,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                           className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                           autoComplete="off"
                           required
-                          placeholder="Nom du nouveau commune"
+                          placeholder={t("newcommunetitle")}
                         />
 
                         <input

@@ -49,8 +49,10 @@ const AddCommune: React.FC<AddCommuneProps> = ({ setShowModal, idRegion }) => {
     
           Swal.fire({
             icon: "success",
-            title: "Bon travail!",
-            text: "Commune ajouté avec succès !",
+            title: langueActive?.indice === "fr" ? "Bon travail!" : 
+            langueActive?.indice === "en" ? "Good job !" : "",
+            text: langueActive?.indice === "fr" ? "Commune ajouté avec succès !" : 
+            langueActive?.indice === "en" ? "Commune added successfully!" : "",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -67,7 +69,8 @@ const AddCommune: React.FC<AddCommuneProps> = ({ setShowModal, idRegion }) => {
           Swal.fire({
             icon: "error",
             title: "Erreur",
-            text: "Erreur lors de l'ajout du commune.",
+            text: langueActive?.indice === "fr" ? "Erreur lors de l'ajout du commune." : 
+            langueActive?.indice === "en" ? "Failed to add the commune." : "",
             confirmButtonColor: "#ef4444",
             background: "#1c2d55",
             color: "#fff",

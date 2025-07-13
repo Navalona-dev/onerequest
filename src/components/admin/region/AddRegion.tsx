@@ -64,8 +64,10 @@ const AddRegion: React.FC<AddRegionProps> = ({ setShowModal }) => {
     
           Swal.fire({
             icon: "success",
-            title: "Bon travail!",
-            text: "Region ajouté avec succès !",
+            title: langueActive?.indice === "fr" ? "Bon travail!" : 
+            langueActive?.indice === "en" ? "Good job !" : "",
+            text: langueActive?.indice === "fr" ? "Region ajouté avec succès !" : 
+            langueActive?.indice === "en" ? "Region added successfully!" : "",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -81,7 +83,8 @@ const AddRegion: React.FC<AddRegionProps> = ({ setShowModal }) => {
         } catch (err) {
             const error = err as AxiosError<{ message?: string }>;
           
-            let errorMessage = `Erreur lors de l\'ajout de région.`;
+            let errorMessage = langueActive?.indice === "fr" ? "Erreur lors de l'ajout de région." : 
+            langueActive?.indice === "en" ? "Error adding region." : "";
           
             if (error.response) {
               // Si une réponse est retournée par le backend
@@ -92,11 +95,14 @@ const AddRegion: React.FC<AddRegionProps> = ({ setShowModal }) => {
               if (backendMessage) {
                 errorMessage = backendMessage;
               } else if (status === 404) {
-                errorMessage = "Région introuvable.";
+                errorMessage = langueActive?.indice === "fr" ? "Région introuvable." : 
+                langueActive?.indice === "en" ? "Region not found" : "";
               } else if (status === 401) {
-                errorMessage = "Non autorisé. Veuillez vous reconnecter.";
+                errorMessage = langueActive?.indice === "fr" ? "Non autorisé. Veuillez vous reconnecter." : 
+                langueActive?.indice === "en" ? "Unauthorized. Please log in again." : "";
               } else if (status === 500) {
-                errorMessage = "Erreur serveur. Réessayez plus tard.";
+                errorMessage = langueActive?.indice === "fr" ? "Erreur serveur. Réessayez plus tard." : 
+                langueActive?.indice === "en" ? "Server error. Please try again later." : "";
               }
               // Tu peux rajouter d'autres cas ici si besoin
             } else {

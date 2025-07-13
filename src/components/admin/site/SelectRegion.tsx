@@ -32,9 +32,12 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
         district: ""
     });
 
+    const {langueActive} = useLangueActive();
+    const { t, i18n } = useTranslation();
+
     const fieldLabels: { [key: string]: string } = {
-        region: "Région",
-        commune: "Commune",
+        region: t("region"),
+        commune: t("commune"),
         district: "District"
       };
 
@@ -50,8 +53,6 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
-    const {langueActive} = useLangueActive();
-    const { t, i18n } = useTranslation();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       const { name, value, multiple } = e.target;
@@ -96,7 +97,8 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
         Swal.fire({
           icon: "success",
           title: "Succès",
-          text: "Région et commune associés avec succès.",
+          text: langueActive?.indice === "fr" ? "Région et commune associés avec succès." : 
+          langueActive?.indice === "en" ? "Region and commune successfully associated." : "",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",
           color: "#fff",
@@ -144,14 +146,14 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
             borderColor: codeCouleur?.btnColor
           }}
           >
-            <h2 className="text-xl font-bold mb-4 text-white">Sélectionner une région</h2>
+            <h2 className="text-xl font-bold mb-4 text-white">{t("selectregion")}</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
             {/* Sélecteur de région existante */}
             {!checkboxActive && (
              <>
               <div>
-                <label className="block text-gray-400 mb-1">Région <sup className="text-red-500">*</sup></label>
+                <label className="block text-gray-400 mb-1">{t("region")} <sup className="text-red-500">*</sup></label>
                 <select
                   name="region_id"
                   value={selectedRegionId}
@@ -165,7 +167,7 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
                 </select>
               </div>
               <div>
-                <label className="block text-gray-400 mb-1">Commune <sup className="text-red-500">*</sup></label>
+                <label className="block text-gray-400 mb-1">{t("commune")} <sup className="text-red-500">*</sup></label>
                 <select
                   name="commune_id"
                   value={selectedCommuneId}
@@ -174,7 +176,7 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
                   }}
                   className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                 >
-                  <option value="" disabled>Selectionner un commune</option>
+                  <option value="" disabled>{t("selectcommune")}</option>
                   {communes.map((item) => (
                     <option key={item.id} value={item.id}>{item.nom}</option>
                   ))}
@@ -193,7 +195,7 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
                 checked={checkboxActive}
                 onChange={() => setCheckboxActive((prev) => !prev)}
               />
-              <label htmlFor="is_not_in_list" className="text-white ml-3">Région non trouvée ?</label>
+              <label htmlFor="is_not_in_list" className="text-white ml-3">{t("regionnotfound")} ?</label>
             </div>
 
             {/* Champ de nouvelle région */}
@@ -208,7 +210,7 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
                   className="w-full p-2 rounded bg-[#1c2d55] mt-3 border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                   autoComplete="off"
                   required
-                  placeholder="Nom de la nouvelle région"
+                  placeholder={t("newregiontitle")}
                 />
               </div>
               <div>
@@ -220,7 +222,7 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
                   className="w-full p-2 rounded bg-[#1c2d55] mt-3 border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                   autoComplete="off"
                   required
-                  placeholder="Nom de nouveau commune"
+                  placeholder={t("newcommunetitle")}
                 />
               </div>
               <div>

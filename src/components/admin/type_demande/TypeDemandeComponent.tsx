@@ -81,7 +81,7 @@ const TypeDemandeComponent = () => {
                         e.preventDefault();
                         setShowModalAdd(true);
                     }}
-                        className="bg-red-500 px-5 py-2 text-white rounded"
+                        className="px-5 py-2 text-white rounded"
                         >
                         {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                     </button>

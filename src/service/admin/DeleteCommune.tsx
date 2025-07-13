@@ -3,6 +3,7 @@ import api from "../Api";
 
 const deleteCommune = async (
     idCommune: number,
+    langueActive: "fr" | "en" | null = "fr",
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>
   ) => {  
     const result = await Swal.fire({
@@ -25,7 +26,8 @@ const deleteCommune = async (
   
         await Swal.fire({
           icon: "success",
-          title: "Bon travail!",
+          title: langueActive === "fr" ? "Bon travail!" : 
+            langueActive === "en" ? "Good job !" : "",
           text: "Commune supprimé avec succès !",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",

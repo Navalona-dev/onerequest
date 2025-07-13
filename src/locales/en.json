@@ -153,8 +153,35 @@
     "btncolorhover": "Button color on hover",
     "colorone": "Color 1",
     "colortwo": "Color 2",
-    "updatecodecouleurtitle": "Update color code"
-
+    "updatecodecouleurtitle": "Update color code",
+    "updatecategorietitle": "Update domain category",
+    "btnlisteregion": "Region list",
+    "region": "Region",
+    "commune": "Municipality",
+    "addsitetitle": "Create new site",
+    "regionnotfound": "Region not found",
+    "selectregion": "Select a region",
+    "selectcommune": "Select a municipality",
+    "newregiontitle": "New region name",
+    "newcommunetitle": "New municipality name",
+    "updatesitetitle": "Update site",
+    "communenotfound": "Municipality not found",
+    "domaineentreprise": "Business field",
+    "title": "Title",
+    "updatetypedemandetitle": "Update request type",
+    "selectdomaine": "Select a domain",
+    "addtypedemandetitle": "Create new request type",
+    "privileges": "Privileges",
+    "privilege": "Privilege",
+    "useraddtitle": "Create new user",
+    "prenom": "First name",
+    "mail": "Email address",
+    "userupdatetitle": "Update user",
+    "selecetpriv": "Select privilege",
+    "selectsite": "Select a site",
+    "nonsite": "No site found",
+    "selecttype": "Select a request type",
+    "nontype": "No request type found"
 
   }
   

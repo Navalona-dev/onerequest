@@ -39,7 +39,7 @@ const SelectCommune: React.FC<SelectCommuneProps> = ({ setShowModalSelectCommune
     const { t, i18n } = useTranslation();
 
     const fieldLabels: { [key: string]: string } = {
-        nom: "Nom",
+        nom: t("nom"),
         district: "District",
       };
 
@@ -75,8 +75,10 @@ const SelectCommune: React.FC<SelectCommuneProps> = ({ setShowModalSelectCommune
     
           Swal.fire({
             icon: "success",
-            title: "Bon travail!",
-            text: "Commune ajouté avec succès !",
+            title: langueActive?.indice === "fr" ? "Bon travail!" : 
+            langueActive?.indice === "en" ? "Good job !" : "",
+            text: langueActive?.indice === "fr" ? "Commune ajouté avec succès !" :
+            langueActive?.indice === "en" ? "Commune added successfully!" : "",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -93,7 +95,8 @@ const SelectCommune: React.FC<SelectCommuneProps> = ({ setShowModalSelectCommune
           Swal.fire({
             icon: "error",
             title: "Erreur",
-            text: "Erreur lors de l'ajout du commune.",
+            text: langueActive?.indice === "fr" ? "Erreur lors de l'ajout du commune." : 
+            langueActive?.indice === "en" ? "Error adding the commune." : "",
             confirmButtonColor: "#ef4444",
             background: "#1c2d55",
             color: "#fff",
@@ -117,7 +120,7 @@ const SelectCommune: React.FC<SelectCommuneProps> = ({ setShowModalSelectCommune
             borderColor: codeCouleur?.btnColor
           }}
           >
-            <h2 className="text-xl font-bold mb-4 text-white">Séléctionner un commune</h2>
+            <h2 className="text-xl font-bold mb-4 text-white">{t("selectcommune")}</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -134,7 +137,7 @@ const SelectCommune: React.FC<SelectCommuneProps> = ({ setShowModalSelectCommune
                             setSelectedCommuneId(e.target.value);
                         }}
                         className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent">
-                            <option value="" disabled>Sélectionner un commune</option>
+                            <option value="" disabled>{t("selectcommune")}</option>
                             {communes.length > 0 ? (
                             communes.map((commune) => (
                                 <option value={commune.id}>{commune.nom}</option>
@@ -152,13 +155,13 @@ const SelectCommune: React.FC<SelectCommuneProps> = ({ setShowModalSelectCommune
                             checked={checkboxActive}
                             onChange={() => setCheckboxActive((prev) => !prev)}
                         />
-                        <label htmlFor="is_not_in_list" className="text-white ml-3">Commune non trouvé ?</label>
+                        <label htmlFor="is_not_in_list" className="text-white ml-3">{t("communenotfound")} ?</label>
                     </div>
                     
                    {checkboxActive && (
                        <>
                            <div>
-                               <label className="block text-gray-400 mb-1 text-white">Nom</label>
+                               <label className="block text-gray-400 mb-1 text-white">{t("nom")}</label>
                                <input
                                    type="text"
                                    name="nom"

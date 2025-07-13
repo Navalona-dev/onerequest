@@ -52,8 +52,10 @@ interface AddCategorieDomaineProps {
     
           Swal.fire({
             icon: "success",
-            title: "Bon travail!",
-            text: "Catégorie domaine entreprise ajoutée avec succès !",
+            title: langueActive?.indice === "fr" ? "Bon travail!" : 
+            langueActive?.indice === "en" ? "Good job !" : "",
+            text: langueActive?.indice === "fr" ? "Catégorie domaine entreprise ajoutée avec succès !" : 
+            langueActive?.indice === "en" ? "Business domain category added successfully!" : "",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -69,7 +71,9 @@ interface AddCategorieDomaineProps {
         } catch (err) {
             const error = err as AxiosError<{ message?: string }>;
           
-            let errorMessage = `Erreur lors de l\'ajout d\'utilisateur.`;
+            let errorMessage = langueActive?.indice === "fr" ?
+            "Erreur lors de l'ajout de catégorie domaine d'entreprise" : langueActive?.indice === "en" ?
+            "Error while adding business field category" : "";
           
             if (error.response) {
               // Si une réponse est retournée par le backend
@@ -83,11 +87,16 @@ interface AddCategorieDomaineProps {
                
               }
               else if (status === 404) {
-                errorMessage = "Catégorie introuvable.";
+                errorMessage = langueActive?.indice === "fr" ? 
+                "Catégorie introuvable." : langueActive?.indice === "en" ? 
+                "Category not found." : "";
               } else if (status === 401) {
-                errorMessage = "Non autorisé. Veuillez vous reconnecter.";
+                errorMessage = langueActive?.indice === "fr" ? 
+                "Non autorisé. Veuillez vous reconnecter." : langueActive?.indice === "en" ?
+                "Unauthorized. Please log in again" : "";
               } else if (status === 500) {
-                errorMessage = "Erreur serveur. Réessayez plus tard.";
+                errorMessage = langueActive?.indice === "fr" ? "Erreur serveur. Réessayez plus tard." : 
+                langueActive?.indice === "en" ? "Server error. Please try again later." : "";
               }
               // Tu peux rajouter d'autres cas ici si besoin
             } else {

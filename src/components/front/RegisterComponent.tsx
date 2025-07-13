@@ -69,7 +69,8 @@ const RegisterForm = () => {
   
       Swal.fire({
         icon: "success",
-        title: "Bon travail!",
+        title: langueActive?.indice === "fr" ? "Bon travail!" : 
+            langueActive?.indice === "en" ? "Good job !" : "",
         text: "Compte ajouté avec succès !",
         confirmButtonColor: "#7c3aed",
         cancelButtonColor: "#ef4444",

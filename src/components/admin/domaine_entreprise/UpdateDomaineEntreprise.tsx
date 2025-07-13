@@ -59,7 +59,8 @@ const UpdateDomaineEntreprise: React.FC<UpdateDomaineEntrepriseProps> = ({ setSh
       Swal.fire({
         icon: "success",
         title: "Succès",
-        text: "Domaine entreprise mis à jour avec succès.",
+        text: langueActive?.indice === "fr" ? "Domaine entreprise mis à jour avec succès." : 
+        langueActive?.indice === "en" ? "Business domain updated successfully." : "",
         confirmButtonColor: "#7c3aed",
         background: "#1c2d55",
         color: "#fff",
@@ -72,7 +73,8 @@ const UpdateDomaineEntreprise: React.FC<UpdateDomaineEntrepriseProps> = ({ setSh
       Swal.fire({
         icon: "error",
         title: "Erreur",
-        text: "Une erreur est survenue lors de la mise à jour.",
+        text: langueActive?.indice === "fr" ? "Une erreur est survenue lors de la mise à jour." : 
+        langueActive?.indice === "en" ? "An error occurred during the update." : "",
         confirmButtonColor: "#ef4444",
         background: "#1c2d55",
         color: "#fff",

@@ -227,7 +227,8 @@ const DemandeUpdate: React.FC = () => {
   
       Swal.fire({
         icon: "success",
-        title: "Bon travail!",
+        title: langueActive?.indice === "fr" ? "Bon travail!" : 
+            langueActive?.indice === "en" ? "Good job !" : "",
         text: "Demande modifiée avec succès !",
         confirmButtonColor: "#7c3aed",
         cancelButtonColor: "#ef4444",

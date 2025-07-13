@@ -128,7 +128,9 @@ const CommuneComponent = () => {
                           title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}
                           onClick={(e) => {
                             e.preventDefault();
-                            deleteCommune(item.id, setShowModalAdd);
+                            if (langueActive) {
+                              deleteCommune(item.id, langueActive.indice as "fr" | "en", setShowModalAdd);
+                            }
                           }}
                           >
                             

@@ -38,7 +38,8 @@ const toggleActiveCodeCouleur = async (
 
       await Swal.fire({
         icon: "success",
-        title: "Bon travail!",
+        title: langue === "fr" ? "Bon travail!" : 
+            langue === "en" ? "Good job !" : "",
         text: `Site ${pastActionWord} avec succès !`,
         confirmButtonColor: "#7c3aed",
         background: "#1c2d55",

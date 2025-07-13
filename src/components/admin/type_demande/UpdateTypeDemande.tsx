@@ -9,6 +9,7 @@ import { store } from "../../../store";
   export interface Domaine {
     id: number;
     libelle: string;
+    libelleEn: string;
   }
 
 interface UpdateTypeProps {
@@ -33,13 +34,14 @@ const UpdateTypeDemande: React.FC<UpdateTypeProps> = ({ setShowModalUpdate, type
       const state = store.getState();
       const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
 
-  const fieldLabels: { [key: string]: string } = {
-    nom: "Titre",
-    description: "Description",
-    domaine: "Domaine d'entreprise",
-  };
+      const fieldLabels: { [key: string]: string } = {
+        domaine: t("domaineentreprise"),
+        nom: t("title"),
+        description: "Description",
+      };
 
-  const [domaineListe, setDomaineListe] = useState<{ id: number; libelle?: string }[]>([]);
+
+  const [domaineListe, setDomaineListe] = useState<{ id: number; libelle?: string; libelleEn: string }[]>([]);
 
 const listeDomaine = async () => {
   try {
@@ -75,7 +77,8 @@ const handleChange = (
       Swal.fire({
         icon: "success",
         title: "Succès",
-        text: "Type de demande mis à jour avec succès.",
+        text: langueActive?.indice === "fr" ? "Type de demande mis à jour avec succès." : 
+        langueActive?.indice === "en" ? "Request type updated successfully." : "",
         confirmButtonColor: "#7c3aed",
         background: "#1c2d55",
         color: "#fff",
@@ -87,24 +90,27 @@ const handleChange = (
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>;
           
-        let errorMessage = `Erreur lors de la mise à jour de type de demande.`;
+        let errorMessage = langueActive?.indice === "fr" ? "Erreur lors de la mise à jour de type de demande." : 
+        langueActive?.indice === "en" ? "Error updating request type." : "";
       
         if (error.response) {
           // Si une réponse est retournée par le backend
           const status = error.response.status;
           const backendMessage = error.response.data?.message;
       
-          // Si le backend renvoie un message clair, on l’affiche
           if (backendMessage) {
             errorMessage = backendMessage;
           } else if (status == 400) {
           }
           else if (status === 404) {
-            errorMessage = "Type de demande introuvable.";
+            errorMessage = langueActive?.indice === "fr" ? "Type de demande introuvable." : 
+            langueActive?.indice === "en" ? "Request type not found" : "";
           } else if (status === 401) {
-            errorMessage = "Non autorisé. Veuillez vous reconnecter.";
+            errorMessage = langueActive?.indice === "fr" ? "Non autorisé. Veuillez vous reconnecter." : 
+            langueActive?.indice === "en" ? "Unauthorized. Please log in again." : "";
           } else if (status === 500) {
-            errorMessage = "Erreur serveur. Réessayez plus tard.";
+            errorMessage = langueActive?.indice === "fr" ? "Erreur serveur. Réessayez plus tard." : 
+            langueActive?.indice === "en" ? "Server error. Please try again later." : "";
           }
           // Tu peux rajouter d'autres cas ici si besoin
         } else {
@@ -135,7 +141,7 @@ const handleChange = (
   return (
     <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
       <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down">
-        <h2 className="text-xl font-bold mb-4 text-white">Modifier un utilisateur</h2>
+        <h2 className="text-xl font-bold mb-4 text-white">{t("updatetypedemandetitle")}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
         {Object.keys(formData).map((field) =>
@@ -153,10 +159,10 @@ const handleChange = (
                         className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
                         required
                     >
-                        <option value="" disabled>Selectionner une domaine</option>
+                        <option value="" disabled>{t("selectdomaine")}</option>
                         {domaineListe.map((item) => (
                         <option key={item.id} value={`/api/domaine_entreprises/${item.id}`} className="mt-3">
-                            {item.libelle}
+                            {langueActive?.indice === "fr" ? item.libelle : langueActive?.indice === "en" ? item.libelleEn : ""}
                         </option>
                         ))}
                     </select>
@@ -197,10 +203,10 @@ const handleChange = (
 
         <button
           onClick={() => setShowModalUpdate(false)}
-          className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg"
+          className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg py-1 px-2 rounded"
           aria-label="Close modal"
         >
-          ×
+          <i className="bi bi-x-circle-fill text-white"></i>
         </button>
       </div>
     </div>

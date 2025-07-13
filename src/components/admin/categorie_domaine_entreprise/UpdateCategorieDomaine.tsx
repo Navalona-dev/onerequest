@@ -67,20 +67,22 @@ const UpdateCategorieDomaine: React.FC<UpdateCategorieProps> = ({ setShowModalUp
       Swal.fire({
         icon: "success",
         title: "Succès",
-        text: "Catégorie domaine entreprise mis à jour avec succès.",
+        text: langueActive?.indice === "fr" ? "Catégorie domaine entreprise mis à jour avec succès." : 
+        langueActive?.indice === "en" ? "Business domain category updated successfully." : "",
         confirmButtonColor: "#7c3aed",
         background: "#1c2d55",
         color: "#fff",
       }).then(() => {
         setShowModalUpdate(false);
-        window.location.reload(); // ou mets à jour l'état local
+        window.location.reload(); 
       });
 
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Erreur",
-        text: "Une erreur est survenue lors de la mise à jour.",
+        text: langueActive?.indice === "fr" ? "Une erreur est survenue lors de la mise à jour." : 
+        langueActive?.indice === "en" ? "An error occurred during the update." : "",
         confirmButtonColor: "#ef4444",
         background: "#1c2d55",
         color: "#fff",
@@ -98,7 +100,7 @@ const UpdateCategorieDomaine: React.FC<UpdateCategorieProps> = ({ setShowModalUp
         borderColor: codeCouleur?.btnColor
       }}
       >
-        <h2 className="text-xl font-bold mb-4 text-white">Modifier la catégorie domaine</h2>
+        <h2 className="text-xl font-bold mb-4 text-white">{t("updatecategorietitle")}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {Object.keys(formData).map((field) =>
