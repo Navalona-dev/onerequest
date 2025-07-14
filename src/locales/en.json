@@ -126,7 +126,9 @@
       "annule": "Cancelled",
       "enattente": "Pending",
       "valide": "Validated",
-      "accepte": "Accepted"
+      "accepte": "Accepted",
+      "privileges": "Privileges"
+
     },
     "header": {
       "search": "Search"
@@ -181,7 +183,11 @@
     "selectsite": "Select a site",
     "nonsite": "No site found",
     "selecttype": "Select a request type",
-    "nontype": "No request type found"
+    "nontype": "No request type found",
+    "userlisttitle": "User list",
+    "privilegeListe": "Privilege list",
+    "libelleFr": "Label in French",
+    "libelleEn": "Label in English"
 
   }
   

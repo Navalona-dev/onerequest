@@ -124,7 +124,8 @@
       "annule": "Annulée",
       "enattente": "En attente",
       "valide": "Validée",
-      "accepte": "Acceptée"
+      "accepte": "Acceptée",
+      "privileges": "Privilèges"
     },
     "header": {
       "search": "Recherche"
@@ -179,7 +180,11 @@
     "selectsite": "Selectionner un site",
     "nonsite": "Aucun site trouvé",
     "selecttype": "Selectionner un type de demande",
-    "nontype": "Aucun type de demande trouvé"
+    "nontype": "Aucun type de demande trouvé",
+    "userlisttitle": "Liste utilisateur",
+    "privilegeListe": "Liste privilèges",
+    "libelleFr": "Libellé en français",
+    "libelleEn": "Libellé en anglais"
 
   }
   

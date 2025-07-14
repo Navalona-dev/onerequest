@@ -14,6 +14,8 @@ import { useTranslation } from "react-i18next";
 type Privilege = {
     id: number;
     title: string;
+    libelleEn: string;
+    libelleFr: string;
   };
   
   type Site = {
@@ -138,7 +140,7 @@ const UserComponent = () => {
         <>
         <div className="h-[69vh] overflow-y-auto">
             <div className="color-header px-4 flex justify-between items-center mb-3">
-                <h4 className="font-bold text-white">Liste utilisateur</h4>
+                <h4 className="font-bold text-white">{t("userlisttitle")}</h4>
                 {user && user.privileges && user.privileges.some(p => p.title === "super_admin" || p.title === "admin_site") ? (
                     <button
                     onClick={() => setShowModal(true)}
@@ -189,7 +191,7 @@ const UserComponent = () => {
                     </div>
                     <div className="w-full">
                         <input type="text" name="" id="" 
-                        placeholder={`${t("privilege")}`}
+                        placeholder={`${t("privilege")}...`}
                         value={searchPrivilege}
                         onChange={(e) => setSearchPrivilege(e.target.value)}
                         className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
@@ -273,7 +275,7 @@ const UserComponent = () => {
                                             {item.privileges.length > 0 ? (
                                                 item.privileges.map((priv, index) => (
                                                 <span key={index}>
-                                                    <i className="bi bi-circle-fill icon-priv"></i>{priv.title} <br />
+                                                    <i className="bi bi-circle-fill icon-priv"></i>{priv.title} ({langueActive?.indice === "fr" ? priv.libelleFr : langueActive?.indice === "en" ? priv.libelleEn : ""}) <br />
                                                 </span>
                                                 ))
                                             ) : null}

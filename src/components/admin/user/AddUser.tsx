@@ -32,7 +32,7 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
       };
 
       const [siteListe, setSiteListe] = useState<{ id: number; nom?: string; libelle?: string }[]>([]);
-      const [privilegeListe, setPrivilegeListe] = useState<{ id: number; title?: string; description?: string }[]>([]);
+      const [privilegeListe, setPrivilegeListe] = useState<{ id: number; title?: string; description?: string; libelleFr: string; libelleEn: string; }[]>([]);
       const {codeCouleur} = useGlobalActiveCodeCouleur();
       const state = store.getState();
       const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
@@ -51,8 +51,6 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
         try {
           const response = await api.get("/api/privileges");
           const privileges = response.data;
-          console.log(privileges);
-
           return privileges;
         } catch (error) {
           return 0;
@@ -191,7 +189,7 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                         <option value="" disabled>{t("selecetpriv")}</option>
                         {privilegeListe.map((priv) => (
                         <option key={priv.id} value={`/api/privileges/${priv.id}`} className="mt-3">
-                            {priv.title}
+                            {priv.title} ({langueActive?.indice === "fr" ? priv.libelleFr : langueActive?.indice === "en" ? priv.libelleEn : ""})
                         </option>
                         ))}
                     </select>

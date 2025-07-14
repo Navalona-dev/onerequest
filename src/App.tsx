@@ -69,6 +69,7 @@ function App() {
                   <Route path="/region" element={<ContentPage />} />
                   <Route path="/type-demande" element={<ContentPage />} />
                   <Route path="/demande" element={<ContentPage />} />
+                  <Route path="/privilege" element={<ContentPage />} />
                   <Route path="/categorie-domaine-entreprise" element={<ContentPage />} />
                   <Route path="/:idRegion/commune" element={<ContentPage />} />
                   <Route path="/:idCategorieDomaine/domaine-entreprise" element={<ContentPage />} />

@@ -20,6 +20,7 @@ import DomaineEntreprise from "./DomaineEntreprise";
 import TypeDemandePage from "./TypeDemandePage";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 import DemandePage from "./DemandePage";
+import PrivilegePage from "./PrivilegePage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -44,7 +45,8 @@ const ContentPage = () => {
             "region",
             "categorie-domaine-entreprise",
             "type-demande",
-            "demande"
+            "demande",
+            "privilege"
         ].includes(path)) {
             setCurrentModule(path as any);
         } else if (/^\d+\/commune$/.test(path)) {
@@ -83,6 +85,8 @@ const ContentPage = () => {
                 return <TypeDemandePage />;
             case "demande":
                 return <DemandePage />;
+            case "privilege":
+                return <PrivilegePage />;
             default:
                 return <Dashboard />;
         }

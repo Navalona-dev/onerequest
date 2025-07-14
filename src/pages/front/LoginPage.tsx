@@ -5,6 +5,7 @@ import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCoule
 import { useNavigate } from "react-router-dom";
 import { useLangueActive } from "../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
+import { data } from "jquery";
 
 const LoginPageFront = () => {
   const [email, setEmail] = useState("");

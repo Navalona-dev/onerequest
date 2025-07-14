@@ -51,7 +51,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ setShowModalUpdate, userId, ini
       };
 
   const [siteListe, setSiteListe] = useState<{ id: number; nom?: string; libelle?: string }[]>([]);
-  const [privilegeListe, setPrivilegeListe] = useState<{ id: number; title?: string; description?: string }[]>([]);
+  const [privilegeListe, setPrivilegeListe] = useState<{ id: number; title?: string; description?: string; libelleFr: string; libelleEn: string; }[]>([]);
   const {codeCouleur} = useGlobalActiveCodeCouleur();
   const state = store.getState();
   const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
@@ -210,7 +210,7 @@ const listePrivilege = async () => {
                         <option value="" disabled>{t("selecetpriv")}</option>
                         {privilegeListe.map((priv) => (
                         <option key={priv.id} value={`/api/privileges/${priv.id}`} className="mt-3">
-                            {priv.title}
+                            {priv.title} ({langueActive?.indice === "fr" ? priv.libelleFr : langueActive?.indice === "en" ? priv.libelleEn : ""})
                         </option>
                         ))}
                     </select>

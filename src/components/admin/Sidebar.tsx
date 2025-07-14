@@ -311,6 +311,20 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               </span>
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.user")}</span>
             </li>
+            {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') && user.isSuperAdmin === true ? (
+              <li
+                className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                  activeMenu === "privilege" ? "bg-[#1c2d55] text-white" : ""
+                } ${currentModule === "privilege" ? "bg-[#1c2d55] text-white" : ""}`}
+                onClick={() => handleMenuClick("privilege")}
+              >
+                <span className="icon-sidebar">
+                <i className="bi bi-lock-fill"></i>
+                </span>
+                <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.privileges")}</span>
+              </li>
+            ) : null}
+            
           </ul>
         </nav>
     </div>
