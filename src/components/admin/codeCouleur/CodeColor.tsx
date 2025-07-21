@@ -228,7 +228,7 @@ const CodeColor = () => {
               ) : (
                 <tr>
                   <td colSpan={6} className="px-6 py-4 text-gray-500">
-                    Aucun enregistrement trouvé
+                    {t("nodata")}
                   </td>
                 </tr>
               )}

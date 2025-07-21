@@ -129,7 +129,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
             confirmButtonText: "OK",
-            cancelButtonText: "Cancel",
+            cancelButtonText: langueActive?.indice === "en" ? "Cancel" : langueActive?.indice === "fr" ? "Annuler" : "",
             background: "#1c2d55",
             color: "#fff",
           }).then(() => {
@@ -140,7 +140,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
         } catch (error) {
           Swal.fire({
             icon: "error",
-            title: "Erreur",
+            title: langueActive?.indice === "fr" ? "Erreur" : langueActive?.indice === "en" ? "Error" : "",
             text: langueActive?.indice === "fr" ? "Erreur lors de l'ajout du site." : 
             langueActive?.indice === "en" ? "Error occurred while adding the site." : "",
             confirmButtonColor: "#ef4444",

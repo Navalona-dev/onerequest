@@ -70,8 +70,11 @@ function App() {
                   <Route path="/type-demande" element={<ContentPage />} />
                   <Route path="/demande" element={<ContentPage />} />
                   <Route path="/privilege" element={<ContentPage />} />
+                  <Route path="/niveau-hierarchiques" element={<ContentPage />} />
+                  <Route path="/departement" element={<ContentPage />} />
                   <Route path="/categorie-domaine-entreprise" element={<ContentPage />} />
                   <Route path="/:idRegion/commune" element={<ContentPage />} />
+                  <Route path="/:idDepartement/niveau-hierarchique" element={<ContentPage />} />
                   <Route path="/:idCategorieDomaine/domaine-entreprise" element={<ContentPage />} />
 
                 </Route>

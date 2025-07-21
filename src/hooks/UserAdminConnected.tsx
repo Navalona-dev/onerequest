@@ -5,8 +5,6 @@ const useUserAdminConnected = () => {
 
   useEffect(() => {
     const raw = sessionStorage.getItem("dataUser");
-    console.log(raw);
-
     try {
       const parsed = raw ? JSON.parse(raw) : null;
       setUser(parsed);

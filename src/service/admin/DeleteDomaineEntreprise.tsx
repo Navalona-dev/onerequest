@@ -6,14 +6,14 @@ const deleteDomaineEntreprise = async (
     langueActive: "fr" | "en" = "fr"
   ) => {  
     const result = await Swal.fire({
-      title: "Es-tu sûr ?",
-      text: "Cette action est irréversible !",
+      title: langueActive === "fr" ? "Es-tu sûr ?" : langueActive === "en" ? "Are you sure?" : "",
+       text: langueActive === "fr" ? "Cette action est irréversible !" : langueActive === "en" ? "This action is irreversible!" : "",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
       cancelButtonColor: "#6b7280", // gris
-      confirmButtonText: "Oui, supprimer !",
-      cancelButtonText: "Annuler",
+      confirmButtonText: langueActive === "fr" ? "Oui, supprimer !" : langueActive === "en" ? "Yes, delete" : "",
+      cancelButtonText: langueActive === "fr" ? "Annuler" : langueActive === "en" ? "Cancel" : "",
       background: "#1c2d55",
       color: "#fff",
     });
@@ -27,7 +27,7 @@ const deleteDomaineEntreprise = async (
           icon: "success",
           title: langueActive === "fr" ? "Bon travail!" : 
             langueActive === "en" ? "Good job !" : "",
-          text: "Domaine entreprise supprimée avec succès !",
+          text: langueActive === "fr" ? "Domaine entreprise supprimée avec succès !" : langueActive === "en" ? "Business domain deleted successfully!" : "",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",
           color: "#fff",
@@ -40,8 +40,8 @@ const deleteDomaineEntreprise = async (
   
         Swal.fire({
           icon: "error",
-          title: "Erreur",
-          text: "Erreur lors de la suppression de région.",
+          title: langueActive === "fr" ? "Erreur" : langueActive === "en" ? "Error" : "",
+          text: langueActive === "fr" ? "Erreur lors de la suppression de domaine entreprise." : langueActive === "en" ? "Error while deleting business domain." : "",
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",

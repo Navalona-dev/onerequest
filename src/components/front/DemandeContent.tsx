@@ -148,7 +148,7 @@ const DemandeContent: React.FC = () => {
     if (!user) {
       Swal.fire({
         icon: "error",
-        title: "Erreur",
+        title: langueActive?.indice === "fr" ? "Erreur" : langueActive?.indice === "en" ? "Error" : "",
         text: "Utilisateur non authentifié.",
       });
       return;
@@ -183,7 +183,7 @@ const DemandeContent: React.FC = () => {
         cancelButtonColor: "#ef4444",
         showCancelButton: true,
         confirmButtonText: "OK",
-        cancelButtonText: "Annuler",
+        cancelButtonText: langueActive?.indice === "fr" ? "Annuler" : langueActive?.indice === "en" ? "Cancel" : "",
         background: "#1c2d55",
         color: "#fff",
       }).then(() => {
@@ -194,7 +194,7 @@ const DemandeContent: React.FC = () => {
     } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "Erreur",
+        title: langueActive?.indice === "fr" ? "Erreur" : langueActive?.indice === "en" ? "Error" : "",
         text: "Erreur lors de l'ajout de la demande.",
         confirmButtonColor: "#ef4444",
         background: "#1c2d55",

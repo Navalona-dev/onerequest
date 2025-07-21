@@ -58,7 +58,7 @@ interface AddDomaineEntrepriseProps {
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
             confirmButtonText: "OK",
-            cancelButtonText: "Cancel",
+            cancelButtonText: langueActive?.indice === "en" ? "Cancel" : langueActive?.indice === "fr" ? "Annuler" : "",
             background: "#1c2d55",
             color: "#fff",
           }).then(() => {
@@ -100,7 +100,7 @@ interface AddDomaineEntrepriseProps {
           
             await Swal.fire({
               icon: "error",
-              title: "Erreur",
+              title: langueActive?.indice === "fr" ? "Erreur" : langueActive?.indice === "en" ? "Error" : "",
               text: errorMessage,
               confirmButtonColor: "#ef4444",
               background: "#1c2d55",

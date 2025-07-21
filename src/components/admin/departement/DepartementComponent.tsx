@@ -5,61 +5,60 @@ import api from "../../../service/Api";
 import Pagination from "../Pagination";
 import { store } from "../../../store";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
-import AddPrivilege from "./AddPrivilege";
-import UpdatePrivilege from "./UpdatePrivilege";
+import AddDepartement from "./AddDepartement";
+import UpdateDepartement from "./UpdateDepartement";
+import deleteDepartement from "../../../service/admin/DeleteDepartement";
+import { Link } from "react-router-dom";
 
-type Privilege = {
+type Departement = {
     id: number;
-    title: string;
-    libelleFr: string;
-    libelleEn: string;
+    nom: string;
     description: string;
+    nomEn: string;
     descriptionEn: string;
 }
 
-const PrivilegeComponent = () => {
+const DepartementComponent = () => {
     const {langueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
-    const [privileges, setListePrivilege] = useState<Privilege[]>([]);
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 5;
+    const usersPerPage = 2;
 
-    const [searchTitle, setSearchTitle] = useState("");
-    const [searchLibelleFr, setSearchLibelleFr] = useState("");
-    const [searchLibelleEn, setSearchLibelleEn] = useState("");
-    const {codeCouleur} = useGlobalActiveCodeCouleur();
+    const [departements, setListeDepartement] = useState<Departement[]>([]);
+
+    const [searchNom, setSearchNom] = useState("");
+    const [searchNomEn, setSearchNomEn] = useState("");
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalUpdate, setShowModalUpdate] = useState(false);
-    const [selectedPrivilege, setSelectedPrivilege] = useState<Privilege | null>(null);
-
+    const [selectedDepartement, setSelectedDepartement] = useState<Departement | null>(null);
 
     useEffect(() => {
-        api.get('/api/privileges')
+        api.get('/api/departements')
         .then((response) => {
-            setListePrivilege(response.data)
+            setListeDepartement(response.data)
         })
-        .catch((error) => console.log("Erreur API", error))
+        .catch((error) => console.log("Erreur API", error));
     }, []);
 
-    const filteredUsers = privileges.filter(priv => {
-        const nomMatch = !searchTitle || priv.title.toLowerCase().includes(searchTitle.toLowerCase());
-        const prenomMatch = !searchLibelleFr || priv.libelleFr.toLowerCase().includes(searchLibelleFr.toLowerCase());
-        const emailMatch = !searchLibelleEn || priv.libelleEn.toLowerCase().includes(searchLibelleEn.toLowerCase());
-    
-        return nomMatch && prenomMatch && emailMatch;
+    const filteredDepartements = departements.filter(dep => {
+        const nomMatch = !searchNom || dep.nom.toLowerCase().includes(searchNom.toLowerCase());
+        const nomEnMatch = !searchNomEn || dep.nomEn.toLowerCase().includes(searchNomEn.toLowerCase());
+        return nomMatch && nomEnMatch;
     });
 
-     //const dataToPaginate = filteredUsers.length > 0 ? filteredUsers : users;
-     const dataToPaginate = filteredUsers;
+     //const dataToPaginate = filteredDepartements.length > 0 ? filteredDepartements : users;
+     const dataToPaginate = filteredDepartements;
 
      const totalPages = Math.max(1, Math.ceil(dataToPaginate.length / usersPerPage));
      
-     const indexOfLastUser = currentPage * usersPerPage;
-     const indexOfFirstUser = indexOfLastUser - usersPerPage;
+     const indexOfLastDepartement = currentPage * usersPerPage;
+     const indexOfFirstDepartement = indexOfLastDepartement - usersPerPage;
+
+     const {codeCouleur} = useGlobalActiveCodeCouleur();
      
-     const currentprivileges = dataToPaginate.slice(indexOfFirstUser, indexOfLastUser);
+     const currentDepartements = dataToPaginate.slice(indexOfFirstDepartement, indexOfLastDepartement);
 
      useEffect(() => {
         if (currentPage > totalPages) {
@@ -71,7 +70,7 @@ const PrivilegeComponent = () => {
         <>
             <div className="h-[69vh] overflow-y-auto my-3">
                 <div className="color-header px-4 flex justify-between items-center mb-3">
-                    <h4 className="font-bold text-white">{t("privilegeListe")}</h4>
+                    <h4 className="font-bold text-white">{t("listDepartement")}</h4>
                         <button
                         onClick={(e) => {
                             e.preventDefault();
@@ -84,30 +83,21 @@ const PrivilegeComponent = () => {
                     
                 </div>
                 <div className="card my-6 px-5 mx-8 border border-gray-700 py-5">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="w-full">
                             <input type="text" name="" id="" 
-                            placeholder={`${t("title")}...`}
-                            value={searchTitle}
-                            onChange={(e) => setSearchTitle(e.target.value)}
+                            placeholder={`${t("nomFr")}...`}
+                            value={searchNom}
+                            onChange={(e) => setSearchNom(e.target.value)}
                             className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
                                     focus:outline-none focus:ring-0 focus:border-transparent"
                             />
                         </div>
                         <div className="w-full">
                             <input type="text" name="" id="" 
-                            placeholder={`${t("libelleFr")}...`}
-                            value={searchLibelleFr}
-                            onChange={(e) => setSearchLibelleFr(e.target.value)}
-                            className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
-                                    focus:outline-none focus:ring-0 focus:border-transparent"
-                            />
-                        </div>
-                        <div className="w-full">
-                            <input type="text" name="" id="" 
-                            placeholder={`${t("libelleEn")}...`}
-                            value={searchLibelleEn}
-                            onChange={(e) => setSearchLibelleEn(e.target.value)}
+                            placeholder={`${t("nomEn")}...`}
+                            value={searchNomEn}
+                            onChange={(e) => setSearchNomEn(e.target.value)}
                             className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
                                     focus:outline-none focus:ring-0 focus:border-transparent"
                             />
@@ -124,13 +114,10 @@ const PrivilegeComponent = () => {
                                         Actions
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        {t("title")}
+                                        {t("nomFr")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        {t("libelleFr")}
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-white">
-                                        {t("libelleEn")}
+                                        {t("nomEn")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
                                         {t("descriptionFr")}
@@ -142,35 +129,47 @@ const PrivilegeComponent = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentprivileges.length > 0 ? (
-                                    currentprivileges.map((item, index) => (
-                                        <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"} text-nowrap`}>
-                                            <th className="px-6 py-4">
+                                {currentDepartements.length > 0 ? (
+                                    currentDepartements.map((item, index) => (
+                                        <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
+                                            <th className="px-6 py-4 text-nowrap">
                                                 <>
-                                                    <a href="#"
+                                                <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
+                                                        setSelectedDepartement(item);
                                                         setShowModalUpdate(true);
-                                                        setSelectedPrivilege(item);
                                                     }}
-                                                        title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
-                                                        <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
-                                                        style={{
-                                                            backgroundColor: codeCouleur?.btnColor
-                                                        }}
-                                                        ></i>
-                                                    </a>
+                                                    title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
+                                                    <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
+                                                    style={{
+                                                        backgroundColor: codeCouleur?.btnColor
+                                                    }}
+                                                    ></i>
+                                                </a>
+                                                <a href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        if (langueActive) {
+                                                            deleteDepartement(item.id, langueActive.indice as "fr" | "en");
+                                                        }
+                                                      }}
+                                                    title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                </a>
+                                                
+                                                <Link to={`/${item.id}/niveau-hierarchique`}
+                                                    title={langueActive?.indice === "fr" ? "Liste niveau hierarchique" : langueActive?.indice === "en" ? "List of Hierarchical Levels" : ""}
+                                                >
+                                                    <i className="bi bi-list-task bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                </Link>
                                                 </>
                                             
                                             </th>
                                             <td className="px-6 py-4">
-                                                {item.title} 
+                                                {item.nom}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {item.libelleFr}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {item.libelleEn}
+                                                {item.nomEn}
                                             </td>
                                             <td className="px-6 py-4">
                                                 {item.description}
@@ -201,23 +200,23 @@ const PrivilegeComponent = () => {
                 </div>
             </div>
             {showModalAdd && (
-                <AddPrivilege setShowModalAdd={setShowModalAdd} />
+                <AddDepartement setShowModalAdd={setShowModalAdd} />
             )}
 
-            {showModalUpdate && selectedPrivilege && (
-                <UpdatePrivilege 
+            {showModalUpdate && selectedDepartement && (
+                <UpdateDepartement
+                depId={selectedDepartement.id}
                 setShowModalUpdate={setShowModalUpdate}
-                privilegeId={selectedPrivilege.id}
                 initialData={{
-                    libelleFr: selectedPrivilege.libelleFr,
-                    libelleEn: selectedPrivilege.libelleEn,
-                    description: selectedPrivilege.description,
-                    descriptionEn: selectedPrivilege.descriptionEn
+                    nom: selectedDepartement.nom,
+                    nomEn: selectedDepartement.nomEn,
+                    description: selectedDepartement.description,
+                    descriptionEn: selectedDepartement.descriptionEn
                 }}
                 />
-            ) }
+            )}
         </>
     )
 }
 
-export default PrivilegeComponent;
+export default DepartementComponent;

@@ -127,8 +127,9 @@
       "enattente": "Pending",
       "valide": "Validated",
       "accepte": "Accepted",
-      "privileges": "Privileges"
-
+      "privileges": "Privileges",
+      "departements": "Departments",
+      "niveauhierarchique": "Hierarchy Levels"
     },
     "header": {
       "search": "Search"
@@ -187,7 +188,21 @@
     "userlisttitle": "User list",
     "privilegeListe": "Privilege list",
     "libelleFr": "Label in French",
-    "libelleEn": "Label in English"
+    "libelleEn": "Label in English",
+    "descriptionFr": "Description in french",
+    "descriptionEn": "Description in english",
+    "addPrivilege": "Create new privilege",
+    "updatePrivilegeTitle": "Update privilege",
+    "ordre": "Order",
+    "nomFr": "Name in french",
+    "nomEn": "Name in english",
+    "addDepartement": "Create new department",
+    "listDepartement": "List department",
+    "listeNiveau": "List of Hierarchical Levels",
+    "departements": "Departments",
+    "selectDepartement": "Select departement",
+    "updateniveautitle": "Update Hierarchical Levels",
+    "addRang": "Crate new order"
 
   }
   

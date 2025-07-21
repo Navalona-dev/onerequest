@@ -188,6 +188,30 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
 
             <li
               className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "departement" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "departement" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("departement")}
+            >
+              <span className="icon-sidebar">
+              <i className="bi bi-house-fill"></i>
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.departements")}</span>
+            </li>
+
+            <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "niveau-hierarchiques" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "niveau-hierarchiques" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("niveau-hierarchiques")}
+            >
+              <span className="icon-sidebar">
+              <i className="bi bi-diagram-3-fill"></i>
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.niveauhierarchique")}</span>
+            </li>
+
+            <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
                 activeMenu === "categorie-domaine-entreprise" ? "bg-[#1c2d55] text-white" : ""
               } ${currentModule === "categorie-domaine-entreprise" ? "bg-[#1c2d55] text-white" : ""}`}
               onClick={() => handleMenuClick("categorie-domaine-entreprise")}

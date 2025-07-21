@@ -73,7 +73,7 @@ const UpdateCommune: React.FC<UpdateCommuneProps> = ({ setShowModalUpdate, commu
     } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "Erreur",
+        title: langueActive?.indice === "fr" ? "Erreur" : langueActive?.indice === "en" ? "Error" : "",
         text: langueActive?.indice === "fr" ? "Une erreur est survenue lors de la mise à jour." : 
         langueActive?.indice === "en" ? "" : "An error occurred during the update.",
         confirmButtonColor: "#ef4444",

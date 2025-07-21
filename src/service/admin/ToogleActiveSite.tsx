@@ -15,13 +15,13 @@ const toggleActiveSite = async (
 
   const result = await Swal.fire({
     title: `Es-tu sûr ?`,
-    text: `Cette action va ${actionWord} le site. Cette action est irréversible !`,
+    text: langue === "fr" ? `Cette action va ${actionWord} le site. Cette action est irréversible !` : langue === "en" ? `This action will ${actionWord} the site. This action is irreversible!` : "",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#ef4444",
     cancelButtonColor: "#6b7280",
     confirmButtonText: `Oui, ${pastActionWord} !`,
-    cancelButtonText: "Annuler",
+    cancelButtonText: langue === "fr" ? "Annuler" : langue === "en" ? "Cancel" : "",
     background: "#1c2d55",
     color: "#fff",
   });
@@ -48,8 +48,8 @@ const toggleActiveSite = async (
 
       Swal.fire({
         icon: "error",
-        title: "Erreur",
-        text: `Erreur lors de la ${actionWord} du site.`,
+        title: langue === "fr" ? "Erreur" : langue === "en" ? "Error" : "",
+        text: langue === "fr" ? `Erreur lors de la ${actionWord} du site.` : langue === "en" ? `Error occurred while ${actionWord} the site.` : "",
         confirmButtonColor: "#ef4444",
         background: "#1c2d55",
         color: "#fff",

@@ -285,7 +285,7 @@ const UserComponent = () => {
                                 ))
                             ) : (
                                 <tr className="bg-[#1c2d55] text-center">
-                                    <td colSpan={6} className="px-6 py-4">Aucun enregistrement trouvé</td>
+                                    <td colSpan={6} className="px-6 py-4">{t("nodata")}</td>
                                 </tr>
                             )}
                             

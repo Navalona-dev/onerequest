@@ -111,7 +111,7 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
         let errorMessage = error.response?.data?.message || "Erreur inconnue.";
         Swal.fire({
           icon: "error",
-          title: "Erreur",
+          title: langueActive?.indice === "fr" ? "Erreur" : langueActive?.indice === "en" ? "Error" : "",
           text: errorMessage,
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",

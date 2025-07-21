@@ -73,7 +73,7 @@ const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
             confirmButtonText: "OK",
-            cancelButtonText: "Cancel",
+            cancelButtonText: langueActive?.indice === "en" ? "Cancel" : langueActive?.indice === "fr" ? "Annuler" : "",
             background: "#1c2d55",
             color: "#fff",
           }).then(() => {
@@ -84,7 +84,7 @@ const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
         } catch (error) {
           Swal.fire({
             icon: "error",
-            title: "Erreur",
+            title: langueActive?.indice === "fr" ? "Erreur" : langueActive?.indice === "en" ? "Error" : "",
             text: langueActive?.indice === "fr" ? "Erreur lors de l'ajout du code couleur." : 
             langueActive?.indice === "en" ? "Error adding the color code." : "",
             confirmButtonColor: "#ef4444",

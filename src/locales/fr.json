@@ -125,7 +125,9 @@
       "enattente": "En attente",
       "valide": "Validée",
       "accepte": "Acceptée",
-      "privileges": "Privilèges"
+      "privileges": "Privilèges",
+      "departements": "Departements",
+      "niveauhierarchique": "Niveau hierarchique"
     },
     "header": {
       "search": "Recherche"
@@ -184,7 +186,20 @@
     "userlisttitle": "Liste utilisateur",
     "privilegeListe": "Liste privilèges",
     "libelleFr": "Libellé en français",
-    "libelleEn": "Libellé en anglais"
-
+    "libelleEn": "Libellé en anglais",
+    "descriptionFr": "Description en français",
+    "descriptionEn": "Description en anglais",
+    "addPrivilege": "Créer nouveau privilège",
+    "updatePrivilegeTitle": "Modification privilège",
+    "ordre": "Ordre",
+    "nomFr": "Nom en français",
+    "nomEn": "Nom en anglais",
+    "addDepartement": "Créer nouveau departement",
+    "listDepartement": "Liste departement",
+    "listeNiveau": "Liste niveau hierarchique",
+    "departements": "Departements",
+    "selectDepartement": "Selectionner un departement",
+    "updateniveautitle": "Modifier niveau hierarchique",
+    "addRang": "Créer un nouveau rang"
   }
   

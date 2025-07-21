@@ -7,14 +7,14 @@ const deleteRegion = async (
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>
   ) => {  
     const result = await Swal.fire({
-      title: "Es-tu sûr ?",
-      text: "Cette action est irréversible !",
+      title: langueActive === "fr" ? "Es-tu sûr ?" : langueActive === "en" ? "Are you sure?" : "",
+       text: langueActive === "fr" ? "Cette action est irréversible !" : langueActive === "en" ? "This action is irreversible!" : "",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
       cancelButtonColor: "#6b7280", // gris
-      confirmButtonText: "Oui, supprimer !",
-      cancelButtonText: "Annuler",
+      confirmButtonText: langueActive === "fr" ? "Oui, supprimer !" : langueActive === "en" ? "Yes, delete" : "",
+      cancelButtonText: langueActive === "fr" ? "Annuler" : langueActive === "en" ? "Cancel" : "",
       background: "#1c2d55",
       color: "#fff",
     });
@@ -28,7 +28,7 @@ const deleteRegion = async (
           icon: "success",
           title: langueActive === "fr" ? "Bon travail!" : 
             langueActive === "en" ? "Good job !" : "",
-          text: "Region supprimée avec succès !",
+          text: langueActive === "fr" ? "Region supprimée avec succès !" : langueActive === "en" ? "Region deleted successfully!" : "",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",
           color: "#fff",
@@ -42,8 +42,8 @@ const deleteRegion = async (
   
         Swal.fire({
           icon: "error",
-          title: "Erreur",
-          text: "Erreur lors de la suppression de région.",
+          title: langueActive === "fr" ? "Erreur" : langueActive === "en" ? "Error" : "",
+          text: langueActive === "fr" ? "Erreur lors de la suppression de région." : langueActive === "en" ? "Error occurred while deleting the region." : "",
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",

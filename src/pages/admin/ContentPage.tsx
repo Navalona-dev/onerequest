@@ -21,6 +21,9 @@ import TypeDemandePage from "./TypeDemandePage";
 import { useGlobalActiveCodeCouleur } from "../../hooks/UseGlobalActiveCodeCouleur";
 import DemandePage from "./DemandePage";
 import PrivilegePage from "./PrivilegePage";
+import DepartementPage from "./DepartementPage";
+import NiveauHierarchiqueByDepartementPage from "./NiveauHierarchiqueByDepartementPage";
+import NiveauHierarchiquePage from "./NiveauHierarchiquePage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -46,7 +49,9 @@ const ContentPage = () => {
             "categorie-domaine-entreprise",
             "type-demande",
             "demande",
-            "privilege"
+            "privilege",
+            "departement",
+            "niveau-hierarchiques"
         ].includes(path)) {
             setCurrentModule(path as any);
         } else if (/^\d+\/commune$/.test(path)) {
@@ -55,7 +60,11 @@ const ContentPage = () => {
         }else if (/^\d+\/domaine-entreprise$/.test(path)) {
             
             setCurrentModule("domaine-entreprise");
-        } else {
+        } else if (/^\d+\/niveau-hierarchique$/.test(path)) {
+            
+            setCurrentModule("niveau-hierarchique");
+        }
+        else {
             setCurrentModule("dashboard"); // fallback
         }
     }, [location.pathname, setCurrentModule]);
@@ -87,6 +96,12 @@ const ContentPage = () => {
                 return <DemandePage />;
             case "privilege":
                 return <PrivilegePage />;
+            case "departement":
+                return <DepartementPage />;
+            case "niveau-hierarchique":
+                return <NiveauHierarchiqueByDepartementPage />;
+            case "niveau-hierarchiques":
+                return <NiveauHierarchiquePage />;
             default:
                 return <Dashboard />;
         }

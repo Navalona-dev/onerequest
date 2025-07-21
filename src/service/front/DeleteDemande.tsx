@@ -6,14 +6,14 @@ const deleteDemandeFront = async (
     langueActive: "fr" | "en" | null = "fr",
   ) => {  
     const result = await Swal.fire({
-      title: "Es-tu sûr ?",
-      text: "Cette action est irréversible !",
+      title: langueActive === "fr" ? "Es-tu sûr ?" : langueActive === "en" ? "Are you sure?" : "",
+       text: langueActive === "fr" ? "Cette action est irréversible !" : langueActive === "en" ? "This action is irreversible!" : "",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
       cancelButtonColor: "#6b7280", // gris
-      confirmButtonText: "Oui, supprimer !",
-      cancelButtonText: "Annuler",
+      confirmButtonText: langueActive === "fr" ? "Oui, supprimer !" : langueActive === "en" ? "Yes, delete" : "",
+      cancelButtonText: langueActive === "fr" ? "Annuler" : langueActive === "en" ? "Cancel" : "",
       background: "#1c2d55",
       color: "#fff",
     });
@@ -40,7 +40,7 @@ const deleteDemandeFront = async (
   
         Swal.fire({
           icon: "error",
-          title: "Erreur",
+          title: langueActive === "fr" ? "Erreur" : langueActive === "en" ? "Error" : "",
           text: "Erreur lors de la suppression de demande.",
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",

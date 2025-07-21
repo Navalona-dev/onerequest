@@ -119,7 +119,7 @@ const handleChange = (
       
         await Swal.fire({
           icon: "error",
-          title: "Erreur",
+          title: langueActive?.indice === "fr" ? "Erreur" : langueActive?.indice === "en" ? "Error" : "",
           text: errorMessage,
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
