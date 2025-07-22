@@ -9,6 +9,7 @@ import AddDepartement from "./AddDepartement";
 import UpdateDepartement from "./UpdateDepartement";
 import deleteDepartement from "../../../service/admin/DeleteDepartement";
 import { Link } from "react-router-dom";
+import UserAdminConnected from "../../../hooks/UserAdminConnected";
 
 type Departement = {
     id: number;
@@ -17,6 +18,26 @@ type Departement = {
     nomEn: string;
     descriptionEn: string;
 }
+
+type Site = {
+    id: number;
+    nom: string;
+}
+
+type Privilege = {
+    id: number;
+    title: string;
+  };
+
+type UserType = {
+    id: number;
+    nom: string;
+    prenom: string;
+    privileges: Privilege[];
+    site: Site;
+    message: string;
+    isSuperAdmin: boolean;
+  };
 
 const DepartementComponent = () => {
     const {langueActive} = useLangueActive();
@@ -33,14 +54,23 @@ const DepartementComponent = () => {
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalUpdate, setShowModalUpdate] = useState(false);
     const [selectedDepartement, setSelectedDepartement] = useState<Departement | null>(null);
+    const [site, setSite] = useState<Site | null>(null);
+    const user = UserAdminConnected() as UserType | null;
 
     useEffect(() => {
-        api.get('/api/departements')
+        api.get('/api/sites/current')
+        .then((response) => {
+            setSite(response.data)
+        })
+        .catch((error) => console.log("Erreur API", error));
+
+        //api.get('/api/departements')
+        api.get(`/api/sites/${site?.id}/departements`)
         .then((response) => {
             setListeDepartement(response.data)
         })
         .catch((error) => console.log("Erreur API", error));
-    }, []);
+    }, [site?.id]);
 
     const filteredDepartements = departements.filter(dep => {
         const nomMatch = !searchNom || dep.nom.toLowerCase().includes(searchNom.toLowerCase());
@@ -71,15 +101,18 @@ const DepartementComponent = () => {
             <div className="h-[69vh] overflow-y-auto my-3">
                 <div className="color-header px-4 flex justify-between items-center mb-3">
                     <h4 className="font-bold text-white">{t("listDepartement")}</h4>
+                    {user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
                         <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setShowModalAdd(true);
-                        }}
-                        className="px-5 py-2 text-white rounded"
-                        >
-                        {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
-                    </button>
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setShowModalAdd(true);
+                            }}
+                            className="px-5 py-2 text-white rounded"
+                            >
+                            {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
+                        </button>
+                    ) : null}
+                    
                     
                 </div>
                 <div className="card my-6 px-5 mx-8 border border-gray-700 py-5">
@@ -105,8 +138,8 @@ const DepartementComponent = () => {
                     
                     </div>
                 </div>
-                <div className="mx-3 w-[153vh]">
-                    <div className="w-[38vh] md:w-full sm:w-[38vh] h-[55vh] overflow-auto">
+                <div className="mx-3">
+                    <div className="w-[38vh] md:w-full sm:w-[38vh] h-[40vh] md:h-[55vh] sm:h-[40vh] overflow-auto">
                         <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
                                 <tr className="text-nowrap border-b-2 border-gray-700 ...">
@@ -134,28 +167,33 @@ const DepartementComponent = () => {
                                         <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
                                             <th className="px-6 py-4 text-nowrap">
                                                 <>
-                                                <a href="#"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        setSelectedDepartement(item);
-                                                        setShowModalUpdate(true);
-                                                    }}
-                                                    title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
-                                                    <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
-                                                    style={{
-                                                        backgroundColor: codeCouleur?.btnColor
-                                                    }}
-                                                    ></i>
-                                                </a>
-                                                <a href="#"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        if (langueActive) {
-                                                            deleteDepartement(item.id, langueActive.indice as "fr" | "en");
-                                                        }
-                                                      }}
-                                                    title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
-                                                </a>
+                                                {user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
+                                                    <>
+                                                        <a href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setSelectedDepartement(item);
+                                                            setShowModalUpdate(true);
+                                                        }}
+                                                        title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
+                                                        <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
+                                                        style={{
+                                                            backgroundColor: codeCouleur?.btnColor
+                                                        }}
+                                                        ></i>
+                                                        </a>
+                                                        <a href="#"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                if (langueActive) {
+                                                                    deleteDepartement(item.id, langueActive.indice as "fr" | "en");
+                                                                }
+                                                            }}
+                                                            title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                        </a>
+                                                    </>
+                                                ) : null}
+                                                
                                                 
                                                 <Link to={`/${item.id}/niveau-hierarchique`}
                                                     title={langueActive?.indice === "fr" ? "Liste niveau hierarchique" : langueActive?.indice === "en" ? "List of Hierarchical Levels" : ""}

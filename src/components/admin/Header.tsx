@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useLayoutContent } from '../../contexts/admin/LayoutContext';
 import api from "../../service/Api";
@@ -58,6 +58,9 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
   const token = sessionStorage.getItem("jwt");
   const email = sessionStorage.getItem("email");
 
+  const locationRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
+
   const getLangLabel = (lang: Langue): string => {
     return langueActive?.indice === "fr" ? lang.titleFr : lang.titleEn;
   };
@@ -105,6 +108,23 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
   };
 
   useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (locationRef.current && !locationRef.current.contains(event.target as Node)) {
+        setLocationDropdownOpen(false);
+      }
+      if (langRef.current && !langRef.current.contains(event.target as Node)) {
+        setLangDropdownOpen(false);
+      }
+    }
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
+
+  useEffect(() => {
     api.get('/api/sites')
       .then(response => setSites(response.data))
       .catch(error => console.error("Erreur API:", error));
@@ -121,7 +141,7 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
     >
       <div>
         {/* Boutons collapse */}
-        <button className="block md:hidden text-white text-xl" onClick={onToggleMobileSidebar}>
+        <button className="block md:hidden text-white text-xl px-2 py-1 rounded" onClick={onToggleMobileSidebar}>
           <i className="bi bi-list"></i>
         </button>
 
@@ -143,22 +163,23 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
       <div className="relative flex items-center space-x-4">
         {/* Dropdown site pour super_admin */}
         {user?.isSuperAdmin && (
-          <div className="relative">
+          <div className="relative" ref={locationRef}>
             <button
               onClick={toggleLocationDropdown}
               className="flex items-center gap-2 px-3 py-1 bg-white text-black rounded-md shadow hover:bg-gray-100 transition"
             >
-              🌍 <span className="text-sm font-medium">Sites</span>
+              🌍 <span className="text-sm font-medium hidden sm:inline">Sites</span>
               <i className="bi bi-caret-down-fill text-sm"></i>
             </button>
 
             {locationDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-96 bg-white text-black rounded shadow-lg z-50 p-2 grid grid-cols-3 gap-2">
+              <div className=" absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-lg z-50 p-2">
+
                 {sites.length > 0 ? (
                   sites.map((site) => (
                     <div
                       key={site.id}
-                      className="px-3 py-2 text-sm text-center rounded hover:bg-gray-100 cursor-pointer"
+                      className="px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer"
                       style={{
                         backgroundColor: site.isCurrent ? codeCouleur?.btnColor : "",
                         color: site.isCurrent ? "white" : ""
@@ -180,12 +201,12 @@ const Header = ({ onToggleMobileSidebar }: HeaderProps) => {
         )}
 
         {/* Dropdown Langue */}
-        <div className="relative">
+        <div className="relative" ref={langRef}>
           <button
             onClick={toggleLangDropdown}
             className="flex items-center gap-2 px-3 py-1 bg-white text-black rounded-md shadow hover:bg-gray-100 transition"
           >
-            {langueActive?.icon} <span>{langueActive && getLangLabel(langueActive)}</span>
+            {langueActive?.icon} <span className="hidden sm:inline">{langueActive && getLangLabel(langueActive)}</span>
             <i className="bi bi-chevron-down ml-1 text-xs"></i>
           </button>
 

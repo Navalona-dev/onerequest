@@ -109,6 +109,10 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
       setActiveMenu("user");
     }else if (path.includes("/type-demande")) {
       setActiveMenu("type-demande");
+    }else if (path.includes("/departement")) {
+      setActiveMenu("departement");
+    }else if (path.includes("/niveau-hierarchiques")) {
+      setActiveMenu("niveau-hierarchiques");
     }
     else if (path.includes("/categorie-domaine-entreprise")) {
       setActiveMenu("categorie-domaine-entreprise");
@@ -138,7 +142,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
       >
         {onCloseMobileSidebar && (
           <button
-            className="md:hidden absolute top-4 right-4 text-white text-xl"
+            className="md:hidden absolute top-4 right-4 text-white text-xl px-1 rounded"
             onClick={onCloseMobileSidebar}
           >
             <i className="bi bi-x-lg"></i>

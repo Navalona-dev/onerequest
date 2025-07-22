@@ -7,16 +7,20 @@ import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCo
 import { store } from "../../../store";
 import { AxiosError } from "axios";
 
-interface AddRangProps {
-    setShowModalAddRang: React.Dispatch<React.SetStateAction<boolean>>;
+interface UpdateRangProps {
+    setShowModalUpdateRang: React.Dispatch<React.SetStateAction<boolean>>;
+    idRang: number;
     niveauId: number;
     depId: number;
+    initialData: {
+      rang: number;
+    }
 
 }
 
-const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang, niveauId, depId }) => {
+const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalUpdateRang, idRang, niveauId, depId, initialData }) => {
     const [formData, setFormData] = useState({
-        rang: "",
+        rang: initialData.rang,
     });
 
     const {langueActive} = useLangueActive();
@@ -46,21 +50,25 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
         e.preventDefault();
 
         const payload: any = {
-            rang: parseInt(formData.rang, 10),
-            niveauHierarchique: `/api/niveau_hierarchiques/${niveauId}`,
-            departement: `/api/departements/${depId}`,
+            rang: formData.rang,
           };
           
     
         try {
-          await api.post(`/api/niveau_hierarchique_rangs`, payload);
+          await api.patch(`/api/niveau_hierarchique_rangs/${idRang}`, payload, 
+            {
+              headers: {
+                'Content-Type': 'application/merge-patch+json'
+              }
+            }
+          );
     
           Swal.fire({
             icon: "success",
             title: langueActive?.indice === "fr" ? "Bon travail!" : 
             langueActive?.indice === "en" ? "Good job !" : "",
-            text: langueActive?.indice === "fr" ? "Rang ajouté avec succès !" : 
-            langueActive?.indice === "en" ? "Order added successfully!" : "",
+            text: langueActive?.indice === "fr" ? "Rang modifié avec succès !" : 
+            langueActive?.indice === "en" ? "Order updated successfully!" : "",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -69,15 +77,15 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
             background: "#1c2d55",
             color: "#fff",
           }).then(() => {
-            setShowModalAddRang(false);
+            setShowModalUpdateRang(false);
             window.location.reload();
           });
           
         } catch (err) {
             const error = err as AxiosError<{ message?: string }>;
           
-            let errorMessage = langueActive?.indice === "fr" ? "Erreur lors de l'ajout de rang." : 
-            langueActive?.indice === "en" ? "Error while adding order." : "";
+            let errorMessage = langueActive?.indice === "fr" ? "Erreur lors de la mise à jour de rang." : 
+            langueActive?.indice === "en" ? "Error while updating order." : "";
           
             if (error.response) {
               // Si une réponse est retournée par le backend
@@ -154,13 +162,13 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
                             type="submit"
                             className="text-white px-4 py-2 rounded"
                             >
-                            {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
+                            {langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
                             </button>
                         </div>
                     </form>
             
                     <button
-                        onClick={() => setShowModalAddRang(false)}
+                        onClick={() => setShowModalUpdateRang(false)}
                         className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg py-1 px-2 rounded"
                         aria-label="Close modal"
                         >
@@ -172,4 +180,4 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
     )
 }
 
-export default AddRangNiveauHierarchique;
+export default UpdateRangNiveauHierarchique;

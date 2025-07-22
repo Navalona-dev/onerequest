@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const useUserAdminConnected = () => {
+const UserAdminConnected = () => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -17,4 +17,4 @@ const useUserAdminConnected = () => {
   return user;
 };
 
-export default useUserAdminConnected;
+export default UserAdminConnected;
