@@ -88,28 +88,28 @@ const TypeDemandeComponent = () => {
                     
                 </div>
                 <div className="card my-6 px-5 mx-4 border border-gray-700 py-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="w-full">
-                        <input type="text" name="" id="" 
-                        placeholder={`${t("nom")}...`}
-                        value={searchNom}
-                        onChange={(e) => setSearchNom(e.target.value)}
-                        className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
-                                focus:outline-none focus:ring-0 focus:border-transparent"
-                        />
-                    </div>
-                    <div className="w-full">
-                        <input type="text" name="" id="" 
-                        placeholder={`${t("domaine")}...`}
-                        value={searchDomaine}
-                        onChange={(e) => setSearchDomaine(e.target.value)}
-                        className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
-                                focus:outline-none focus:ring-0 focus:border-transparent"
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="w-full">
+                            <input type="text" name="" id="" 
+                            placeholder={`${t("nom")}...`}
+                            value={searchNom}
+                            onChange={(e) => setSearchNom(e.target.value)}
+                            className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
+                                    focus:outline-none focus:ring-0 focus:border-transparent"
+                            />
+                        </div>
+                        <div className="w-full">
+                            <input type="text" name="" id="" 
+                            placeholder={`${t("domaine")}...`}
+                            value={searchDomaine}
+                            onChange={(e) => setSearchDomaine(e.target.value)}
+                            className="pl-10 pr-3 py-2 w-full bg-[#1c2d55] text-white rounded text-sm 
+                                    focus:outline-none focus:ring-0 focus:border-transparent"
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-                <div className="w-[38vh] md:w-full sm:w-[38vh] h-[55vh] overflow-auto">
+                <div className="w-[42vh] md:w-full sm:w-[42vh] h-[55vh] overflow-auto">
                     <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
                             <tr className="text-nowrap border-b-2 border-gray-700 ...">

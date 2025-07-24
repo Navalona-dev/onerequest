@@ -11,6 +11,8 @@ import AddRangNiveauHierarchique from "./AddRangNiveauHierarchique";
 import { Link } from "react-router-dom";
 import UpdateRangNiveauHierarchique from "./UpdateRangNiveauHierarchique";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
+import AddNiveauHierarchique from "./AddNiveauHierarchique";
+import dissocieNiveauHierarchique from "./DissocieNiveauHierarchique";
 
 type Rang = {
     id: number;
@@ -65,6 +67,7 @@ const NiveauHierarchiqueComponent = () => {
     const [showModalAddRang, setShowModalAddRang] = useState(false);
     const [showModalUpdateRang, setShowModalUpdateRang] = useState(false);
     const [selectedNiveau, setSelectedNiveau] = useState<NiveauHierarchique | null>(null);
+    const [showModalAdd, setShowModalAdd] = useState(false);
 
     useEffect(() => {
         const fetchRangs = async () => {
@@ -73,7 +76,7 @@ const NiveauHierarchiqueComponent = () => {
             await Promise.all(
                 niveaux.map(async (niveau) => {
                     try {
-                        const response = await api.get(`/api/niveau_hierarchique/${niveau.id}/departement/${idDepartement}`);
+                        const response = await api.get(`/api/niveau_hierarchiques/${niveau.id}/departement/${idDepartement}`);
                         const rangData = response.data;
 
                         rangsTemp[(niveau.id)] = {
@@ -136,7 +139,12 @@ const NiveauHierarchiqueComponent = () => {
 
             <div className="flex flex-row gap-2">
             {user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
-                <button className="px-5 py-1.5 text-white rounded">
+                <button className="px-5 py-1.5 text-white rounded"
+                onClick={(e) => {
+                    e.preventDefault();
+                    setShowModalAdd(true);
+                }}
+                >
                     {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                 </button>
             ) : null}
@@ -183,14 +191,10 @@ const NiveauHierarchiqueComponent = () => {
                                             {user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
                                                 <>
                                                     <a href="#"
-                                                        title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
-                                                        <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
-                                                        style={{
-                                                            backgroundColor: codeCouleur?.btnColor
-                                                        }}
-                                                        ></i>
-                                                    </a>
-                                                    <a href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        dissocieNiveauHierarchique(item.id,langueActive?.indice as "fr" | "en" , Number(idDepartement), rangs[item.id].id);
+                                                    }}
                                                         title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                     </a>
                                                 </>
@@ -293,6 +297,14 @@ const NiveauHierarchiqueComponent = () => {
                 }}
              />
         )}
+
+        {showModalAdd && idDepartement && (
+            <AddNiveauHierarchique
+                setShowModalAdd={setShowModalAdd}
+                idDepartement={Number(idDepartement)}
+             />
+        )}
+
         
         </>
     )

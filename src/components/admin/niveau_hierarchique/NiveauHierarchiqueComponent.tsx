@@ -9,6 +9,7 @@ import deleteDepartement from "../../../service/admin/DeleteDepartement";
 import { useParams } from 'react-router-dom';
 import AddNiveauHierarchique from "./AddNiveauHierarchique";
 import UpdateNiveauHierarchique from "./UpdateNiveauHierarchique";
+import deleteNiveauHierarchique from "../../../service/admin/DeleteNiveauHierarchique";
 
 type Departement = {
     id: number;
@@ -122,7 +123,10 @@ const NiveauHierarchiqueComponent = () => {
                                                     ></i>
                                                 </a>
                                                 <a href="#"
-                                                
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        deleteNiveauHierarchique(item.id, langueActive?.indice as "fr" | "en")
+                                                    }}
                                                     title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
                                                 </>
