@@ -10,6 +10,12 @@ import UpdateDepartement from "./UpdateDepartement";
 import deleteDepartement from "../../../service/admin/DeleteDepartement";
 import { Link } from "react-router-dom";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
+import AddRangDepartement from "./AddRangDepartement";
+
+type Rang = {
+    'id' : number;
+    rang: number;
+}
 
 type Departement = {
     id: number;
@@ -17,6 +23,7 @@ type Departement = {
     description: string;
     nomEn: string;
     descriptionEn: string;
+    departementRangs: Rang[] | [];
 }
 
 type Site = {
@@ -56,6 +63,7 @@ const DepartementComponent = () => {
     const [selectedDepartement, setSelectedDepartement] = useState<Departement | null>(null);
     const [site, setSite] = useState<Site | null>(null);
     const user = UserAdminConnected() as UserType | null;
+    const [showModalAddRangDep, setShowModalAddRangDep] = useState(false);
 
     useEffect(() => {
         api.get('/api/sites/current')
@@ -64,7 +72,7 @@ const DepartementComponent = () => {
         })
         .catch((error) => console.log("Erreur API", error));
 
-        //api.get('/api/departements')
+        if (!site?.id) return;
         api.get(`/api/sites/${site?.id}/departements`)
         .then((response) => {
             setListeDepartement(response.data)
@@ -153,6 +161,9 @@ const DepartementComponent = () => {
                                         {t("nomEn")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
+                                        {t("ordre")}
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-white">
                                         {t("descriptionFr")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
@@ -210,6 +221,29 @@ const DepartementComponent = () => {
                                                 {item.nomEn}
                                             </td>
                                             <td className="px-6 py-4">
+                                                {item.departementRangs && item.departementRangs.length > 0 ? (
+                                                    item.departementRangs.map((rang, index) => (
+                                                        <>
+                                                            <span>{ rang.rang}</span><br />
+                                                        </>
+                                                    ))
+                                                ) : (
+                                                    <a href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setSelectedDepartement(item);
+                                                        setShowModalAddRangDep(true);
+                                                    }}
+                                                    style={{
+                                                        color: codeCouleur?.textColor
+                                                    }}
+                                                    >
+                                                        <i className="bi bi-plus-circle-fill"></i>
+                                                    </a>
+                                                )}
+                                                
+                                            </td>
+                                            <td className="px-6 py-4">
                                                 {item.description}
                                             </td>
                                             <td className="px-6 py-4">
@@ -220,7 +254,7 @@ const DepartementComponent = () => {
                                     ))
                                 ) : (
                                     <tr className="bg-[#1c2d55] text-center">
-                                        <td colSpan={6} className="px-6 py-4">{t("nodata")}</td>
+                                        <td colSpan={7} className="px-6 py-4">{t("nodata")}</td>
                                     </tr>
                                 )}
                                 
@@ -251,6 +285,12 @@ const DepartementComponent = () => {
                     description: selectedDepartement.description,
                     descriptionEn: selectedDepartement.descriptionEn
                 }}
+                />
+            )}
+            {showModalAddRangDep && selectedDepartement && (
+                <AddRangDepartement 
+                    setShowModalAddRangDep={setShowModalAddRangDep}
+                    depId={selectedDepartement.id}
                 />
             )}
         </>

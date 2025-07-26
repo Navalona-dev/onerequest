@@ -7,12 +7,24 @@ import UpdateTypeDemande from "./UpdateTypeDemande";
 import deleteTypeDemande from "../../../service/admin/DeleteTypeDemande";
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
+import { error } from "console";
+import UserAdminConnected from "../../../hooks/UserAdminConnected";
 
 type Domaine = {
     id: number;
     libelle: string;
     libelleEn: string;
 }
+
+type Site = {
+    id: number;
+    nom: string;
+}
+
+type Privilege = {
+    id: number;
+    title: string;
+  };
 
 type TypeDemande = {
     id: number;
@@ -24,9 +36,19 @@ type TypeDemande = {
     descriptionEn: string;
 }
 
+type UserType = {
+    id: number;
+    nom: string;
+    prenom: string;
+    privileges: Privilege[];
+    site: Site;
+    message: string;
+    isSuperAdmin: boolean;
+  };
+
 const TypeDemandeComponent = () => {
     const state = store.getState();
-    const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
+    const { create, delete: deleteAction, edit, activate, deactivate, dissocie } = state.actionTexts;
     const [typeDemandes, setListeTypeDemande] = useState<TypeDemande[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const typesPerPage = 5;
@@ -34,14 +56,25 @@ const TypeDemandeComponent = () => {
     const [searchNom, setSearchNom] = useState("");
     const [searchDomaine, setSearchDomaine] = useState("");
     const [showModalUpdate, setShowModalUpdate] = useState(false);
+    const [site, setSite] = useState<Site | null>(null);
+    const user = UserAdminConnected() as UserType | null;
 
     useEffect(() => {
-        api.get('/api/type_demandes')
+        api.get('/api/sites/current')
+        .then((response) => {
+            setSite(response.data)
+        })
+        .catch((error) => console.log("Erreur API", error));
+    }, []);
+
+    useEffect(() => {
+        if (!site?.id) return;
+        api.get(`/api/sites/${site?.id}/type-demandes`)
         .then((response) => {
             setListeTypeDemande(response.data)
         } )
         .catch((error) => console.log("Erreur API", error));
-    }, []);
+    }, [site]);
 
 
     const filteredTypes = typeDemandes.filter(type => {
@@ -76,15 +109,18 @@ const TypeDemandeComponent = () => {
              <div className="h-[69vh] overflow-y-auto overflow-x-auto px-3 py-4">
                 <div className="color-header px-4 flex justify-between items-center mb-3">
                     <h4 className="font-bold text-white">{t("listetypedemande")}</h4>
-                    <button
-                    onClick={(e) => {
-                        e.preventDefault();
-                        setShowModalAdd(true);
-                    }}
-                        className="px-5 py-2 text-white rounded"
-                        >
-                        {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
-                    </button>
+                    {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') && user.isSuperAdmin === true ? (
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setShowModalAdd(true);
+                            }}
+                                className="px-5 py-2 text-white rounded"
+                                >
+                                {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
+                        </button>
+                    ) : null}
+                    
                     
                 </div>
                 <div className="card my-6 px-5 mx-4 border border-gray-700 py-5">
@@ -133,6 +169,7 @@ const TypeDemandeComponent = () => {
                                 currentTypeDemandes.map((item, index) => (
                                     <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"} `}>
                                         <th className="px-6 py-4 text-nowrap">
+                                        {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') && user.isSuperAdmin === true ? (
                                             <>
                                                 <a href="#"
                                                 onClick={(e) => {
@@ -150,7 +187,12 @@ const TypeDemandeComponent = () => {
                                                     title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
                                             </>
-                                        
+                                        ) : null}
+                                         {user && user.privileges && user.privileges.some(p => p.title === 'super_admin' || p.title === 'admin_site') ? (
+                                            <a href="#"
+                                                title={langueActive?.indice === "fr" ? dissocie.fr.upperText : langueActive?.indice === "en" ? dissocie.en.upperText : ""}><i className="bi bi-archive-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                            </a>
+                                         ) : null}
                                         </th>
                                         <td className="px-6 py-4">
                                             {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""} 

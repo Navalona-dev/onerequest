@@ -202,7 +202,8 @@
     "departements": "Departments",
     "selectDepartement": "Select departement",
     "updateniveautitle": "Update Hierarchical Levels",
-    "addRang": "Crate new order"
-
+    "addRang": "Crate new order",
+    "typeDemande": "Request type",
+    "selecttypedemande": "Select request type"
   }
   

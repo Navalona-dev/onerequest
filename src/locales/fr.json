@@ -200,6 +200,8 @@
     "departements": "Departements",
     "selectDepartement": "Selectionner un departement",
     "updateniveautitle": "Modifier niveau hierarchique",
-    "addRang": "Créer un nouveau rang"
+    "addRang": "Créer un nouveau rang",
+    "typeDemande": "Type de demande",
+    "selecttypedemande": "Selectionner un type de demande"
   }
   

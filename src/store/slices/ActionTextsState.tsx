@@ -46,6 +46,10 @@ const initialState: ActionTextsState = {
     fr: { actionWord: "voir le fichier", pastActionWord: "vu", upperText: "Voir le fichier" },
     en: { actionWord: "view file", pastActionWord: "viewed", upperText: "View File" },
   },
+  dissocie: {
+    fr: { actionWord: "dissocier", pastActionWord: "dissocié", upperText: "Dissocier" },
+    en: { actionWord: "dissociate", pastActionWord: "dissociated", upperText: "Dissociate" },
+  },
 };
 
 const actionTextsSlice = createSlice({

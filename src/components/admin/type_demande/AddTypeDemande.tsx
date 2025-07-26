@@ -11,29 +11,53 @@ interface AddTypeDemandeProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+type Region = {
+  id: number;
+  nom: string;
+}
+
+type Commune = {
+  id: number;
+  nom: string;
+}
+
+type Site = {
+  id: number;
+  nom: string;
+  region: Region | null;
+  commune: Commune | null;
+}
+
 const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
     const [formData, setFormData] = useState({
         domaine: "",
         nom: "",
+        nomEn: "",
+        sites: [] as string[],
         description: "",
+        descriptionEn: "",
     });
 
     const {langueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
+    const [siteListe, setListeSite] = useState<Site[]>([]);
 
     const fieldLabels: { [key: string]: string } = {
         domaine: t("domaineentreprise"),
-        nom: t("title"),
-        description: "Description",
+        nom: t("nomFr"),
+        nomEn: t("nomEn"),
+        sites: "Sites",
+        description: t("descriptionFr"),
+        descriptionEn: t("descriptionEn")
       };
 
       const [domaineListe, setDomaineListe] = useState<{ id: number; libelle?: string; libelleEn: string }[]>([]);
 
     const listeDomaine = async () => {
       try {
-        const response = await api.get("/api/domaine_entreprises");
+        const response = await api.get('/api/entreprises/domaines');
         const sites = response.data;
         return sites;
       } catch (error) {
@@ -41,14 +65,29 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
       }
     };
 
+    const listeSite = async () => {
+      try {
+        const response = await api.get("/api/sites");
+        const sites = response.data;
+        return sites;
+      } catch (error) {
+        return 0;
+      }
+    };
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-      ) => {
-        const { name, value } = e.target;
+      e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    ) => {
+      const { name, value, multiple } = e.target as HTMLSelectElement;
+    
+      if (multiple) {
+        const values = Array.from((e.target as HTMLSelectElement).selectedOptions, option => option.value);
+        setFormData(prev => ({ ...prev, [name]: values }));
+      } else {
         setFormData(prev => ({ ...prev, [name]: value }));
-      };
-      
+      }
+    };
+    
       
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -124,12 +163,18 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
           setDomaineListe(liste);
         };
 
+        const fetchSiteListe = async () => {
+          const liste = await listeSite();
+          setListeSite(liste);
+        };
+
         fetchDomaineListe();
+        fetchSiteListe();
       }, []);
 
       return (
-        <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
-          <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down">
+        <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50 h-[100vh]">
+          <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4 text-white">{t("addtypedemandetitle")}</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -137,7 +182,9 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
                 <div key={field}>
                   <label className="block text-gray-400 mb-1">
                     {fieldLabels[field] || field}
-                    <sup className="text-red-500">*</sup>
+                    {(field === "nom" || field === "description" || field === "sites" || field === "domaine") ? (
+                      <sup className="text-red-500">*</sup>
+                    ): null}
                     
                   </label>
                   {field === "domaine" ? (
@@ -156,16 +203,32 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
                         ))}
                     </select>
                     ) : (
-                    field === "description" ? (
+                    field === "description" || field === "descriptionEn" ? (
                         <textarea name="description" id=""
                             value={formData.description}
                             onChange={handleChange}
                             className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
-                            required
+                            required={field === "description"}
                             rows={5}
                         >
 
                         </textarea>
+                    ) : field === "sites" ? (
+                      <select
+                        name="sites"
+                        multiple
+                        value={formData.sites}
+                        onChange={handleChange}
+                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                        required
+                    >
+                        <option value="" disabled>{t("selectsite")}</option>
+                        {siteListe.map((site) => (
+                        <option key={site.id} value={`/api/sites/${site.id}`} className="mt-3">
+                            {site.nom} ({site.region?.nom} / {site.commune?.nom})
+                        </option>
+                        ))}
+                    </select>
                     ) : ( 
                     <input
                         type="text"
@@ -174,7 +237,7 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
                         onChange={handleChange}
                         className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                         autoComplete="off"
-                        required
+                        required={field === "nom"}
                     />
                     ))}
                 </div>

@@ -202,7 +202,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.departements")}</span>
             </li>
 
-            <li
+            {/*<li
               className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
                 activeMenu === "niveau-hierarchiques" ? "bg-[#1c2d55] text-white" : ""
               } ${currentModule === "niveau-hierarchiques" ? "bg-[#1c2d55] text-white" : ""}`}
@@ -212,7 +212,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <i className="bi bi-diagram-3-fill"></i>
               </span>
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.niveauhierarchique")}</span>
-            </li>
+            </li>*/}
 
             <li
               className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
@@ -262,8 +262,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
                     isSidebarCollapsed ? 'absolute left-full top-0 ml-2 w-48 bg-[#0B1437] p-2 rounded shadow-lg z-50' : 'ml-8 mt-1'
                   } space-y-1 text-sm`}
                 >
-                  {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') && user.isSuperAdmin === true ? (
-                    <li 
+                 <li 
                         className={`px-2 py-1 rounded ${hoverColor} cursor-pointer
                         ${activeMenu === "type-demande" ? "bg-[#1c2d55] text-white" : ""
                         } ${currentModule === "type-demande" ? "bg-[#1c2d55] text-white" : ""}
@@ -276,7 +275,6 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
                         <i className="mr-2 text-xs bi bi-circle"></i>
                         Types
                     </li>
-                  ) : (null)}
                   
                   <li  
                       className={`px-2 py-1 rounded ${hoverColor} cursor-pointer
