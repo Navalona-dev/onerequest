@@ -130,8 +130,8 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
               if (backendMessage) {
                 errorMessage = backendMessage;
               } else if (status == 400 || status == 422) {
-                errorMessage = langueActive?.indice === "fr" ? "Un rang niveau hierarchique pour ce departement existe déjà." : 
-                langueActive?.indice === "en" ? "An order of hierarchy level with this department already exists." : "";
+                errorMessage = langueActive?.indice === "fr" ? "Un rang departement pour ce type de demande et ce site existe déjà." : 
+                langueActive?.indice === "en" ? "An order of department with this site and request type already exists." : "";
               }
               else if (status === 404) {
                 errorMessage = langueActive?.indice === "fr" ? "Rang introuvable." : 

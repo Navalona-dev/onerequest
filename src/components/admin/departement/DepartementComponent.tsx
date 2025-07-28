@@ -64,6 +64,9 @@ const DepartementComponent = () => {
     const [site, setSite] = useState<Site | null>(null);
     const user = UserAdminConnected() as UserType | null;
     const [showModalAddRangDep, setShowModalAddRangDep] = useState(false);
+    const {codeCouleur} = useGlobalActiveCodeCouleur();
+    const [rangs, setListeRang] = useState<Rang[]>([]);
+    const [rangsParDepartement, setRangsParDepartement] = useState<{ [depId: number]: Rang[] }>({});
 
     useEffect(() => {
         api.get('/api/sites/current')
@@ -78,7 +81,27 @@ const DepartementComponent = () => {
             setListeDepartement(response.data)
         })
         .catch((error) => console.log("Erreur API", error));
+        
     }, [site?.id]);
+
+    useEffect(() => {
+        if (site && departements.length > 0) {
+          departements.forEach(dep => {
+            api
+              .get(`/api/sites/${site.id}/departement/${dep.id}/rangs`)
+              .then((response) => {
+                setRangsParDepartement(prev => ({
+                  ...prev,
+                  [dep.id]: response.data,
+                }));
+              })
+              .catch(err => {
+                console.error(`Erreur pour département ${dep.id} :`, err);
+              });
+          });
+        }
+      }, [site, departements]);
+
 
     const filteredDepartements = departements.filter(dep => {
         const nomMatch = !searchNom || dep.nom.toLowerCase().includes(searchNom.toLowerCase());
@@ -93,8 +116,6 @@ const DepartementComponent = () => {
      
      const indexOfLastDepartement = currentPage * usersPerPage;
      const indexOfFirstDepartement = indexOfLastDepartement - usersPerPage;
-
-     const {codeCouleur} = useGlobalActiveCodeCouleur();
      
      const currentDepartements = dataToPaginate.slice(indexOfFirstDepartement, indexOfLastDepartement);
 
@@ -221,27 +242,39 @@ const DepartementComponent = () => {
                                                 {item.nomEn}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {item.departementRangs && item.departementRangs.length > 0 ? (
-                                                    item.departementRangs.map((rang, index) => (
-                                                        <>
-                                                            <span>{ rang.rang}</span><br />
-                                                        </>
+                                            <div className="text-center">
+                                                <a
+                                                href="#"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setSelectedDepartement(item);
+                                                    setShowModalAddRangDep(true);
+                                                }}
+                                                style={{ color: codeCouleur?.textColor }}
+                                                >
+                                                <i className="bi bi-plus-circle-fill"></i>
+                                                </a><br /><br />
+                                            </div>
+                                               {/* {rangsParDepartement[item.id] && rangsParDepartement[item.id].length > 0 ? (
+                                                    <span className="mr-2">
+                                                        [ {rangsParDepartement[item.id].map(r => r.rang).join(', ')} ]
+                                                    </span>
+                                                ) : null}*/}
+                                                {rangsParDepartement[item.id] && rangsParDepartement[item.id].length > 0 ? (
+                                                    rangsParDepartement[item.id].map((rang, index) => (
+                                                        <p key={rang.id}>
+                                                            <span className="mr-2">{ rang.rang}</span>
+                                                            <a href="#"
+                                                            style={{
+                                                                color: codeCouleur?.textColor
+                                                            }}
+                                                            >
+                                                                <i className="bi bi-pencil-fill"></i>
+                                                            </a>
+                                                        </p>
                                                     ))
-                                                ) : (
-                                                    <a href="#"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        setSelectedDepartement(item);
-                                                        setShowModalAddRangDep(true);
-                                                    }}
-                                                    style={{
-                                                        color: codeCouleur?.textColor
-                                                    }}
-                                                    >
-                                                        <i className="bi bi-plus-circle-fill"></i>
-                                                    </a>
-                                                )}
-                                                
+                                                ) : null}
+
                                             </td>
                                             <td className="px-6 py-4">
                                                 {item.description}
