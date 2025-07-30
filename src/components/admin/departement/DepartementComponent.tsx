@@ -11,10 +11,31 @@ import deleteDepartement from "../../../service/admin/DeleteDepartement";
 import { Link } from "react-router-dom";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
 import AddRangDepartement from "./AddRangDepartement";
+import UpdateRangDepartement from "./UpdateRangDepartement";
+import deleteRangDepartement from "../../../service/admin/DeleteRangDepartement";
+import dissocieDepartement from "../../../service/admin/DissocieDepartement";
+
+type Domaine = {
+    id: number;
+    libelle: string;
+    libelleEn: string;
+}
+
+
+type TypeDemande = {
+    id: number;
+    nom: string;
+    domaine: Domaine;
+    description: string;
+    isActive: boolean;
+    nomEn: string;
+    descriptionEn: string;
+}
 
 type Rang = {
-    'id' : number;
+    id : number;
     rang: number;
+    typeDemande: TypeDemande;
 }
 
 type Departement = {
@@ -50,7 +71,7 @@ const DepartementComponent = () => {
     const {langueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
     const state = store.getState();
-    const { create, delete: deleteAction, edit, activate, deactivate } = state.actionTexts;
+    const { create, delete: deleteAction, edit, activate, deactivate, dissocie } = state.actionTexts;
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 2;
 
@@ -61,11 +82,12 @@ const DepartementComponent = () => {
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalUpdate, setShowModalUpdate] = useState(false);
     const [selectedDepartement, setSelectedDepartement] = useState<Departement | null>(null);
+    const [selectedRang, setSelectedRang] = useState<Rang | null>(null);
     const [site, setSite] = useState<Site | null>(null);
     const user = UserAdminConnected() as UserType | null;
     const [showModalAddRangDep, setShowModalAddRangDep] = useState(false);
+    const [showModalUpdateRangDep, setShowModalUpdateRangDep] = useState(false);
     const {codeCouleur} = useGlobalActiveCodeCouleur();
-    const [rangs, setListeRang] = useState<Rang[]>([]);
     const [rangsParDepartement, setRangsParDepartement] = useState<{ [depId: number]: Rang[] }>({});
 
     useEffect(() => {
@@ -223,6 +245,13 @@ const DepartementComponent = () => {
                                                             }}
                                                             title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                         </a>
+                                                        <a href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            dissocieDepartement(item.id, langueActive?.indice as "fr" | "en", Number(site?.id))
+                                                        }}
+                                                            title={langueActive?.indice === "fr" ? dissocie.fr.upperText : langueActive?.indice === "en" ? dissocie.en.upperText : ""}><i className="bi bi-trash2-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                        </a>
                                                     </>
                                                 ) : null}
                                                 
@@ -241,35 +270,44 @@ const DepartementComponent = () => {
                                             <td className="px-6 py-4">
                                                 {item.nomEn}
                                             </td>
-                                            <td className="px-6 py-4">
-                                            <div className="text-center">
-                                                <a
-                                                href="#"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    setSelectedDepartement(item);
-                                                    setShowModalAddRangDep(true);
-                                                }}
-                                                style={{ color: codeCouleur?.textColor }}
-                                                >
-                                                <i className="bi bi-plus-circle-fill"></i>
-                                                </a><br /><br />
-                                            </div>
-                                               {/* {rangsParDepartement[item.id] && rangsParDepartement[item.id].length > 0 ? (
-                                                    <span className="mr-2">
-                                                        [ {rangsParDepartement[item.id].map(r => r.rang).join(', ')} ]
-                                                    </span>
-                                                ) : null}*/}
+                                            <td className="px-6 py-4 text-nowrap">
+                                                <div className="text-center">
+                                                    <a
+                                                    href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setSelectedDepartement(item);
+                                                        setShowModalAddRangDep(true);
+                                                    }}
+                                                    style={{ color: codeCouleur?.textColor }}
+                                                    title={langueActive?.indice === "fr" ? "Ajout rang" : langueActive?.indice === "en" ? "Add order" : ""}                                                    >
+                                                    <i className="bi bi-plus-circle-fill"></i>
+                                                    </a><br /><br />
+                                                </div>
                                                 {rangsParDepartement[item.id] && rangsParDepartement[item.id].length > 0 ? (
                                                     rangsParDepartement[item.id].map((rang, index) => (
-                                                        <p key={rang.id}>
+                                                        <p key={rang.id} className="mb-3">
                                                             <span className="mr-2">{ rang.rang}</span>
                                                             <a href="#"
-                                                            style={{
-                                                                color: codeCouleur?.textColor
-                                                            }}
+                                                                onClick={(e) => {
+                                                                    e.preventDefault();
+                                                                    setSelectedRang(rang);
+                                                                    setShowModalUpdateRangDep(true);
+                                                                }}
+                                                                style={{
+                                                                    color: codeCouleur?.textColor
+                                                                }}
+                                                                title={langueActive?.indice === "fr" ? "Modification rang" : langueActive?.indice === "en" ? "Update order" : ""}                                                                className="mr-2"
                                                             >
                                                                 <i className="bi bi-pencil-fill"></i>
+                                                            </a>
+                                                            <a href="#"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                deleteRangDepartement(rang.id, langueActive?.indice as "fr" | "en");
+                                                            }}
+                                                                title={langueActive?.indice === "fr" ? "Supprimer rang" : langueActive?.indice === "en" ? "Delete order" : ""}                                                            >
+                                                                <i className="bi bi-trash-fill text-red-500"></i>
                                                             </a>
                                                         </p>
                                                     ))
@@ -326,6 +364,18 @@ const DepartementComponent = () => {
                     depId={selectedDepartement.id}
                 />
             )}
+
+        {showModalUpdateRangDep && selectedRang && (
+            <UpdateRangDepartement
+                setShowModalUpdateRangDep={setShowModalUpdateRangDep}
+                idRang={selectedRang.id}
+                initialData={{
+                    rang: selectedRang.rang,
+                    type: selectedRang.typeDemande ?? null,
+                }}
+            />
+        )}
+
         </>
     )
 }

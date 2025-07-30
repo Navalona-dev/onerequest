@@ -18,7 +18,6 @@ type Domaine = {
     libelleEn: string;
 }
 
-
 type TypeDemande = {
     id: number;
     nom: string;
@@ -29,17 +28,25 @@ type TypeDemande = {
     descriptionEn: string;
 }
 
-interface AddRangProps {
-    setShowModalAddRangDep: React.Dispatch<React.SetStateAction<boolean>>;
-    depId: number;
+interface UpdateDepartementProps {
+    setShowModalUpdateRangDep: React.Dispatch<React.SetStateAction<boolean>>;
+    idRang: number;
+    initialData: {
+      rang: number;
+      type: TypeDemande | null;
+    };
+  }
 
-}
-
-const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, depId }) => {
+const UpdateRangDepartement: React.FC<UpdateDepartementProps> = ({ setShowModalUpdateRangDep,idRang , initialData }) => {
     const [formData, setFormData] = useState({
-        rang: "",
-        type: "",
+        rang: initialData.rang,
+        type: initialData.type ? `/api/type_demandes/${initialData.type.id}` : "",
     });
+
+    console.log('idRang', idRang);
+    console.log("type", initialData.type);
+    console.log("rang", initialData.rang);
+      
 
     const {langueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
@@ -87,22 +94,27 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
         e.preventDefault();
 
         const payload: any = {
-            rang: parseInt(formData.rang, 10),
+            rang: formData.rang,
             site: `/api/sites/${site?.id}`,
-            departement: `/api/departements/${depId}`,
             typeDemande: formData.type
           };
           
     
         try {
-          await api.post(`/api/departement_rangs`, payload);
+          await api.patch(`/api/departement_rangs/${idRang}`, payload,
+            {
+                headers: {
+                  'Content-Type': 'application/merge-patch+json'
+                }
+              }
+          );
     
           Swal.fire({
             icon: "success",
             title: langueActive?.indice === "fr" ? "Bon travail!" : 
             langueActive?.indice === "en" ? "Good job !" : "",
-            text: langueActive?.indice === "fr" ? "Rang ajouté avec succès !" : 
-            langueActive?.indice === "en" ? "Order added successfully!" : "",
+            text: langueActive?.indice === "fr" ? "Rang modifié avec succès !" : 
+            langueActive?.indice === "en" ? "Order updated successfully!" : "",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -111,7 +123,7 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
             background: "#1c2d55",
             color: "#fff",
           }).then(() => {
-            setShowModalAddRangDep(false);
+            setShowModalUpdateRangDep(false);
             window.location.reload();
           });
           
@@ -213,13 +225,13 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
                             type="submit"
                             className="text-white px-4 py-2 rounded"
                             >
-                            {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
+                            {langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
                             </button>
                         </div>
                     </form>
             
                     <button
-                        onClick={() => setShowModalAddRangDep(false)}
+                        onClick={() => setShowModalUpdateRangDep(false)}
                         className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg py-1 px-2 rounded"
                         aria-label="Close modal"
                         >
@@ -231,4 +243,4 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
     )
 }
 
-export default AddRangDepartement;
+export default UpdateRangDepartement;
