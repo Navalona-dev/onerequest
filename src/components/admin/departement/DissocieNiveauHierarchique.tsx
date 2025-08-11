@@ -5,7 +5,6 @@ const dissocieNiveauHierarchique = async (
     idNiveau: number,
     langueActive: "fr" | "en" | null = "fr",
     idDep: number,
-    idRang: number
   ) => {  
     const result = await Swal.fire({
       title: langueActive === "fr" ? "Es-tu sûr ?" : langueActive === "en" ? "Are you sure?" : "",
@@ -22,7 +21,7 @@ const dissocieNiveauHierarchique = async (
   
     if (result.isConfirmed) {
       try {
-        const response = await api.delete(`/api/niveau_hierarchiques/${idNiveau}/departements/${idDep}/rangs/${idRang}/dissocier`);
+        const response = await api.delete(`/api/niveau_hierarchiques/${idNiveau}/departements/${idDep}/dissocier`);
   
         await Swal.fire({
           icon: "success",

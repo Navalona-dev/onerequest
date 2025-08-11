@@ -94,7 +94,7 @@ const UpdateCommune: React.FC<UpdateCommuneProps> = ({ setShowModalUpdate, commu
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-400 mb-1">Nom</label>
+            <label className="block text-gray-400 mb-1">Nom <sup className="text-red-500">*</sup> </label>
             <input
               type="text"
               name="nom"
@@ -107,7 +107,7 @@ const UpdateCommune: React.FC<UpdateCommuneProps> = ({ setShowModalUpdate, commu
           </div>
 
           <div>
-            <label className="block text-gray-400 mb-1">District</label>
+            <label className="block text-gray-400 mb-1">District <sup className="text-red-500">*</sup></label>
             <input
               type="text"
               name="district"

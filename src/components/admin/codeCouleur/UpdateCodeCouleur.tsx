@@ -136,7 +136,7 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
              
              <label className="block text-gray-400 mb-1">
              {fieldLabels[field] || field}
-                 {["site", "bgColor", "textColor", "btnColor"].includes(field) && (
+                 {["site", "bgColor", "textColor", "btnColor", "btnColorHover", "textColorHover"].includes(field) && (
                    <sup className="text-red-500">*</sup>
                  )}
             </label>
@@ -148,7 +148,7 @@ const UpdateCodeCouleur: React.FC<AddCodeCouleurProps> = ({
                   onChange={handleChange}
                   className={`w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] ${field === "libelle" ? "text-white" : "cursor-pointer"} focus:outline-none focus:ring-0 focus:border-transparent`}
                   autoComplete="off"
-                  required={["bgColor", "textColor", "btnColor"].includes(field)}
+                  required={["bgColor", "textColor", "btnColor", "btnColorHover", "textColorHover"].includes(field)}
                 />
             </div>
           ))}

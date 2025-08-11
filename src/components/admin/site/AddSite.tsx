@@ -171,6 +171,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                     {!checkboxActive && (
                       <label className="block text-gray-400 mb-1">
                         {fieldLabels[field] || field}
+                        <sup className="text-red-500">*</sup>
                       </label>
                     )}
 
@@ -196,17 +197,18 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                     {!checkboxActive && 
                       (
                         <select defaultValue="" name="" id="" 
-                      onChange={(e) => {
-                        setSelectedRegionId(e.target.value);
-                      }}
-                      className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent">
-                        <option value="" disabled>{t("selectregion")}</option>
-                        {regions.length > 0 ? (
-                          regions.map((region) => (
-                            <option value={region.id}>{region.nom}</option>
-                          ))
-                        ) : null}
-                      </select>
+                        onChange={(e) => {
+                          setSelectedRegionId(e.target.value);
+                        }}
+                        required
+                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent">
+                          <option value="" disabled>{t("selectregion")}</option>
+                          {regions.length > 0 ? (
+                            regions.map((region) => (
+                              <option value={region.id}>{region.nom}</option>
+                            ))
+                          ) : null}
+                        </select>
                       )}
 
                        {/* Case à cocher */}
@@ -246,17 +248,18 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                     <>
                     {!checkboxActive && (
                       <select defaultValue="" name="" id="" 
-                      onChange={(e) => {
-                        setSelectedCommuneId(e.target.value);
-                      }}
-                      className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent">
-                        <option value="" disabled>{t("selectcommune")}</option>
-                        {communes.length > 0 ? (
-                          communes.map((commune) => (
-                            <option value={commune.id}>{commune.nom}</option>
-                          ))
-                        ) : null}
-                      </select>
+                        onChange={(e) => {
+                          setSelectedCommuneId(e.target.value);
+                        }}
+                        required
+                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent">
+                          <option value="" disabled>{t("selectcommune")}</option>
+                          {communes.length > 0 ? (
+                            communes.map((commune) => (
+                              <option value={commune.id}>{commune.nom}</option>
+                            ))
+                          ) : null}
+                        </select>
                     )}
 
                     {checkboxActive && (

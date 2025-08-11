@@ -106,11 +106,8 @@ interface AddPrivilegeProps {
                             <div key={field}>
                                 <label className="block text-gray-400 mb-1">
                                     {fieldLabels[field] || field} 
-                                    {(field === "title" || field === "libelleFr" || field === "libelleEn") ? (
-                                        <sup className="text-red-500">*</sup>
-                                    ) : (
-                                        <sup></sup>
-                                    )}
+                                    <sup className="text-red-500">*</sup>
+                                    
                                 </label>
                             {field === "description" || field === "descriptionEn" ? (
                                 <textarea
@@ -119,6 +116,7 @@ interface AddPrivilegeProps {
                                 onChange={handleChange}
                                 className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
                                 rows={4}
+                                required
                                 />
                             ) : (
                                 <input

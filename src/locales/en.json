@@ -204,6 +204,8 @@
     "updateniveautitle": "Update Hierarchical Levels",
     "addRang": "Crate new order",
     "typeDemande": "Request type",
-    "selecttypedemande": "Select request type"
+    "selecttypedemande": "Select request type",
+    "addNiveauHierarchique": "Create new Hierarchical Level"
+
   }
   

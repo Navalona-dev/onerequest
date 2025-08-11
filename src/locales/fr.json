@@ -202,6 +202,7 @@
     "updateniveautitle": "Modifier niveau hierarchique",
     "addRang": "Créer un nouveau rang",
     "typeDemande": "Type de demande",
-    "selecttypedemande": "Selectionner un type de demande"
+    "selecttypedemande": "Selectionner un type de demande",
+    "addNiveauHierarchique": "Créer un niveau hierarchique"
   }
   

@@ -94,6 +94,7 @@ const AddCommune: React.FC<AddCommuneProps> = ({ setShowModal, idRegion }) => {
                 <div key={field}>
                   <label className="block text-gray-400 mb-1">
                     {fieldLabels[field] || field}
+                    <sup className="text-red-500">*</sup>
                   </label>
                     <input
                         type="text"

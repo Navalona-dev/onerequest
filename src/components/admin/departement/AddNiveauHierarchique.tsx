@@ -6,6 +6,7 @@ import api from "../../../service/Api";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { store } from "../../../store";
 import { AxiosError } from "axios";
+import { error } from "console";
 
 interface AddNiveauProps {
     setShowModalAdd: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,6 +17,13 @@ type Departement = {
     id: number;
     nom: string;
     nomEn: string;
+    niveauHierarchiques: [];
+}
+
+type NiveauHierarchique = {
+  id: number;
+  nom: string;
+  nomEn: string
 }
 
 
@@ -32,6 +40,36 @@ const AddNiveauHierarchique: React.FC<AddNiveauProps> = ({ setShowModalAdd, idDe
     const {codeCouleur} = useGlobalActiveCodeCouleur();
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
+    const [niveaux, setListeNiveau] = useState<NiveauHierarchique[]>([]);
+    const [isFindNiveau, setIsFindNiveau] = useState(false);
+    const [selectedNiveaux, setSelectedNiveaux] = useState<number[]>([]);
+    const [departement, setDepartement] = useState<Departement | null>(null);
+
+    const handleCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setIsFindNiveau(e.target.checked);
+    };
+
+    const handleSelectDepartement = (id: number) => {
+      setSelectedNiveaux((prev) =>
+        prev.includes(id) ? prev.filter((niveauId) => niveauId !== id) : [...prev, id]
+      );
+    };
+
+    useEffect(() => {
+      api.get('/api/niveau_hierarchiques')
+      .then((response) => {
+        setListeNiveau(response.data);
+      })
+      .catch((error) => console.log('Erreur API', error));
+    }, []);
+
+    useEffect(() => {
+      api.get(`/api/departements/${idDepartement}`)
+      .then((response) => {
+        setDepartement(response.data);
+      })
+      .catch((error) => console.log("Erreur API", error));
+    }, [idDepartement]);
 
     const fieldLabels: { [key: string]: string } = {
         nom: t("nomFr"),
@@ -59,14 +97,59 @@ const AddNiveauHierarchique: React.FC<AddNiveauProps> = ({ setShowModalAdd, idDe
 
         const payload: any = {};
 
-        payload.nom = formData.nom;
-        payload.description = formData.description;
-        payload.descriptionEn = formData.descriptionEn;
-        payload.nomEn = formData.nomEn;
-        payload.departements = [`/api/departements/${idDepartement}`];
+        if (!departement) {
+          Swal.fire("Erreur", "Departement introuvable", "error");
+          return;
+        }
+
+        if (!isFindNiveau) {
+          // Cas 1 : assignation de niveau hierarchique existants
+          try {
+            console.log("hello");
+
+          // 2 Extraire les IDs actuels
+          const niveauxExistants = departement.niveauHierarchiques.map(
+            (niveau: any) => `/api/niveau_hierarchiques/${niveau.id}`
+          );
+
+          console.log("niveaux", niveauxExistants);
+
+          // 3️ Fusionner sans doublons
+          const nouveauxNiveaux = selectedNiveaux.map(
+            (niveauId) => `/api/niveau_hierarchiques/${niveauId}`
+          );
+          const tousNiveauHierarchiques = Array.from(new Set([...niveauxExistants, ...nouveauxNiveaux]));
+
+          // 4️ Envoyer le PATCH avec la liste fusionnée
+          await api.patch(
+            `/api/departements/${departement.id}`,
+            { niveauHierarchiques: tousNiveauHierarchiques },
+            {
+              headers: {
+                "Content-Type": "application/merge-patch+json"
+              }
+            }
+          );
+      
+            Swal.fire("Succès", "Niveau hierarchique assignés au departement", "success").then(() => {
+              setShowModalAdd(false);
+              window.location.reload();
+            });
+          } catch (error) {
+            Swal.fire("Erreur", "Impossible d'assigner les départements", "error");
+          }
+        }else {
+          payload.nom = formData.nom;
+          payload.description = formData.description;
+          payload.descriptionEn = formData.descriptionEn;
+          payload.nomEn = formData.nomEn;
+          payload.departements = [`/api/departements/${idDepartement}`];
+          await api.post("/api/niveau_hierarchiques", payload);
+
+        }
+        
     
         try {
-          await api.post("/api/niveau_hierarchiques", payload);
     
           Swal.fire({
             icon: "success",
@@ -138,40 +221,88 @@ const AddNiveauHierarchique: React.FC<AddNiveauProps> = ({ setShowModalAdd, idDe
                     borderColor: codeCouleur?.btnColor
                 }}
                 >
-                    <h2 className="text-xl font-bold mb-4 text-white">{t("addDepartement")}</h2>
+                    <h2 className="text-xl font-bold mb-4 text-white">{t("addNiveauHierarchique")}</h2>
             
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        
-                        {Object.keys(formData).map((field) =>
-                            <div key={field}>
-                                <label className="block text-gray-400 mb-1">
-                                    {fieldLabels[field] || field} 
-                                    {(field === "nom" || field === "description" || field === "ordre") ? (
-                                        <sup className="text-red-500">*</sup>
-                                    ) : (
-                                        <sup></sup>
-                                    )}
-                                </label>
-                            {field === "description" || field === "descriptionEn" ? (
-                                <textarea
-                                name={field}
-                                value={formData[field as keyof typeof formData]}
-                                onChange={handleChange}
-                                className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
-                                rows={4}
-                                />
-                            ) :  (
+                      {!isFindNiveau && (
+                          <div className="mb-4 flex flex-col gap-2" id="dep_liste">
+                          {niveaux.map((item) => {
+                            const id = `departement-${item.id}`;
+                            const nomAffiche =
+                              langueActive?.indice === "fr"
+                                ? item.nom
+                                : langueActive?.indice === "en"
+                                ? item.nomEn
+                                : "";
+
+                            return (
+                              <div key={id} className="flex items-center space-x-2">
                                 <input
-                                    type="text"
+                                  type="checkbox"
+                                  id={id}
+                                  checked={selectedNiveaux.includes(item.id)}
+                                  onChange={() => handleSelectDepartement(item.id)}
+                                  className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                />
+                                <label
+                                  htmlFor={id}
+                                  className="text-gray-300 cursor-pointer select-none"
+                                >
+                                  {nomAffiche}
+                                </label>
+                              </div>
+                            );
+                          })}
+
+                        </div>
+                        )}
+
+                      <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-4" role="alert">
+                        <input 
+                          type="checkbox" 
+                          name="depNonTrouve" 
+                          id="depNonTrouve" 
+                          className="mr-1" 
+                          onChange={handleCheckBox} 
+                          checked={isFindNiveau}
+                        />
+                        <label htmlFor="depNonTrouve" className="text-gray-700 cursor-pointer">
+                          {langueActive?.indice === "fr" ? "Niveau hierarchique n'existe pas encore?" : 
+                          langueActive?.indice === "en" ? "Hierarchical level doesn't exist yet?" : ""}
+                        </label>
+                      </div>
+
+                        {isFindNiveau && (
+                          <div className="niveau_form">
+                            {Object.keys(formData).map((field) =>
+                                <div key={field}>
+                                    <label className="block text-gray-400 mb-1">
+                                        {fieldLabels[field] || field} 
+                                        <sup className="text-red-500">*</sup>
+                                    </label>
+                                {field === "description" || field === "descriptionEn" ? (
+                                    <textarea
                                     name={field}
                                     value={formData[field as keyof typeof formData]}
                                     onChange={handleChange}
-                                    className={`w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent`}
+                                    className="mb-3 w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                                    rows={4}
                                     required
-                                    autoComplete="off"
-                                />
-                            ) }
-                            </div>
+                                    />
+                                ) :  (
+                                    <input
+                                        type="text"
+                                        name={field}
+                                        value={formData[field as keyof typeof formData]}
+                                        onChange={handleChange}
+                                        className={`mb-3 w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent`}
+                                        required
+                                        autoComplete="off"
+                                    />
+                                ) }
+                                </div>
+                            )}
+                          </div>
                         )}
 
                         <div className="flex justify-end">

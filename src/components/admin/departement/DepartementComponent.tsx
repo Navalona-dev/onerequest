@@ -149,7 +149,7 @@ const DepartementComponent = () => {
 
     return(
         <>
-            <div className="h-[69vh] overflow-y-auto my-3">
+            <div className="h-[69vh] overflow-y-auto py-3">
                 <div className="color-header px-4 flex justify-between items-center mb-3">
                     <h4 className="font-bold text-white">{t("listDepartement")}</h4>
                     {user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
@@ -166,7 +166,7 @@ const DepartementComponent = () => {
                     
                     
                 </div>
-                <div className="card my-6 px-5 mx-8 border border-gray-700 py-5">
+                <div className="card my-6 px-5 mx-12 border border-gray-700 py-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="w-full">
                             <input type="text" name="" id="" 
@@ -190,7 +190,7 @@ const DepartementComponent = () => {
                     </div>
                 </div>
                 <div className="mx-3">
-                    <div className="w-[38vh] md:w-full sm:w-[38vh] h-[40vh] md:h-[55vh] sm:h-[40vh] overflow-auto">
+                    <div className="w-[42vh] md:w-full sm:w-[42vh] h-[40vh] md:h-[55vh] sm:h-[40vh] overflow-auto">
                         <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
                                 <tr className="text-nowrap border-b-2 border-gray-700 ...">
@@ -219,7 +219,7 @@ const DepartementComponent = () => {
                                 {currentDepartements.length > 0 ? (
                                     currentDepartements.map((item, index) => (
                                         <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
-                                            <th className="px-6 py-4 text-nowrap">
+                                            <th className="px-6 py-4 text-nowrap ">
                                                 <>
                                                 {user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
                                                     <>
@@ -244,7 +244,7 @@ const DepartementComponent = () => {
                                                                 }
                                                             }}
                                                             title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
-                                                        </a>
+                                                        </a> <br /> <br />
                                                         <a href="#"
                                                         onClick={(e) => {
                                                             e.preventDefault();
@@ -271,44 +271,61 @@ const DepartementComponent = () => {
                                                 {item.nomEn}
                                             </td>
                                             <td className="px-6 py-4 text-nowrap">
+                                            {user && user.privileges && (
+                                                (user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true) ||
+                                                user.privileges.some(p => p.title === "admin_site")
+                                            ) ? (
                                                 <div className="text-center">
                                                     <a
-                                                    href="#"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        setSelectedDepartement(item);
-                                                        setShowModalAddRangDep(true);
-                                                    }}
-                                                    style={{ color: codeCouleur?.textColor }}
-                                                    title={langueActive?.indice === "fr" ? "Ajout rang" : langueActive?.indice === "en" ? "Add order" : ""}                                                    >
-                                                    <i className="bi bi-plus-circle-fill"></i>
-                                                    </a><br /><br />
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setSelectedDepartement(item);
+                                                            setShowModalAddRangDep(true);
+                                                        }}
+                                                        style={{ color: codeCouleur?.textColor }}
+                                                        title={langueActive?.indice === "fr" ? "Ajout rang" : langueActive?.indice === "en" ? "Add order" : ""}
+                                                    >
+                                                        <i className="bi bi-plus-circle-fill"></i>
+                                                    </a>
+                                                    <br /><br />
                                                 </div>
+                                            ) : null}
+
+                                                
                                                 {rangsParDepartement[item.id] && rangsParDepartement[item.id].length > 0 ? (
                                                     rangsParDepartement[item.id].map((rang, index) => (
                                                         <p key={rang.id} className="mb-3">
                                                             <span className="mr-2">{ rang.rang}</span>
-                                                            <a href="#"
-                                                                onClick={(e) => {
-                                                                    e.preventDefault();
-                                                                    setSelectedRang(rang);
-                                                                    setShowModalUpdateRangDep(true);
-                                                                }}
-                                                                style={{
-                                                                    color: codeCouleur?.textColor
-                                                                }}
-                                                                title={langueActive?.indice === "fr" ? "Modification rang" : langueActive?.indice === "en" ? "Update order" : ""}                                                                className="mr-2"
-                                                            >
-                                                                <i className="bi bi-pencil-fill"></i>
-                                                            </a>
-                                                            <a href="#"
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                deleteRangDepartement(rang.id, langueActive?.indice as "fr" | "en");
-                                                            }}
-                                                                title={langueActive?.indice === "fr" ? "Supprimer rang" : langueActive?.indice === "en" ? "Delete order" : ""}                                                            >
-                                                                <i className="bi bi-trash-fill text-red-500"></i>
-                                                            </a>
+                                                            {user && user.privileges && (
+                                                                (user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true) ||
+                                                                user.privileges.some(p => p.title === "admin_site")
+                                                            ) ? (
+                                                                <>
+                                                                    <a href="#"
+                                                                        onClick={(e) => {
+                                                                            e.preventDefault();
+                                                                            setSelectedRang(rang);
+                                                                            setShowModalUpdateRangDep(true);
+                                                                        }}
+                                                                        style={{
+                                                                            color: codeCouleur?.textColor
+                                                                        }}
+                                                                        title={langueActive?.indice === "fr" ? "Modification rang" : langueActive?.indice === "en" ? "Update order" : ""}                                                                className="mr-2"
+                                                                    >
+                                                                        <i className="bi bi-pencil-fill"></i>
+                                                                    </a>
+                                                                    <a href="#"
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        deleteRangDepartement(rang.id, langueActive?.indice as "fr" | "en");
+                                                                    }}
+                                                                        title={langueActive?.indice === "fr" ? "Supprimer rang" : langueActive?.indice === "en" ? "Delete order" : ""}                                                            >
+                                                                        <i className="bi bi-trash-fill text-red-500"></i>
+                                                                    </a>
+                                                                </>
+                                                            ) : null}
+                                                            
                                                         </p>
                                                     ))
                                                 ) : null}

@@ -267,7 +267,15 @@ const SiteComponent = () => {
                         <td className="px-6 py-4">{item.nom}</td>
                         <td className="px-6 py-4">
                           {item.region ? (
-                            item.region.nom
+                            <>
+                              <span className="mr-2">{item.region.nom}</span>
+                              <a href="#"
+                              style={{
+                                color: codeCouleur?.textColor
+                              }}
+                              ><i className="bi bi-pencil-fill"></i></a>
+                            </>
+
                           ) : (
                             <div className="flex items-center justify-center">
                               <a href="#"
@@ -286,7 +294,12 @@ const SiteComponent = () => {
                           <td className="px-6 py-4">
                             {item.commune ? (
                               <>
-                              {item.commune.nom} <span>/</span> {item.commune.district}
+                                <span className="mr-2">{item.commune.nom} / {item.commune.district}</span>
+                                <a href="#"
+                                style={{
+                                  color: codeCouleur?.textColor
+                                }}
+                                ><i className="bi bi-pencil-fill"></i></a>
                               </>
                             ) : (
                               item.region ? (

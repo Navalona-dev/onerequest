@@ -118,7 +118,7 @@ const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
               <div key={field}>
                 <label className="block text-gray-400 mb-1">
                   {fieldLabels[field] || field} 
-                  {(field === "site" || field === "bgColor" || field === "textColor" || field === "btnColor") ? (
+                  {(field === "libelle" || field === "bgColor" || field === "textColor" || field === "btnColor" || field === "textColorHover" || field === "btnColorHover") ? (
                     <sup className="text-red-500">*</sup>
                   ) : (
                     <sup></sup>
@@ -133,7 +133,7 @@ const AddCodeCouleur: React.FC<AddCodeCouleurProps> = ({ setShowModal }) => {
                     onChange={handleChange}
                     className={`w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] ${field === "libelle" ? "text-white" : "cursor-pointer"} focus:outline-none focus:ring-0 focus:border-transparent`}
                     autoComplete="off"
-                    required={field === "bgColor" || field === "textColor" || field === "btnColor"}
+                    required={field === "bgColor" || field === "textColor" || field === "btnColor" || field === "libelle" || field === "textColorHover" || field === "btnColorHover"}
                   />
               </div>
             ))}
