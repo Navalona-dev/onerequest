@@ -127,7 +127,8 @@
       "accepte": "Acceptée",
       "privileges": "Privilèges",
       "departements": "Departements",
-      "niveauhierarchique": "Niveau hierarchique"
+      "niveauhierarchique": "Niveau hierarchique",
+      "domaineEntreprise": "Domaine entreprise"
     },
     "header": {
       "search": "Recherche"
@@ -203,6 +204,10 @@
     "addRang": "Créer un nouveau rang",
     "typeDemande": "Type de demande",
     "selecttypedemande": "Selectionner un type de demande",
-    "addNiveauHierarchique": "Créer un niveau hierarchique"
+    "addNiveauHierarchique": "Créer un niveau hierarchique",
+    "addDomaineTitle": "Créer une nouvelle domaine d'entreprise",
+    "category": "Catégorie",
+    "selectCtaegorie": "Selectionner une catégorie",
+    "listeDomaine": "Liste domaine"
   }
   

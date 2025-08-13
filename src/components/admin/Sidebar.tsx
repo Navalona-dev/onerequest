@@ -113,6 +113,8 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
       setActiveMenu("departement");
     }else if (path.includes("/niveau-hierarchiques")) {
       setActiveMenu("niveau-hierarchiques");
+    }else if (path.includes("/domaine-entreprise-liste")) {
+      setActiveMenu("domaine-entreprise-liste");
     }
     else if (path.includes("/categorie-domaine-entreprise")) {
       setActiveMenu("categorie-domaine-entreprise");
@@ -129,7 +131,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
         }
       })
       .catch((error) => {
-        console.error("Erreur API:", error); // Autres erreurs réseau ou 500
+        console.error("Erreur API:", error); 
       });
   }, []);
   
@@ -214,7 +216,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.niveauhierarchique")}</span>
             </li>*/}
 
-            <li
+            {/*<li
               className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
                 activeMenu === "categorie-domaine-entreprise" ? "bg-[#1c2d55] text-white" : ""
               } ${currentModule === "categorie-domaine-entreprise" ? "bg-[#1c2d55] text-white" : ""}`}
@@ -224,6 +226,18 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <i className="bi bi-tags-fill"></i>
               </span>
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.catentreprise")}</span>
+            </li>*/}
+
+            <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "domaine-entreprise-liste" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "domaine-entreprise-liste" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("domaine-entreprise-liste")}
+            >
+              <span className="icon-sidebar">
+              <i className="bi bi-tags-fill"></i>
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.domaineEntreprise")}</span>
             </li>
 
             {/* Dropdown */}

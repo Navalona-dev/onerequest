@@ -129,7 +129,8 @@
       "accepte": "Accepted",
       "privileges": "Privileges",
       "departements": "Departments",
-      "niveauhierarchique": "Hierarchy Levels"
+      "niveauhierarchique": "Hierarchy Levels",
+      "domaineEntreprise": "Company domain"
     },
     "header": {
       "search": "Search"
@@ -205,7 +206,10 @@
     "addRang": "Crate new order",
     "typeDemande": "Request type",
     "selecttypedemande": "Select request type",
-    "addNiveauHierarchique": "Create new Hierarchical Level"
-
+    "addNiveauHierarchique": "Create new Hierarchical Level",
+    "addDomaineTitle": "Create new company domain",
+    "category": "Category",
+    "selectCtaegorie": "Select category",
+    "listeDomaine": "Domain list"
   }
   

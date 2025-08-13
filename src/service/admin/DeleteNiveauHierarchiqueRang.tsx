@@ -1,9 +1,9 @@
 import Swal from "sweetalert2";
 import api from "../Api";
 
-const deleteDomaineEntreprise = async (
-    idDomaine: number,
-    langueActive: "fr" | "en" = "fr"
+const deleteNiveauHierarchiqueRang = async (
+    idRang: number,
+    langueActive: "fr" | "en" | null = "fr",
   ) => {  
     const result = await Swal.fire({
       title: langueActive === "fr" ? "Es-tu sûr ?" : langueActive === "en" ? "Are you sure?" : "",
@@ -20,14 +20,14 @@ const deleteDomaineEntreprise = async (
   
     if (result.isConfirmed) {
       try {
-        const response = await api.delete(`/api/domaine_entreprises/${idDomaine}`);
-        console.log("Réponse API:", response.data);
+        const response = await api.delete(`/api/niveau_hierarchique_rangs/${idRang}`);
   
         await Swal.fire({
           icon: "success",
           title: langueActive === "fr" ? "Bon travail!" : 
             langueActive === "en" ? "Good job !" : "",
-          text: langueActive === "fr" ? "Domaine entreprise supprimée avec succès !" : langueActive === "en" ? "Business domain deleted successfully!" : "",
+          text: langueActive === "fr" ? "Rang niveau hierarchique supprimé avec succès !" : 
+          langueActive === "en" ? "Hierarchic level order deleted successfully!" : "",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",
           color: "#fff",
@@ -35,35 +35,20 @@ const deleteDomaineEntreprise = async (
   
         window.location.reload();
   
-      } catch (error: any) {
+      } catch (error) {
         console.error("Erreur API:", error);
-      
-        let errorMessage = "";
-      
-        // Si l'API renvoie un message spécifique
-        if (error.response?.status === 400) {
-          errorMessage = langueActive === "fr"
-            ? "Vous ne pouvez pas faire cette action. Le type de demande relié au domaine possède déjà une demande existante."
-            : langueActive == "en" ? "You cannot perform this action. The request type linked to the domain already has an existing request." : "";
-        } else {
-          // Message générique
-          errorMessage = langueActive === "fr"
-            ? "Erreur lors de la suppression de domaine entreprise."
-            : "Error while deleting business domain.";
-        }
-      
+  
         Swal.fire({
           icon: "error",
-          title: langueActive === "fr" ? "Erreur" : "Error",
-          text: errorMessage,
+          title: langueActive === "fr" ? "Erreur" : langueActive === "en" ? "Error" : "",
+          text: langueActive === "fr" ? "Erreur lors de la suppression du rang niveau hierarchique." : 
+          langueActive === "en" ? "Error while deleting the hierarchic level order." : "",
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",
         });
       }
-      
-      
     }
   };
 
-  export default deleteDomaineEntreprise;
+  export default deleteNiveauHierarchiqueRang;

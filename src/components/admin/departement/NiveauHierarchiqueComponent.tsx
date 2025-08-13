@@ -13,6 +13,9 @@ import UpdateRangNiveauHierarchique from "./UpdateRangNiveauHierarchique";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
 import AddNiveauHierarchique from "./AddNiveauHierarchique";
 import dissocieNiveauHierarchique from "./DissocieNiveauHierarchique";
+import UpdateNiveauHierarchique from "./UpdateNiveauHierarchique";
+import deleteNiveauHierarchique from "../../../service/admin/DeleteNiveauHierarchique";
+import deleteNiveauHierarchiqueRang from "../../../service/admin/DeleteNiveauHierarchiqueRang";
 
 type Rang = {
     id: number;
@@ -68,6 +71,7 @@ const NiveauHierarchiqueComponent = () => {
     const [showModalUpdateRang, setShowModalUpdateRang] = useState(false);
     const [selectedNiveau, setSelectedNiveau] = useState<NiveauHierarchique | null>(null);
     const [showModalAdd, setShowModalAdd] = useState(false);
+    const [showModalUpdate, setShowModalUpdate] = useState(false);
 
     useEffect(() => {
         const fetchRangs = async () => {
@@ -191,6 +195,11 @@ const NiveauHierarchiqueComponent = () => {
                                             {user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
                                                 <>
                                                     <a href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setShowModalUpdate(true);
+                                                        setSelectedNiveau(item);
+                                                    }}
                                                     title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}
                                                     >
                                                         <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
@@ -200,6 +209,10 @@ const NiveauHierarchiqueComponent = () => {
                                                         ></i>
                                                     </a>
                                                     <a href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        deleteNiveauHierarchique(item.id, langueActive?.indice as "fr" | "en")
+                                                    }}
                                                     title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}
                                                     >
                                                         <i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
@@ -238,7 +251,12 @@ const NiveauHierarchiqueComponent = () => {
                                                             }}
                                                             ></i>
                                                         </a>
-                                                        <a href="#">
+                                                        <a href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            deleteNiveauHierarchiqueRang(rangs[item.id].id, langueActive?.indice as "fr" | "en")
+                                                        }}
+                                                        >
                                                             <i className="bi bi-trash-fill text-red-500"
                                                             title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}                                                        ></i>
                                                         </a>
@@ -326,6 +344,19 @@ const NiveauHierarchiqueComponent = () => {
                 idDepartement={Number(idDepartement)}
              />
         )}
+
+        {showModalUpdate && selectedNiveau && (
+            <UpdateNiveauHierarchique 
+                setShowModalUpdate={setShowModalUpdate}
+                idNiveau={selectedNiveau.id}
+                initialData={{
+                    nom: selectedNiveau.nom,
+                    nomEn: selectedNiveau.nomEn,
+                    description: selectedNiveau.description,
+                    descriptionEn: selectedNiveau.descriptionEn
+                }}
+            />
+        ) }
 
         
         </>

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import Swal from "sweetalert2";
-
-import api from "../../../service/Api";
+import React, {useEffect, useState} from "react";
 import { AxiosError } from "axios";
+import api from "../../../service/Api";
+import Swal from "sweetalert2";
+import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
+import { store } from "../../../store";
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
-import { store } from "../../../store";
 
 interface AddTypeDemandeProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,6 +43,7 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
     const [siteListe, setListeSite] = useState<Site[]>([]);
+    const {codeCouleur} = useGlobalActiveCodeCouleur();
 
     const fieldLabels: { [key: string]: string } = {
         domaine: t("domaineentreprise"),
@@ -174,7 +175,11 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
 
       return (
         <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50 h-[100vh]">
-          <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-y-auto">
+          <div className="bg-[#111C44] border rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-y-auto"
+           style={{
+            borderColor: codeCouleur?.btnColor
+          }}
+          >
             <h2 className="text-xl font-bold mb-4 text-white">{t("addtypedemandetitle")}</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -203,12 +208,22 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
                         ))}
                     </select>
                     ) : (
-                    field === "description" || field === "descriptionEn" ? (
+                    field === "description" ? (
                         <textarea name="description" id=""
                             value={formData.description}
                             onChange={handleChange}
                             className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
-                            required={field === "description"}
+                            required
+                            rows={5}
+                        >
+
+                        </textarea>
+                    ) : field === "descriptionEn" ? (
+                        <textarea name="descriptionEn" id=""
+                            value={formData.descriptionEn}
+                            onChange={handleChange}
+                            className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
+                            required
                             rows={5}
                         >
 
@@ -225,7 +240,9 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
                         <option value="" disabled>{t("selectsite")}</option>
                         {siteListe.map((site) => (
                         <option key={site.id} value={`/api/sites/${site.id}`} className="mt-3">
-                            {site.nom} ({site.region?.nom} / {site.commune?.nom})
+                            {site.nom} {site.region && site.commune ? (
+                              <span>({site.region?.nom} / {site.commune?.nom})</span>
+                            ) : null} 
                         </option>
                         ))}
                     </select>
@@ -247,7 +264,7 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                  className="text-white px-4 py-2 rounded"
                 >
                   {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
                 </button>

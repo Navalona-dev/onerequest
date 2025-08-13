@@ -6,35 +6,63 @@ import { store } from "../../../store";
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
 
+type Categorie = {
+  id: number;
+  nom: string;
+  nomEn: string;
+  description: string;
+  descriptionEn: string;
+}
+
 interface UpdateDomaineEntrepriseProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
   domaineId: number;
   initialData: {
     libelle: string;
     description: string;
+    libelleEn: string;
+    descriptionEn: string;
+    categorieDomaineEntreprise: Categorie | null;
   };
  
 }
 
+
+
 const UpdateDomaineEntreprise: React.FC<UpdateDomaineEntrepriseProps> = ({ setShowModalUpdate, domaineId, initialData }) => {
   const [formData, setFormData] = useState({
+    categorieDomaineEntreprise: initialData.categorieDomaineEntreprise ? `/api/categorie_domaine_entreprises/${initialData.categorieDomaineEntreprise.id}` : "",
     libelle: initialData.libelle,
+    libelleEn: initialData.libelleEn,
     description: initialData.description,
+    descriptionEn: initialData.descriptionEn,
   });
-
-  const fieldLabels: { [key: string]: string } = {
-    libelle: "Libellé",
-    description: "Description",
-  };
 
   const {codeCouleur} = useGlobalActiveCodeCouleur();
   const state = store.getState();
   const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
   const {langueActive} = useLangueActive();
   const { t, i18n } = useTranslation();
+  const [categories, setListeCategorie] = useState<Categorie[]>([]);
+
+  const fieldLabels: { [key: string]: string } = {
+    libelle: t("libelleFr"),
+    libelleEn: t("libelleEn"),
+    description: t("descriptionFr"),
+    descriptionEn: t("descriptionEn"),
+    categorieDomaineEntreprise: t("category")
+  };
+
+  useEffect(() => {
+    api.get('/api/entreprises/categories')
+    .then((response) => {
+      setListeCategorie(response.data);
+    })
+    .catch((error) => console.log("Erreur API", error));
+  }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -83,8 +111,8 @@ const UpdateDomaineEntreprise: React.FC<UpdateDomaineEntrepriseProps> = ({ setSh
   };
 
   return (
-    <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
-      <div className="bg-[#111C44] border rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down"
+    <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50 h-[100vh]">
+      <div className="bg-[#111C44] border rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-auto"
       style={{
         borderColor: codeCouleur?.btnColor
       }}
@@ -92,8 +120,28 @@ const UpdateDomaineEntreprise: React.FC<UpdateDomaineEntrepriseProps> = ({ setSh
         <h2 className="text-xl font-bold mb-4 text-white">Modifier la domaine d'entreprise</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+            <label className="block text-gray-400 mb-1">{t("category")}</label>
+            <select
+                id="categorieDomaineEntreprise"
+                name="categorieDomaineEntreprise"
+                value={formData.categorieDomaineEntreprise}
+                onChange={handleChange}
+                className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                required
+            >
+                <option value="" disabled>{t("selectCtaegorie")}</option>
+                {categories.map((item) => (
+                <option key={item.id} value={`/api/categorie_domaine_entreprises/${item.id}`}>
+                    {langueActive?.indice === "fr" ? item.nom : 
+                    langueActive?.indice === "en" ? item.nomEn : ""}
+                </option>
+                ))}
+
+            </select>
+          </div>
           <div>
-            <label className="block text-gray-400 mb-1">Libellé</label>
+            <label className="block text-gray-400 mb-1">{t("libelleFr")}</label>
             <input
               type="text"
               name="libelle"
@@ -104,12 +152,35 @@ const UpdateDomaineEntreprise: React.FC<UpdateDomaineEntrepriseProps> = ({ setSh
               autoComplete="off"
             />
           </div>
+          <div>
+            <label className="block text-gray-400 mb-1">{t("libelleEn")}</label>
+            <input
+              type="text"
+              name="libelleEn"
+              value={formData.libelleEn}
+              onChange={handleChange}
+              className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+              required
+              autoComplete="off"
+            />
+          </div>
 
             <div>
-              <label className="block text-gray-400 mb-1">Description</label>
+              <label className="block text-gray-400 mb-1">{t("descriptionFr")}</label>
               <textarea
                 name="description"
                 value={formData.description}
+                onChange={handleChange}
+                className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                required
+                rows={4}
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 mb-1">{t("descriptionEn")}</label>
+              <textarea
+                name="descriptionEn"
+                value={formData.descriptionEn}
                 onChange={handleChange}
                 className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
                 required

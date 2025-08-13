@@ -24,6 +24,7 @@ import PrivilegePage from "./PrivilegePage";
 import DepartementPage from "./DepartementPage";
 import NiveauHierarchiqueByDepartementPage from "./NiveauHierarchiqueByDepartementPage";
 import NiveauHierarchiquePage from "./NiveauHierarchiquePage";
+import DomaineEntrepriseListe from "./DomaineEntrepriseListe";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -51,7 +52,8 @@ const ContentPage = () => {
             "demande",
             "privilege",
             "departement",
-            "niveau-hierarchiques"
+            "niveau-hierarchiques",
+            "domaine-entreprise-liste"
         ].includes(path)) {
             setCurrentModule(path as any);
         } else if (/^\d+\/commune$/.test(path)) {
@@ -102,6 +104,8 @@ const ContentPage = () => {
                 return <NiveauHierarchiqueByDepartementPage />;
             case "niveau-hierarchiques":
                 return <NiveauHierarchiquePage />;
+            case "domaine-entreprise-liste":
+                return <DomaineEntrepriseListe />;
             default:
                 return <Dashboard />;
         }
