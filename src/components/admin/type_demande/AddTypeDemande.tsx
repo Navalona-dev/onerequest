@@ -26,6 +26,16 @@ type Site = {
   nom: string;
   region: Region | null;
   commune: Commune | null;
+  typeDemandes: [];
+}
+
+type TypeDemande = {
+  id: number;
+  nom: string;
+  description: string;
+  isActive: boolean;
+  nomEn: string;
+  descriptionEn: string;
 }
 
 const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
@@ -44,6 +54,10 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
     const [siteListe, setListeSite] = useState<Site[]>([]);
     const {codeCouleur} = useGlobalActiveCodeCouleur();
+    const [isFindTypeDemande, setIsFindTypeDemande] = useState(false);
+    const [site, setSite] = useState<Site | null>(null);
+    const [selectedTypeDemandes, setSelectedTypeDemandes] = useState<number[]>([]);
+    const [typeDemandes, setListeTypeDemande] = useState<TypeDemande[]>([])
 
     const fieldLabels: { [key: string]: string } = {
         domaine: t("domaineentreprise"),
@@ -54,7 +68,7 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
         descriptionEn: t("descriptionEn")
       };
 
-      const [domaineListe, setDomaineListe] = useState<{ id: number; libelle?: string; libelleEn: string }[]>([]);
+  const [domaineListe, setDomaineListe] = useState<{ id: number; libelle?: string; libelleEn: string }[]>([]);
 
     const listeDomaine = async () => {
       try {
@@ -76,6 +90,16 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
       }
     };
 
+    const handleCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setIsFindTypeDemande(e.target.checked);
+    };
+
+    const handleSelectTypeDemandes = (id: number) => {
+      setSelectedTypeDemandes((prev) =>
+        prev.includes(id) ? prev.filter((typeId) => typeId !== id) : [...prev, id]
+      );
+    };
+
     const handleChange = (
       e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
     ) => {
@@ -88,14 +112,74 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
       }
     };
+
+    useEffect(() => {
+      api.get('/api/sites/current')
+      .then((response) => {
+        setSite(response.data);
+      })
+      .catch((error) => console.log("Erreur API", error));
+    }, []);
+
+    useEffect(() => {
+      
+      api.get(`/api/entreprises/type-demandes`)
+      .then((response) => {
+          setListeTypeDemande(response.data)
+      } )
+      .catch((error) => console.log("Erreur API", error));
+  }, []);
     
       
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!site) {
+          Swal.fire("Erreur", "Site introuvable", "error");
+          return;
+        }
+
+        if (!isFindTypeDemande) {
+          // Cas 1 : assignation de type de demande existants
+          try {
+
+          // 2 Extraire les IDs actuels
+        
+          const typesExistants = (site.typeDemandes ?? []).map(
+            (type: any) => `/api/type_demandes/${type.id}`
+          );   
+
+          // 3️ Fusionner sans doublons
+          const nouveauxTypeDemandes = selectedTypeDemandes.map(
+            (typeId) => `/api/type_demandes/${typeId}`
+          );
+
+          const tousTypeDemandes = Array.from(new Set([...typesExistants, ...nouveauxTypeDemandes]));
+
+          // 4️ Envoyer le PATCH avec la liste fusionnée
+          await api.patch(
+            `/api/sites/${site.id}`,
+            { typeDemandes: tousTypeDemandes },
+            {
+              headers: {
+                "Content-Type": "application/merge-patch+json"
+              }
+            }
+          );
+      
+            Swal.fire("Succès", "Départements assignés au site", "success").then(() => {
+              setShowModal(false);
+              window.location.reload();
+            });
+          } catch (error) {
+            Swal.fire("Erreur", "Impossible d'assigner les départements", "error");
+          }
+        } else {
+          const response = await api.post("/api/type_demandes", formData);
+
+        }
     
         try {
-          const response = await api.post("/api/type_demandes", formData);
-          console.log("Réponse API:", response.data);
     
           Swal.fire({
             icon: "success",
@@ -183,83 +267,133 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
             <h2 className="text-xl font-bold mb-4 text-white">{t("addtypedemandetitle")}</h2>
     
             <form onSubmit={handleSubmit} className="space-y-4">
-            {Object.keys(formData).map((field) =>
-                <div key={field}>
-                  <label className="block text-gray-400 mb-1">
-                    {fieldLabels[field] || field}
-                    {(field === "nom" || field === "description" || field === "sites" || field === "domaine") ? (
-                      <sup className="text-red-500">*</sup>
-                    ): null}
-                    
-                  </label>
-                  {field === "domaine" ? (
-                    <select
-                        name="domaine"
-                        value={formData.domaine}
-                        onChange={handleChange}
-                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
-                        required
-                    >
-                        <option value="" disabled>{t("selectdomaine")}</option>
-                        {domaineListe.map((item) => (
-                        <option key={item.id} value={`/api/domaine_entreprises/${item.id}`} className="mt-3">
-                            {langueActive?.indice === "fr" ? item.libelle : langueActive?.indice === "en" ? item.libelleEn : ""}
-                        </option>
-                        ))}
-                    </select>
-                    ) : (
-                    field === "description" ? (
-                        <textarea name="description" id=""
-                            value={formData.description}
-                            onChange={handleChange}
-                            className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
-                            required
-                            rows={5}
+              {!isFindTypeDemande && (
+                  <div className="mb-4 flex flex-col gap-2" id="dep_liste">
+                  {typeDemandes.map((item) => {
+                    const id = `departement-${item.id}`;
+                    const nomAffiche =
+                      langueActive?.indice === "fr"
+                        ? item.nom
+                        : langueActive?.indice === "en"
+                        ? item.nomEn
+                        : "";
+
+                    return (
+                      <div key={id} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={id}
+                          checked={selectedTypeDemandes.includes(item.id)}
+                          onChange={() => handleSelectTypeDemandes(item.id)}
+                          className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <label
+                          htmlFor={id}
+                          className="text-gray-300 cursor-pointer select-none"
                         >
+                          {nomAffiche}
+                        </label>
+                      </div>
+                    );
+                  })}
 
-                        </textarea>
-                    ) : field === "descriptionEn" ? (
-                        <textarea name="descriptionEn" id=""
-                            value={formData.descriptionEn}
-                            onChange={handleChange}
-                            className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
-                            required
-                            rows={5}
-                        >
+                  </div>
+              )}
 
-                        </textarea>
-                    ) : field === "sites" ? (
-                      <select
-                        name="sites"
-                        multiple
-                        value={formData.sites}
-                        onChange={handleChange}
-                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
-                        required
-                    >
-                        <option value="" disabled>{t("selectsite")}</option>
-                        {siteListe.map((site) => (
-                        <option key={site.id} value={`/api/sites/${site.id}`} className="mt-3">
-                            {site.nom} {site.region && site.commune ? (
-                              <span>({site.region?.nom} / {site.commune?.nom})</span>
-                            ) : null} 
-                        </option>
-                        ))}
-                    </select>
-                    ) : ( 
-                    <input
-                        type="text"
-                        name={field}
-                        value={formData[field as keyof typeof formData]}
-                        onChange={handleChange}
-                        className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
-                        autoComplete="off"
-                        required={field === "nom"}
-                    />
-                    ))}
-                </div>
-            )}
+                    <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-4" role="alert">
+                      <input 
+                        type="checkbox" 
+                        name="depNonTrouve" 
+                        id="depNonTrouve" 
+                        className="mr-1" 
+                        onChange={handleCheckBox} 
+                        checked={isFindTypeDemande}
+                      />
+                      <label htmlFor="depNonTrouve" className="text-gray-700 cursor-pointer">
+                        {langueActive?.indice === "fr" ? "Departement n'existe pas encore?" : 
+                        langueActive?.indice === "en" ? "Department doesn't exist yet?" : ""}
+                      </label>
+                    </div>
+                    {isFindTypeDemande && (
+                      <div>
+                        {Object.keys(formData).map((field) =>
+                          <div key={field}>
+                            <label className="block text-gray-400 mb-1">
+                              {fieldLabels[field] || field}
+                              {(field === "nom" || field === "description" || field === "sites" || field === "domaine") ? (
+                                <sup className="text-red-500">*</sup>
+                              ): null}
+                              
+                            </label>
+                            {field === "domaine" ? (
+                              <select
+                                  name="domaine"
+                                  value={formData.domaine}
+                                  onChange={handleChange}
+                                  className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                                  required
+                              >
+                                  <option value="" disabled>{t("selectdomaine")}</option>
+                                  {domaineListe.map((item) => (
+                                  <option key={item.id} value={`/api/domaine_entreprises/${item.id}`} className="mt-3">
+                                      {langueActive?.indice === "fr" ? item.libelle : langueActive?.indice === "en" ? item.libelleEn : ""}
+                                  </option>
+                                  ))}
+                              </select>
+                              ) : (
+                              field === "description" ? (
+                                  <textarea name="description" id=""
+                                      value={formData.description}
+                                      onChange={handleChange}
+                                      className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
+                                      required
+                                      rows={5}
+                                  >
 
+                                  </textarea>
+                              ) : field === "descriptionEn" ? (
+                                  <textarea name="descriptionEn" id=""
+                                      value={formData.descriptionEn}
+                                      onChange={handleChange}
+                                      className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
+                                      required
+                                      rows={5}
+                                  >
+
+                                  </textarea>
+                              ) : field === "sites" ? (
+                                <select
+                                  name="sites"
+                                  multiple
+                                  value={formData.sites}
+                                  onChange={handleChange}
+                                  className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                                  required
+                              >
+                                  <option value="" disabled>{t("selectsite")}</option>
+                                  {siteListe.map((site) => (
+                                  <option key={site.id} value={`/api/sites/${site.id}`} className="mt-3">
+                                      {site.nom} {site.region && site.commune ? (
+                                        <span>({site.region?.nom} / {site.commune?.nom})</span>
+                                      ) : null} 
+                                  </option>
+                                  ))}
+                              </select>
+                              ) : ( 
+                              <input
+                                  type="text"
+                                  name={field}
+                                  value={formData[field as keyof typeof formData]}
+                                  onChange={handleChange}
+                                  className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
+                                  autoComplete="off"
+                                  required={field === "nom"}
+                              />
+                              ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
               <div className="flex justify-end">
                 <button

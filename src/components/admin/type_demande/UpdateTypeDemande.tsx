@@ -12,13 +12,33 @@ import { store } from "../../../store";
     libelleEn: string;
   }
 
+  type Region = {
+    id: number;
+    nom: string;
+  }
+  
+  type Commune = {
+    id: number;
+    nom: string;
+  }
+
+  type Site = {
+    id: number;
+    nom: string;
+    region: Region | null;
+    commune: Commune | null;
+  }
+
 interface UpdateTypeProps {
   setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
   typeId: number;
   initialData: {
     domaine: Domaine | null;
     nom: string;
+    nomEn: string;
     description: string;
+    descriptionEn: string;
+    sites: Site[];
   };
 }
 
@@ -26,7 +46,10 @@ const UpdateTypeDemande: React.FC<UpdateTypeProps> = ({ setShowModalUpdate, type
     const [formData, setFormData] = useState({
         domaine: initialData.domaine ? `/api/domaine_entreprises/${initialData.domaine.id}` : "",
         nom: initialData.nom,
+        nomEn: initialData.nomEn,
+        sites: initialData.sites.map(s => `/api/sites/${s.id}`), 
         description: initialData.description,
+        descriptionEn: initialData.descriptionEn
       });
       
       const {langueActive} = useLangueActive();
@@ -36,16 +59,30 @@ const UpdateTypeDemande: React.FC<UpdateTypeProps> = ({ setShowModalUpdate, type
 
       const fieldLabels: { [key: string]: string } = {
         domaine: t("domaineentreprise"),
-        nom: t("title"),
-        description: "Description",
+        nom: t("nomFr"),
+        nomEn: t("nomEn"),
+        sites: "Sites",
+        description: t("descriptionFr"),
+        descriptionEn: t("descriptionEn")
       };
 
 
   const [domaineListe, setDomaineListe] = useState<{ id: number; libelle?: string; libelleEn: string }[]>([]);
+  const [siteListe, setListeSite] = useState<Site[]>([]);
 
-const listeDomaine = async () => {
+  const listeDomaine = async () => {
+    try {
+      const response = await api.get('/api/entreprises/domaines');
+      const sites = response.data;
+      return sites;
+    } catch (error) {
+      return 0;
+    }
+  };
+
+const listeSite = async () => {
   try {
-    const response = await api.get("/api/domaine_entreprises");
+    const response = await api.get("/api/sites");
     const sites = response.data;
     return sites;
   } catch (error) {
@@ -54,11 +91,17 @@ const listeDomaine = async () => {
 };
 
 const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+) => {
+  const { name, value, multiple } = e.target as HTMLSelectElement;
+
+  if (multiple) {
+    const values = Array.from((e.target as HTMLSelectElement).selectedOptions, option => option.value);
+    setFormData(prev => ({ ...prev, [name]: values }));
+  } else {
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  }
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,13 +177,18 @@ const handleChange = (
       setDomaineListe(liste);
     };
 
-  
+    const fetchSiteListe = async () => {
+      const liste = await listeSite();
+      setListeSite(liste);
+    };
+
     fetchDomaineListe();
+    fetchSiteListe();
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
-      <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down">
+    <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50 h-[100vh]">
+      <div className="bg-[#111C44] border border-red-500 rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-auto">
         <h2 className="text-xl font-bold mb-4 text-white">{t("updatetypedemandetitle")}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -177,6 +225,34 @@ const handleChange = (
                         >
 
                         </textarea>
+                    ) : field === "descriptionEn" ? (
+                        <textarea name="descriptionEn" id=""
+                            value={formData.descriptionEn}
+                            onChange={handleChange}
+                            className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
+                            required
+                            rows={5}
+                        >
+
+                        </textarea>
+                    ) : field === "sites" ? (
+                      <select
+                          name="sites"
+                          multiple
+                          value={formData.sites}
+                          onChange={handleChange}
+                          className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                          required
+                      >
+                          <option value="" disabled>{t("selectsite")}</option>
+                          {siteListe.map((site) => (
+                          <option key={site.id} value={`/api/sites/${site.id}`} className="mt-3">
+                              {site.nom} {site.region && site.commune ? (
+                                <span>({site.region?.nom} / {site.commune?.nom})</span>
+                              ) : null} 
+                          </option>
+                          ))}
+                      </select>
                     ) : ( 
                     <input
                         type="text"

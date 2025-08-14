@@ -108,11 +108,12 @@ const AddNiveauHierarchique: React.FC<AddNiveauProps> = ({ setShowModalAdd, idDe
             console.log("hello");
 
           // 2 Extraire les IDs actuels
-          const niveauxExistants = departement.niveauHierarchiques.map(
+          /*const niveauxExistants = departement.niveauHierarchiques.map(
             (niveau: any) => `/api/niveau_hierarchiques/${niveau.id}`
-          );
-
-          console.log("niveaux", niveauxExistants);
+          );*/
+          const niveauxExistants = (departement.niveauHierarchiques ?? []).map(
+            (niveau: any) => `/api/niveau_hierarchiques/${niveau.id}`
+          );          
 
           // 3️ Fusionner sans doublons
           const nouveauxNiveaux = selectedNiveaux.map(

@@ -16,11 +16,22 @@ type Domaine = {
     libelleEn: string;
 }
 
-type Site = {
+type Region = {
     id: number;
     nom: string;
 }
+  
+type Commune = {
+id: number;
+nom: string;
+}
 
+type Site = {
+id: number;
+nom: string;
+region: Region | null;
+commune: Commune | null;
+}
 type Privilege = {
     id: number;
     title: string;
@@ -34,6 +45,7 @@ type TypeDemande = {
     isActive: boolean;
     nomEn: string;
     descriptionEn: string;
+    sites: Site[];
 }
 
 type UserType = {
@@ -79,8 +91,8 @@ const TypeDemandeComponent = () => {
 
     const filteredTypes = typeDemandes.filter(type => {
         const nomMatch = !searchNom || type.nom.toLowerCase().includes(searchNom.toLowerCase());
-        const domaineMatch = !searchDomaine || type.domaine.libelle.toLowerCase() || type.domaine.libelleEn.toLowerCase().includes(searchDomaine.toLowerCase());
-    
+        const domaineMatch = !searchDomaine || type.domaine.libelle.toLowerCase().includes(searchDomaine.toLowerCase()) || type.domaine.libelleEn.toLowerCase().includes(searchDomaine.toLowerCase());
+
         return nomMatch && domaineMatch;
     });
     
@@ -196,6 +208,7 @@ const TypeDemandeComponent = () => {
                                         </th>
                                         <td className="px-6 py-4">
                                             {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""} 
+                                            
                                         </td>
                                         <td className="px-6 py-4">
                                             {langueActive?.indice === "fr" ? item.domaine.libelle : langueActive?.indice === "en" ? item.domaine.libelleEn : ""} 
@@ -234,6 +247,9 @@ const TypeDemandeComponent = () => {
                     nom: selectedType.nom,
                     description: selectedType.description,
                     domaine: selectedType.domaine ?? null,
+                    nomEn: selectedType.nomEn,
+                    descriptionEn: selectedType.descriptionEn,
+                    sites: selectedType.sites
                 }}
              /> 
              )}

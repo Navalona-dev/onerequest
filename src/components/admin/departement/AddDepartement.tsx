@@ -111,9 +111,12 @@ type Departement = {
           try {
 
           // 2 Extraire les IDs actuels
-          const departementsExistants = site.departements.map(
+          /*const departementsExistants = site.departements.map(
             (dep: any) => `/api/departements/${dep.id}`
-          );
+          );*/
+          const departementsExistants = (site.departements ?? []).map(
+            (dep: any) => `/api/departements/${dep.id}`
+          );          
 
           // 3️ Fusionner sans doublons
           const nouveauxDepartements = selectedDepartements.map(
