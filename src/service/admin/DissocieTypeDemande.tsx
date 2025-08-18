@@ -1,18 +1,19 @@
 import Swal from "sweetalert2";
 import api from "../Api";
 
-const deleteTypeDemande = async (
-    idTypeDemande: number,
-    langueActive: "fr" | "en" = "fr"
+const dissocieTypeDemande = async (
+    idType: number,
+    langueActive: "fr" | "en" | null = "fr",
+    idSite: number
   ) => {  
     const result = await Swal.fire({
       title: langueActive === "fr" ? "Es-tu sûr ?" : langueActive === "en" ? "Are you sure?" : "",
-       text: langueActive === "fr" ? "Cette action est irréversible !" : langueActive === "en" ? "This action is irreversible!" : "",
+      text: langueActive === "fr" ? "Cette action est irréversible !" : langueActive === "en" ? "This action is irreversible!" : "",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
       cancelButtonColor: "#6b7280", // gris
-      confirmButtonText: langueActive === "fr" ? "Oui, supprimer !" : langueActive === "en" ? "Yes, delete" : "",
+      confirmButtonText: langueActive === "fr" ? "Oui, dissocier !" : langueActive === "en" ? "Yes, dissociate" : "",
       cancelButtonText: langueActive === "fr" ? "Annuler" : langueActive === "en" ? "Cancel" : "",
       background: "#1c2d55",
       color: "#fff",
@@ -20,13 +21,15 @@ const deleteTypeDemande = async (
   
     if (result.isConfirmed) {
       try {
-        const response = await api.delete(`/api/type_demandes/${idTypeDemande}`);
+        const response = await api.delete(`/api/type_demandes/${idType}/site/${idSite}/dissocier`);
+        console.log("Réponse API:", response.data);
   
         await Swal.fire({
           icon: "success",
           title: langueActive === "fr" ? "Bon travail!" : 
             langueActive === "en" ? "Good job !" : "",
-          text: langueActive === "fr" ? "Type demande supprimé avec succès !" : langueActive === "en" ? "Request type deleted successfully!" : "",
+          text: langueActive === "fr" ? "Type demande dissocié du site avec succès !" : 
+          langueActive === "en" ? "Order type dissociated successfully!" : "",
           confirmButtonColor: "#7c3aed",
           background: "#1c2d55",
           color: "#fff",
@@ -41,8 +44,8 @@ const deleteTypeDemande = async (
         const errorMessage =
           error.response?.data?.detail ||
           (langueActive === "fr"
-            ? "Impossible de supprimer ce type de demande : il existe déjà des demandes associées."
-            : langueActive === "en" ? "Impossible to delete this request type: there are already associated requests." : "");
+            ? "Impossible de dissocier ce type de demande : il existe déjà des demandes associées."
+            : langueActive === "en" ? "Impossible to dissociate this request type: there are already associated requests." : "");
       
         Swal.fire({
           icon: "error",
@@ -56,7 +59,8 @@ const deleteTypeDemande = async (
           color: "#fff",
         });
       }
+      
     }
   };
 
-  export default deleteTypeDemande;
+  export default dissocieTypeDemande;

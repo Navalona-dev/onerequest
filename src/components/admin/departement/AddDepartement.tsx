@@ -137,7 +137,6 @@ type Departement = {
       
             Swal.fire("Succès", "Départements assignés au site", "success").then(() => {
               setShowModalAdd(false);
-              window.location.reload();
             });
           } catch (error) {
             Swal.fire("Erreur", "Impossible d'assigner les départements", "error");

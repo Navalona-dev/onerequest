@@ -9,6 +9,7 @@ import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
 import { error } from "console";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
+import dissocieTypeDemande from "../../../service/admin/DissocieTypeDemande";
 
 type Domaine = {
     id: number;
@@ -194,7 +195,7 @@ const TypeDemandeComponent = () => {
                                                 <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
-                                                        deleteTypeDemande(item.id);
+                                                        deleteTypeDemande(item.id, langueActive?.indice as "fr" | "en");
                                                     }}
                                                     title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
@@ -202,6 +203,10 @@ const TypeDemandeComponent = () => {
                                         ) : null}
                                          {user && user.privileges && user.privileges.some(p => p.title === 'super_admin' || p.title === 'admin_site') ? (
                                             <a href="#"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                dissocieTypeDemande(item.id, langueActive?.indice as "fr" | "en", Number(site?.id))
+                                            }}
                                                 title={langueActive?.indice === "fr" ? dissocie.fr.upperText : langueActive?.indice === "en" ? dissocie.en.upperText : ""}><i className="bi bi-archive-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                             </a>
                                          ) : null}

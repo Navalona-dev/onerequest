@@ -169,7 +169,6 @@ const AddTypeDemande: React.FC<AddTypeDemandeProps> = ({ setShowModal }) => {
       
             Swal.fire("Succès", "Départements assignés au site", "success").then(() => {
               setShowModal(false);
-              window.location.reload();
             });
           } catch (error) {
             Swal.fire("Erreur", "Impossible d'assigner les départements", "error");

@@ -134,7 +134,6 @@ const AddNiveauHierarchique: React.FC<AddNiveauProps> = ({ setShowModalAdd, idDe
       
             Swal.fire("Succès", "Niveau hierarchique assignés au departement", "success").then(() => {
               setShowModalAdd(false);
-              window.location.reload();
             });
           } catch (error) {
             Swal.fire("Erreur", "Impossible d'assigner les départements", "error");
