@@ -37,13 +37,23 @@ const deleteSite = async (
         setShowModal(false);
         window.location.reload();
   
-      } catch (error) {
+      } catch (error: any) {
         console.error("Erreur API:", error);
-  
+      
+        const status = error.response?.status; 
+        const errorMessage =
+          error.response?.data?.detail ||
+          (langueActive === "fr"
+            ? "Impossible de supprimer ce site : il existe déjà des demandes associées, vos pouvez faire seuelemnt le rendre indisponible."
+            : langueActive === "en" ? "Impossible to delete this site: there are already requests associated with it; you can only make it unavailable." : "");
+      
         Swal.fire({
           icon: "error",
-          title: langueActive === "fr" ? "Erreur" : langueActive === "en" ? "Error" : "",
-          text: langueActive === "fr" ? "Erreur lors de la suppression du site." : langueActive === "en" ? "Error occurred while deleting the site." : "",
+          title:
+            langueActive === "fr"
+              ? `Erreur`
+              : `Error`,
+          text: errorMessage,
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",

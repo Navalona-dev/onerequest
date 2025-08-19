@@ -243,7 +243,7 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ setShowModalSelectRegion, s
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                  className="text-white px-4 py-2 rounded"
                 >
                   {langueActive?.indice === "fr" ? save.fr.upperText : langueActive?.indice === "en" ? save.en.upperText : ""}
                 </button>

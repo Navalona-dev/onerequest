@@ -208,6 +208,10 @@
     "addDomaineTitle": "Créer une nouvelle domaine d'entreprise",
     "category": "Catégorie",
     "selectCtaegorie": "Selectionner une catégorie",
-    "listeDomaine": "Liste domaine"
+    "listeDomaine": "Liste domaine",
+    "make_available": "Rendre disponible",
+    "make_unavailable": "Rendre indisponible",
+    "disponible": "disponible",
+    "indisponible": "indisponible"
   }
   

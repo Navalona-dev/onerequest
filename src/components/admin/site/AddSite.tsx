@@ -235,7 +235,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                               className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                               autoComplete="off"
                               required
-                              placeholder={t("newregiontitle")}
+                              placeholder={`${t("newregiontitle")} *`}
                             />
                           </div>
                           
@@ -264,6 +264,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
 
                     {checkboxActive && (
                       <div className="mt-4">
+                        
                         <input
                           type="text"
                           name="commune"
@@ -272,7 +273,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                           className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                           autoComplete="off"
                           required
-                          placeholder={t("newcommunetitle")}
+                          placeholder={`${t("newcommunetitle")} *`}
                         />
 
                         <input
@@ -283,7 +284,7 @@ const Addsite: React.FC<AddSiteProps> = ({ setShowModal }) => {
                           className="w-full p-2 rounded bg-[#1c2d55] mt-4 border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent"
                           autoComplete="off"
                           required
-                          placeholder="District"
+                          placeholder="District *"
                         />
                       </div>
                     )}

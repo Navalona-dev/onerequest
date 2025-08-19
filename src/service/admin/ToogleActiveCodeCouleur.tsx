@@ -39,7 +39,7 @@ const toggleActiveCodeCouleur = async (
         icon: "success",
         title: langue === "fr" ? "Bon travail!" : 
             langue === "en" ? "Good job !" : "",
-        text: `Site ${pastActionWord} avec succès !`,
+        text: langue === "fr" ? `Code couleur ${pastActionWord} avec succès !` : langue === "en" ? `Color code ${pastActionWord} succesfully !` : "",
         confirmButtonColor: "#7c3aed",
         background: "#1c2d55",
         color: "#fff",

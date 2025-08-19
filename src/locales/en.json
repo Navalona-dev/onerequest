@@ -210,6 +210,10 @@
     "addDomaineTitle": "Create new company domain",
     "category": "Category",
     "selectCtaegorie": "Select category",
-    "listeDomaine": "Domain list"
+    "listeDomaine": "Domain list",
+    "make_available": "Make available",
+    "make_unavailable": "Make unavailable",
+     "disponible": "available",
+    "indisponible": "unavailable"
   }
   

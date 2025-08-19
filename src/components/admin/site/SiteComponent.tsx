@@ -17,6 +17,7 @@ import SelectCommune from "./SelectCommune";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
+import toogleDisponibleSite from "../../../service/admin/ToogleDisponibleSite";
 
 type RegionType = {
   id: number;
@@ -37,6 +38,7 @@ type SiteType = {
   isCurrent: boolean;
   region: RegionType;
   commune: CommuneType;
+  isIndisponible: boolean;
 }
 
 const SiteComponent = () => {
@@ -51,7 +53,7 @@ const SiteComponent = () => {
   const { create, delete: deleteAction, edit, activate, deactivate, addRegion } = state.actionTexts;
 
   const [currentPage, setCurrentPage] = useState(1);
-  const sitesPerPage = 5;
+  const sitesPerPage = 3;
 
   const [regions, setListeRegion] = useState<RegionType[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<RegionType | null>(null);
@@ -251,7 +253,7 @@ const SiteComponent = () => {
                               backgroundColor: codeCouleur?.btnColor
                             }}
                             ></i>
-                          </a>
+                          </a> <br /> <br />
                           <a href="#"
                           onClick={(e) => {
                             e.preventDefault();
@@ -262,7 +264,23 @@ const SiteComponent = () => {
                           title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}>
                             <i className="bi bi-trash-fill bg-red-500 px-1.5 py-1 text-white rounded-3xl mr-3"></i>
                           </a>
-                          
+                          <a href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              toogleDisponibleSite(item.id, !item.isIndisponible, setShowModal, langueActive?.indice as "fr" | "en", t);
+                            }}
+                            title={item.isIndisponible 
+                              ? t("make_available")  
+                              : t("make_unavailable")
+                          }
+                          >
+                            {item.isIndisponible ? (
+                              <i className="bi bi-toggle-off text-red-500 text-2xl"></i>
+                            ) : (
+                              <i className="bi bi-toggle-on text-green-500 text-2xl"></i>
+                            )}
+                          </a>
+
                         </td>
                         <td className="px-6 py-4">{item.nom}</td>
                         <td className="px-6 py-4">

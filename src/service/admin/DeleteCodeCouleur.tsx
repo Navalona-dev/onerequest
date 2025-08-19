@@ -37,13 +37,23 @@ const deleteCodeCouleur = async (
         setShowModal(false);
         window.location.reload();
   
-      } catch (error) {
+      } catch (error: any) {
         console.error("Erreur API:", error);
-  
+      
+        const status = error.response?.status; 
+        const errorMessage =
+          error.response?.data?.detail ||
+          (langueActive === "fr"
+            ? "Impossible de supprimer ce code couleur : veuillez d'abord activé un autre code couleur avant de le supprimer."
+            : langueActive === "en" ? "Impossible to delete this color code: please activate another color code first before deleting it." : "");
+      
         Swal.fire({
           icon: "error",
-          title: langueActive === "fr" ? "Erreur" : langueActive === "en" ? "Error" : "",
-          text: langueActive === "fr" ? "Erreur lors de la suppression du code couleur." : langueActive === "en" ? "Error while deleting the color code." : "",
+          title:
+            langueActive === "fr"
+              ? `Erreur`
+              : `Error`,
+          text: errorMessage,
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",
