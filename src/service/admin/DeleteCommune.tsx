@@ -37,13 +37,24 @@ const deleteCommune = async (
         setShowModal(false);
         window.location.reload();
   
-      } catch (error) {
-        console.error("Erreur API:", error);
-  
+      } catch (error: any) {
+        const status = error.response?.status;
+        
+        let errorMessage = "";
+        if (status === 409) {
+          errorMessage = langueActive === "fr"
+            ? "Impossible de supprimer cette commune : il existe déjà des demandes associées aux sites associés."
+            : "Unable to delete this municipality: there are already requests associated with the linked sites.";
+        } else {
+          errorMessage = langueActive === "fr"
+            ? "Erreur lors de la suppression de commune."
+            : "Error occurred while deleting the municipality.";
+        }
+        
         Swal.fire({
           icon: "error",
-          title: langueActive === "fr" ? "Erreur" : langueActive === "en" ? "Error" : "",
-          text: langueActive === "fr" ? "Erreur lors de la suppression du commune." : langueActive === "en" ? "Error while deleting the municipality." : "",
+          title: langueActive === "fr" ? "Erreur" : "Error",
+          text: errorMessage,
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",

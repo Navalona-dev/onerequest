@@ -38,27 +38,29 @@ const deleteSite = async (
         window.location.reload();
   
       } catch (error: any) {
-        console.error("Erreur API:", error);
-      
-        const status = error.response?.status; 
-        const errorMessage =
-          error.response?.data?.detail ||
-          (langueActive === "fr"
-            ? "Impossible de supprimer ce site : il existe déjà des demandes associées, vos pouvez faire seuelemnt le rendre indisponible."
-            : langueActive === "en" ? "Impossible to delete this site: there are already requests associated with it; you can only make it unavailable." : "");
-      
+        const status = error.response?.status;
+        
+        let errorMessage = "";
+        if (status === 409) {
+          errorMessage = langueActive === "fr"
+            ? "Impossible de supprimer ce site : il existe déjà des demandes associées, vous pouvez seulement le rendre indisponible."
+            : "Cannot delete this site: there are already associated requests, you can only make it unavailable.";
+        } else if (status === 403) {
+          errorMessage = langueActive === "fr"
+            ? "Suppression impossible : ce site est actuellement utilisé. Veuillez sélectionner un autre site avant de le supprimer."
+            : "Deletion not allowed: this site is currently in use. Please select another site before deleting it.";
+        }
+        
         Swal.fire({
           icon: "error",
-          title:
-            langueActive === "fr"
-              ? `Erreur`
-              : `Error`,
+          title: langueActive === "fr" ? "Erreur" : "Error",
           text: errorMessage,
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",
         });
       }
+      
     }
   };
 

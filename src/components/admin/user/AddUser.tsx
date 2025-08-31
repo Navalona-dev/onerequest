@@ -157,8 +157,8 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
       }, []);
 
       return (
-        <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50">
-          <div className="bg-[#111C44] border rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down"
+        <div className="fixed inset-0 bg-[#111C44] bg-opacity-50 flex items-start justify-center pt-2 z-50 h-[100vh]">
+          <div className="bg-[#111C44] border rounded-lg p-8 w-11/12 max-w-md relative shadow-lg slide-down h-[95vh] overflow-auto"
           style={{
             borderColor: codeCouleur?.btnColor
           }}

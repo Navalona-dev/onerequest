@@ -18,16 +18,19 @@ import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCo
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
 import toogleDisponibleSite from "../../../service/admin/ToogleDisponibleSite";
-
-type RegionType = {
-  id: number;
-  nom: string;
-}
+import UpdateRegion from "./UpdateRegion";
+import UpdateCommune from "./UpdateCommune";
 
 type CommuneType = {
   id: number;
   nom: string;
   district: string;
+}
+
+type RegionType = {
+  id: number;
+  nom: string;
+  commune: CommuneType | null;
 }
 
 type SiteType = {
@@ -61,6 +64,8 @@ const SiteComponent = () => {
   const [searchByRegion, setSearchByRegion] = useState(false);
   const [searchNom, setSearchNom] = useState("");
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+  const [showModalUpdateRegion, setShowModalUpdateRegion] = useState(false);
+  const [showModalUpdateCommune, setShowModalUpdateCommune] = useState(false);
 
   const {langueActive} = useLangueActive();
   const { t, i18n } = useTranslation();
@@ -288,6 +293,12 @@ const SiteComponent = () => {
                             <>
                               <span className="mr-2">{item.region.nom}</span>
                               <a href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setSelectedSite(item);
+                                setShowModalUpdateRegion(true);
+
+                              }}
                               style={{
                                 color: codeCouleur?.textColor
                               }}
@@ -314,6 +325,12 @@ const SiteComponent = () => {
                               <>
                                 <span className="mr-2">{item.commune.nom} / {item.commune.district}</span>
                                 <a href="#"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setSelectedSite(item);
+                                  setShowModalUpdateCommune(true);
+  
+                                }}
                                 style={{
                                   color: codeCouleur?.textColor
                                 }}
@@ -393,6 +410,29 @@ const SiteComponent = () => {
             isCurrent: selectedSite.isCurrent
           }}
           
+        />
+      )}
+
+      {showModalUpdateRegion && selectedSite && (
+        <UpdateRegion 
+          setShowModalUpdateRegion={setShowModalUpdateRegion}
+          siteId={selectedSite.id}
+          initialData={{
+            region: selectedSite.region,
+            commune: selectedSite.commune
+          }}
+        
+        />
+      )}
+
+      {showModalUpdateCommune && selectedSite && (
+        <UpdateCommune 
+          setShowModalUpdateCommune={setShowModalUpdateCommune}
+          siteId={selectedSite.id}
+          initialData={{
+            commune: selectedSite.commune,
+            region: selectedSite.region
+          }}
         />
       )}
 

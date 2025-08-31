@@ -214,6 +214,7 @@
     "make_available": "Make available",
     "make_unavailable": "Make unavailable",
      "disponible": "available",
-    "indisponible": "unavailable"
+    "indisponible": "unavailable",
+     "updateRegion": "Update region"
   }
   
