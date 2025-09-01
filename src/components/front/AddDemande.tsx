@@ -47,7 +47,7 @@ type Demande = {
   
 }
 
-const DemandeContent: React.FC = () => {
+const AddDemande: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const {langueActive} = useLangueActive();
   const { t, i18n } = useTranslation();
@@ -116,7 +116,7 @@ const DemandeContent: React.FC = () => {
   };
 
   useEffect(() => {
-    api.get('/api/sites')
+    api.get('/api/sites/active-and-disponible')
     .then((response) => {
       setListeSite(response.data)
     })
@@ -124,12 +124,14 @@ const DemandeContent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    api.get('/api/type_demandes/liste-by-entreprise')
+    if (!selectedSiteId) return;
+
+    api.get(`/api/sites/${selectedSiteId}/type-demandes`)
     .then((response) => {
       setListeTypeDemande(response.data)
     })
     .catch((error) => console.log("Erreur API", error))
-  }, []);
+  }, [selectedSiteId]);
 
   useEffect(() => {
     if (!selectedTypeId) return;
@@ -403,4 +405,4 @@ const DemandeContent: React.FC = () => {
   );
 };
 
-export default DemandeContent;
+export default AddDemande;

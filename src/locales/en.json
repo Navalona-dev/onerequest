@@ -215,6 +215,12 @@
     "make_unavailable": "Make unavailable",
      "disponible": "available",
     "indisponible": "unavailable",
-     "updateRegion": "Update region"
+    "updateRegion": "Update region",
+    "haveAccount": "Already have an account?",
+    "haveNotAccount": "Have not an account ?",
+    "accountIncorrect": "Incorrect email or password",
+    "haveNotAccess": "You do not have permission to access this interface.",
+    "departement": "Department"
+
   }
   

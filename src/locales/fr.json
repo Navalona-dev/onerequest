@@ -213,6 +213,11 @@
     "make_unavailable": "Rendre indisponible",
     "disponible": "disponible",
     "indisponible": "indisponible",
-    "updateRegion": "Modifier région"
+    "updateRegion": "Modifier région",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "haveNotAccount": "Vous n'avez pas un compte ?",
+    "accountIncorrect": "Email ou mot de passe incorrect",
+    "haveNotAccess": "Vous n'avez pas le droit d'accéder à cette interface.",
+    "departement": "Departement"
   }
   

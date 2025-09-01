@@ -2,7 +2,7 @@ import React from "react";
 import { Spinner } from "../../components/front/Spinner";
 import PageBlock from "../../components/front/PageBlock";
 import PageHeader from "../../components/front/PageHeader";
-import DemandeContent from "../../components/front/DemandeContent";
+import AddDemande from "../../components/front/AddDemande";
 import { useLangueActive } from "../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
 
@@ -18,7 +18,7 @@ const DemandePage = () => {
               breadcrumbs={[`${t("menu.home")}`, "Pages", `${t("menu.demande")}`]} 
             />
             <PageBlock />
-            <DemandeContent />
+            <AddDemande />
         </section>
     )
 }

@@ -37,13 +37,24 @@ const deleteUser = async (
         setShowModal(false);
         window.location.reload();
   
-      } catch (error) {
-        console.error("Erreur API:", error);
-  
+      } catch (error: any) {
+        const status = error.response?.status;
+        
+        let errorMessage = "";
+        if (status === 409) {
+          errorMessage = langueActive === "fr"
+            ? "Impossible de supprimer cet utilisateur : il existe déjà des demandes associées."
+            : "Unable to delete this user: there are already requests associated.";
+        } else {
+          errorMessage = langueActive === "fr"
+            ? "Erreur lors de la suppression de l'utilisateur."
+            : "Error occurred while deleting the user.";
+        }
+        
         Swal.fire({
           icon: "error",
-          title: langueActive === "fr" ? "Erreur" : langueActive === "en" ? "Error" : "",
-          text: langueActive === "fr" ? "Erreur lors de la suppression de l'utilisateur." : langueActive === "en" ? "Error occurred while deleting the user." : "",
+          title: langueActive === "fr" ? "Erreur" : "Error",
+          text: errorMessage,
           confirmButtonColor: "#ef4444",
           background: "#1c2d55",
           color: "#fff",

@@ -11,9 +11,21 @@ interface AddUserProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+type Departement = {
+  id: number;
+  nom: string;
+  nomEn: string;
+}
+
+type Site = {
+  id: number;
+  nom: string;
+}
+
 const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
     const [formData, setFormData] = useState({
         site: "",
+        departement: "",
         nom: "",
         prenom: "",
         email: "",
@@ -25,6 +37,7 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
 
     const fieldLabels: { [key: string]: string } = {
         site: "Site",
+        departement: t("departement"),
         nom: t("nom"),
         prenom: t("prenom"),
         email: t("mail"),
@@ -36,6 +49,9 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
       const {codeCouleur} = useGlobalActiveCodeCouleur();
       const state = store.getState();
       const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
+      const [selectedSite, setSelectedSite] = useState<{id: number; nom?: string} | null>(null);
+      const [departements, setListeDepartement] = useState<Departement[]>([]);
+      const [site, setSite] = useState<Site | null>(null);
 
     const listeSite = async () => {
       try {
@@ -46,6 +62,22 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
         return 0;
       }
     };
+
+    useEffect(() => {
+      api.get('/api/sites/current')
+      .then((response) => {
+          setSite(response.data)
+      })
+      .catch((error) => console.log("Erreur API", error));
+
+      if (!site?.id) return;
+      api.get(`/api/sites/${site?.id}/departements`)
+      .then((response) => {
+          setListeDepartement(response.data)
+      })
+      .catch((error) => console.log("Erreur API", error));
+      
+  }, [site?.id]);
 
     const listePrivilege = async () => {
         try {
@@ -61,12 +93,17 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
         const { name, value, multiple } = e.target;
       
         if (multiple) {
-          // Forcer TypeScript à comprendre que e.target est un HTMLSelectElement
           const target = e.target as HTMLSelectElement;
           const values = Array.from(target.selectedOptions, option => option.value);
           setFormData(prev => ({ ...prev, [name]: values }));
         } else {
           setFormData(prev => ({ ...prev, [name]: value }));
+      
+          if (name === "site") {
+            // Trouver le site choisi dans siteListe
+            const foundSite = siteListe.find(s => `/api/sites/${s.id}` === value);
+            setSelectedSite(foundSite || null);
+          }
         }
       };
       
@@ -75,14 +112,13 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
     
         try {
           const response = await api.post("/api/users", formData);
-          console.log("Réponse API:", response.data);
     
           Swal.fire({
             icon: "success",
             title: langueActive?.indice === "fr" ? "Bon travail!" : 
             langueActive?.indice === "en" ? "Good job !" : "",
-            text: langueActive?.indice === "fr" ? "Utilisateur ajouté avec succès !" : 
-            langueActive?.indice === "en" ? "User added successfully!" : "",
+            text: langueActive?.indice === "fr" ? `Utilisateur ajouté au ${selectedSite?.nom} avec succès !` : 
+            langueActive?.indice === "en" ? `User added successfully in ${selectedSite?.nom}` : "",
             confirmButtonColor: "#7c3aed", // violet
             cancelButtonColor: "#ef4444", // rouge
             showCancelButton: true,
@@ -211,6 +247,23 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                         ))}
 
                     </select>
+                    ) : (field === "departement") ? (
+                      <select
+                          id="departements"
+                          name="departement"
+                          value={formData.departement}
+                          onChange={handleChange}
+                          className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                          required
+                      >
+                          <option value="" disabled>{t("selectDepartement")}</option>
+                          {departements.map((dep) => (
+                          <option key={dep.id} value={`/api/departements/${dep.id}`}>
+                              {langueActive?.indice === "fr" ? dep.nom : langueActive?.indice === "en" ? dep.nomEn : ""}
+                          </option>
+                          ))}
+
+                      </select>
                     ) : (
                     <input
                         type="text"

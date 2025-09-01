@@ -6,6 +6,7 @@ import { publicApi } from "../../service/publicApi";
 import { useNavigate } from "react-router-dom";
 import { useLangueActive } from "../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
+import { AxiosError } from "axios";
 
 
 const RegisterForm = () => {
@@ -83,11 +84,44 @@ const RegisterForm = () => {
           navigate("/connexion");
          window.location.reload();
       });
-    } catch (error) {
-      Swal.fire({
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>;
+    
+      let errorMessage = langueActive?.indice === "fr" ? "Erreur lors de l'ajout d'un utilisateur." : 
+      langueActive?.indice === "en" ? "Error while adding user." : "";
+    
+      if (error.response) {
+        // Si une réponse est retournée par le backend
+        const status = error.response.status;
+        const backendMessage = error.response.data?.message;
+    
+        // Si le backend renvoie un message clair, on l’affiche
+        if (backendMessage) {
+          errorMessage = backendMessage;
+        } else if (status == 400) {
+          errorMessage = langueActive?.indice === "fr" ? "Un compte avec cet email existe déjà." : 
+          langueActive?.indice === "en" ? "An account with this email already exists." : "";
+        }
+        else if (status === 404) {
+          errorMessage = langueActive?.indice === "fr" ? "Utilisateur introuvable." : 
+          langueActive?.indice === "en" ? "User not found" : "";
+        } else if (status === 401) {
+          errorMessage = langueActive?.indice === "fr" ? "Non autorisé. Veuillez vous reconnecter." : 
+          langueActive?.indice === "en" ? "Unauthorized. Please log in again." : "";
+        } else if (status === 500) {
+          errorMessage = langueActive?.indice === "fr" ? "Erreur serveur. Réessayez plus tard." : 
+          langueActive?.indice === "en" ? "Server error. Please try again later." : "";
+        }
+        // Tu peux rajouter d'autres cas ici si besoin
+      } else {
+        // Pas de réponse du serveur (ex: problème de réseau)
+        //errorMessage = "Un compte avec cet email existe déjà.";
+      }
+    
+      await Swal.fire({
         icon: "error",
         title: langueActive?.indice === "fr" ? "Erreur" : langueActive?.indice === "en" ? "Error" : "",
-        text: "Erreur lors de l'ajout de compte.",
+        text: errorMessage,
         confirmButtonColor: "#ef4444",
         background: "#1c2d55",
         color: "#fff",
@@ -115,7 +149,7 @@ const RegisterForm = () => {
               <br />
               <span className="text-red-500 text-sm">{errors[field]}</span>
               <input 
-                className="w-full p-2 rounded bg-gray-100 border-gray-100 text-gray-500 focus:outline-none focus:ring-0 focus:border-transparent "
+                className="mt-2 w-full p-2 rounded bg-gray-100 border-gray-100 text-gray-500 focus:outline-none focus:ring-0 focus:border-transparent "
                 type={`${field === "password" ? "password" : field === "confirmPassword" ? "password" : field === "email" ? "email" : "text"}`} 
                 placeholder={fieldLabels[field] || field} 
                 name={field}
@@ -135,7 +169,7 @@ const RegisterForm = () => {
               style={{
                 color: codeCouleur?.textColor
               }}>
-              <a href="/connexion" >{t("register.btn")}</a></span>
+              <a href="/connexion" >{t("menu.login")}</a></span>
             </p>
           </div>
           

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useLangueActive } from "../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
 import { data } from "jquery";
+import { Link } from "react-router-dom";
 
 const LoginPageFront = () => {
   const [email, setEmail] = useState("");
@@ -39,7 +40,7 @@ const LoginPageFront = () => {
         // ❌ Pas autorisé
         sessionStorage.removeItem("jwt");
         sessionStorage.removeItem("email");
-        setError("Vous n'avez pas le droit d'accéder à cette interface.");
+        setError(t("haveNotAccess"));
         return;
       }
   
@@ -47,7 +48,7 @@ const LoginPageFront = () => {
       setError(null);
       navigate("/");
     } catch (err) {
-      setError("Email ou mot de passe incorrect");
+      setError(t("accountIncorrect"));
     }
   };
   
@@ -140,6 +141,19 @@ const LoginPageFront = () => {
           />
 
           {error && <div className="error">{error}</div>}
+
+          <div className="mb-4 text-center">
+            <Link
+              to="/inscription"
+              className="underline"
+              style={{
+                color: codeCouleur?.btnColor
+              }}
+            >
+              {t("haveNotAccount")}
+            </Link>
+          </div>
+
 
           <button type="submit">{t("login.btn")}</button>
         </form>
