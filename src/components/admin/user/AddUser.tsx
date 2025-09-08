@@ -22,10 +22,24 @@ type Site = {
   nom: string;
 }
 
+type Niveau = {
+  id: number;
+  nom: string;
+  nomEn: string;
+}
+
+type Privilege = {
+  id: number;
+  title: string;
+  libelleFr: string;
+  libelleEn: string;
+}
+
 const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
     const [formData, setFormData] = useState({
         site: "",
         departement: "",
+        niveauHierarchique: "",
         nom: "",
         prenom: "",
         email: "",
@@ -41,7 +55,8 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
         nom: t("nom"),
         prenom: t("prenom"),
         email: t("mail"),
-        privileges: t("privileges")
+        //privileges: t("privileges"),
+        niveauHierarchique: t("niveauhierarchique")
       };
 
       const [siteListe, setSiteListe] = useState<{ id: number; nom?: string; libelle?: string }[]>([]);
@@ -52,6 +67,10 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
       const [selectedSite, setSelectedSite] = useState<{id: number; nom?: string} | null>(null);
       const [departements, setListeDepartement] = useState<Departement[]>([]);
       const [site, setSite] = useState<Site | null>(null);
+      const [niveaus, setListeNiveau] = useState<Niveau[]>([]);
+      const [idDepartement, setIdDepartement] = useState<number | null>(null);
+      const [privilege, setPrivilege] = useState<Privilege|null>(null);
+      const [isPrivilege, setIsPrivilege] = useState(false);
 
     const listeSite = async () => {
       try {
@@ -79,6 +98,8 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
       
   }, [site?.id]);
 
+ 
+
     const listePrivilege = async () => {
         try {
           const response = await api.get("/api/privileges");
@@ -100,12 +121,63 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
           setFormData(prev => ({ ...prev, [name]: value }));
       
           if (name === "site") {
-            // Trouver le site choisi dans siteListe
             const foundSite = siteListe.find(s => `/api/sites/${s.id}` === value);
             setSelectedSite(foundSite || null);
           }
+      
+          if (name === "departement") {
+            const depId = parseInt(value.split("/").pop() || "0", 10);
+            setIdDepartement(depId);
+          }
+      
+          if (name === "niveauHierarchique") {
+            const nivId = parseInt(value.split("/").pop() || "0", 10);
+      
+            // Charger le niveau hiérarchique pour récupérer le privilège associé
+            api.get(`/api/niveau_hierarchiques/${nivId}`)
+              .then((res) => {
+                const niveau = res.data;
+      
+                if (niveau.privilege) {
+                  // 👉 tu mets dans privilege (useState séparé)
+                  setPrivilege({
+                    id: niveau.privilege.id,
+                    title: niveau.privilege.title,
+                    libelleFr: niveau.privilege.libelleFr,
+                    libelleEn: niveau.privilege.libelleEn
+                  });
+                  setIsPrivilege(true);
+      
+                  // 👉 et tu mets aussi dans formData
+                  setFormData((prev) => ({
+                    ...prev,
+                    [name]: value,
+                    privileges: [`/api/privileges/${niveau.privilege.id}`]
+                  }));
+                } else {
+                  setPrivilege(null);
+                  setFormData((prev) => ({
+                    ...prev,
+                    [name]: value,
+                    privileges: []
+                  }));
+                }
+              })
+              .catch((err) => console.log("Erreur récupération niveau", err));
+          }
         }
       };
+      
+      useEffect(() => {
+        if (!idDepartement) return;
+      
+        api.get(`/api/departements/${idDepartement}/niveau-hierarchique`)
+          .then((response) => {
+            setListeNiveau(response.data);
+          })
+          .catch((error) => console.log("Erreur API", error));
+      }, [idDepartement]);
+      
       
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -204,17 +276,23 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
             <form onSubmit={handleSubmit} className="space-y-4">
             {Object.keys(formData).map((field) =>
                 <div key={field}>
-                  <label className="block text-gray-400 mb-1">
-                    {fieldLabels[field] || field}
-                    {(field === "prenom") ? (
-                        <sup></sup>
-                  ) : (
-                    <sup className="text-red-500">*</sup>
-                    
-                  )}
-                  </label>
                   {field === "privileges" ? (
-                    <select
+                    null
+                  ) : (
+                    <label className="block text-gray-400 mb-1">
+                      {fieldLabels[field] || field}
+                      {(field === "prenom") ? (
+                          <sup></sup>
+                    ) : (
+                      <sup className="text-red-500">*</sup>
+                      
+                    )}
+                    </label>
+                  )}
+                 
+                  {field === "privileges" ? (
+                    <input type="hidden" name="" />
+                    /*<select
                         name="privileges"
                         multiple
                         value={formData.privileges}
@@ -228,7 +306,8 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                             {priv.title} ({langueActive?.indice === "fr" ? priv.libelleFr : langueActive?.indice === "en" ? priv.libelleEn : ""})
                         </option>
                         ))}
-                    </select>
+                    </select>*/
+                    
                     ): 
                   (field === "site" ? (
                     <select
@@ -264,6 +343,33 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                           ))}
 
                       </select>
+                    ) : (field === "niveauHierarchique") ? (
+                      <>
+                        <select
+                            id="niveauHierarchiques"
+                            name="niveauHierarchique"
+                            value={formData.niveauHierarchique}
+                            onChange={handleChange}
+                            className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                            required
+                        >
+                            <option value="" disabled>{t("selectNiveau")}</option>
+                            {niveaus.map((niv) => (
+                            <option key={niv.id} value={`/api/niveau_hierarchiques/${niv.id}`}>
+                                {langueActive?.indice === "fr" ? niv.nom : langueActive?.indice === "en" ? niv.nomEn : ""}
+                            </option>
+                            ))}
+
+                        </select>
+                      {isPrivilege && (
+                        <p className="mt-3 text-gray-400">{t("privilege")} : 
+                          {langueActive?.indice === "fr" ? privilege?.libelleFr : 
+                          langueActive?.indice === "en" ? privilege?.libelleEn : ""} 
+                          ({privilege?.title})
+                        </p>
+                      )}
+                        
+                      </>
                     ) : (
                     <input
                         type="text"

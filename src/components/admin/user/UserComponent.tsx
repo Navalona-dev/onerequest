@@ -22,6 +22,18 @@ type Privilege = {
     id: number;
     nom: string;
   };
+
+  type Departement = {
+    id: number;
+    nom: string;
+    nomEn: string;
+}
+
+type Niveau = {
+    id: number;
+    nom: string;
+    nomEn: string;
+}
   
   type UserType = {
     id: number;
@@ -32,6 +44,8 @@ type Privilege = {
     site: Site;
     message: string;
     isSuperAdmin: boolean;
+    departement: Departement;
+    niveauHierarchique: Niveau | null;
   };
   
 
@@ -48,7 +62,7 @@ const UserComponent = () => {
     const user = UserAdminConnected() as UserType | null;
 
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 5;
+    const usersPerPage = 2;
 
     //Search
     const [searchNom, setSearchNom] = useState("");
@@ -138,8 +152,8 @@ const UserComponent = () => {
 
     return(
         <>
-        <div className="h-[69vh] overflow-y-auto">
-            <div className="color-header px-4 flex justify-between items-center mb-3">
+        <div className="h-[69vh] overflow-y-auto my-5">
+            <div className="color-header px-8 flex justify-between items-center mb-3">
                 <h4 className="font-bold text-white">{t("userlisttitle")}</h4>
                 {user && user.privileges && user.privileges.some(p => p.title === "super_admin" || p.title === "admin_site") ? (
                     <button
@@ -151,7 +165,7 @@ const UserComponent = () => {
                 ) : null}
                 
             </div>
-            <div className="card my-6 px-5 mx-4 border border-gray-700 py-5">
+            <div className="card my-6 px-5 mx-8 border border-gray-700 py-5">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="w-full">
                         <input type="text" name="" id="" 
@@ -200,11 +214,11 @@ const UserComponent = () => {
                     </div>
                 </div>
             </div>
-            <div className="mx-1">
-                <div className="w-[38vh] md:w-full sm:w-[38vh] h-[55vh] overflow-auto">
+            <div className="mx-4">
+                <div className="w-[42vh] md:w-full sm:w-[42vh] h-[55vh] overflow-auto">
                     <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
-                            <tr className="text-nowrap border-b-2 border-gray-700 ...">
+                            <tr className="border-b-2 border-gray-700 ...">
                                 <th scope="col" className="px-6 py-3 text-white">
                                     Actions
                                 </th>
@@ -221,6 +235,12 @@ const UserComponent = () => {
                                     Site
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
+                                    {t("departement")}
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-white">
+                                    {t("niveauhierarchique")}
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-white">
                                     {t("privilege")}
                                 </th>
                                 
@@ -229,8 +249,8 @@ const UserComponent = () => {
                         <tbody>
                             {currentUsers.length > 0 ? (
                                 currentUsers.map((item, index) => (
-                                    <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"} text-nowrap`}>
-                                        <th className="px-6 py-4">
+                                    <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
+                                        <th className="px-6 py-4 text-nowrap">
                                         {user && user.privileges && user.privileges.some(p => p.title === "super_admin" || p.title === "admin_site") ? (
                                             <>
                                                 <a href="#"
@@ -272,6 +292,14 @@ const UserComponent = () => {
                                             {item.site ? (item.site.nom) : null}
                                         </td>
                                         <td className="px-6 py-4">
+                                            {langueActive?.indice === "fr" ? item.departement.nom : 
+                                            langueActive?.indice === "en" ? item.departement.nomEn : ""}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {langueActive?.indice === "fr" ? item.niveauHierarchique?.nom : 
+                                            langueActive?.indice === "en" ? item.niveauHierarchique?.nomEn : ""}
+                                        </td>
+                                        <td className="px-6 py-4">
                                             {item.privileges.length > 0 ? (
                                                 item.privileges.map((priv, index) => (
                                                 <span key={index}>
@@ -285,7 +313,7 @@ const UserComponent = () => {
                                 ))
                             ) : (
                                 <tr className="bg-[#1c2d55] text-center">
-                                    <td colSpan={6} className="px-6 py-4">{t("nodata")}</td>
+                                    <td colSpan={7} className="px-6 py-4">{t("nodata")}</td>
                                 </tr>
                             )}
                             

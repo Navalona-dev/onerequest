@@ -207,7 +207,7 @@
     "addNiveauHierarchique": "Créer un niveau hierarchique",
     "addDomaineTitle": "Créer une nouvelle domaine d'entreprise",
     "category": "Catégorie",
-    "selectCtaegorie": "Selectionner une catégorie",
+    "selectCategorie": "Selectionner une catégorie",
     "listeDomaine": "Liste domaine",
     "make_available": "Rendre disponible",
     "make_unavailable": "Rendre indisponible",
@@ -218,6 +218,8 @@
     "haveNotAccount": "Vous n'avez pas un compte ?",
     "accountIncorrect": "Email ou mot de passe incorrect",
     "haveNotAccess": "Vous n'avez pas le droit d'accéder à cette interface.",
-    "departement": "Departement"
+    "departement": "Departement",
+    "niveauhierarchique": "Niveau hierarchique",
+    "selectNiveau": "Sélectionner un niveau hierarchique"
   }
   

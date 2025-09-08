@@ -22,14 +22,6 @@ type Rang = {
     rang: string;
 }
 
-type NiveauHierarchique = {
-    id: number;
-    nom: string;
-    nomEn: string;
-    description: string;
-    descriptionEn: string;
-}
-
 type Site = {
     id: number;
     nom: string;
@@ -39,6 +31,15 @@ type Privilege = {
     id: number;
     title: string;
   };
+
+  type NiveauHierarchique = {
+    id: number;
+    nom: string;
+    nomEn: string;
+    description: string;
+    descriptionEn: string;
+    privilege: Privilege;
+}
 
 type UserType = {
     id: number;
@@ -164,7 +165,7 @@ const NiveauHierarchiqueComponent = () => {
                 <div className="w-[42vh] md:w-full sm:w-[42vh] h-[40vh] md:h-[55vh] sm:h-[40vh] overflow-auto">
                     <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
-                            <tr className="text-nowrap border-b-2 border-gray-700 ...">
+                            <tr className="border-b-2 border-gray-700 ...">
                                 <th scope="col" className="px-6 py-3 text-white">
                                     Actions
                                 </th>
@@ -176,6 +177,9 @@ const NiveauHierarchiqueComponent = () => {
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
                                     {t("nomEn")}
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-white">
+                                    {t("privilege")}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
                                     {t("descriptionFr")}
@@ -291,6 +295,9 @@ const NiveauHierarchiqueComponent = () => {
                                             {item.nomEn}
                                         </td>
                                         <td className="px-6 py-4">
+                                            {item.privilege.title}
+                                        </td>
+                                        <td className="px-6 py-4">
                                             {item.description}
                                         </td>
                                         <td className="px-6 py-4">
@@ -301,7 +308,7 @@ const NiveauHierarchiqueComponent = () => {
                                 ))
                             ) : (
                                 <tr className="bg-[#1c2d55] text-center">
-                                    <td colSpan={6} className="px-6 py-4">{t("nodata")}</td>
+                                    <td colSpan={7} className="px-6 py-4">{t("nodata")}</td>
                                 </tr>
                             )}
                             

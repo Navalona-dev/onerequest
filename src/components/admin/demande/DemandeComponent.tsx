@@ -189,7 +189,7 @@ const DemandeComponent = () => {
                                         {t("objet")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        {t("contenu")}
+                                        Message
                                     </th>
                                     
                                 </tr>

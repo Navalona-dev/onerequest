@@ -209,7 +209,7 @@
     "addNiveauHierarchique": "Create new Hierarchical Level",
     "addDomaineTitle": "Create new company domain",
     "category": "Category",
-    "selectCtaegorie": "Select category",
+    "selectCategorie": "Select category",
     "listeDomaine": "Domain list",
     "make_available": "Make available",
     "make_unavailable": "Make unavailable",
@@ -220,7 +220,10 @@
     "haveNotAccount": "Have not an account ?",
     "accountIncorrect": "Incorrect email or password",
     "haveNotAccess": "You do not have permission to access this interface.",
-    "departement": "Department"
+    "departement": "Department",
+    "niveauhierarchique": "Hierarchy Levels",
+    "selectNiveau": "Select Hierarchy Level"
+
 
   }
   

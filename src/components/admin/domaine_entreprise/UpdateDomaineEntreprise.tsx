@@ -130,7 +130,7 @@ const UpdateDomaineEntreprise: React.FC<UpdateDomaineEntrepriseProps> = ({ setSh
                 className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
                 required
             >
-                <option value="" disabled>{t("selectCtaegorie")}</option>
+                <option value="" disabled>{t("selectCategorie")}</option>
                 {categories.map((item) => (
                 <option key={item.id} value={`/api/categorie_domaine_entreprises/${item.id}`}>
                     {langueActive?.indice === "fr" ? item.nom : 
