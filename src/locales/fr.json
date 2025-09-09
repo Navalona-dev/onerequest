@@ -220,6 +220,7 @@
     "haveNotAccess": "Vous n'avez pas le droit d'accéder à cette interface.",
     "departement": "Departement",
     "niveauhierarchique": "Niveau hierarchique",
-    "selectNiveau": "Sélectionner un niveau hierarchique"
+    "selectNiveau": "Sélectionner un niveau hierarchique",
+    "nhAssociate": "Associé niveau hierarchique"
   }
   

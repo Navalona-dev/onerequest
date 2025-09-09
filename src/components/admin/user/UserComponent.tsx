@@ -10,6 +10,7 @@ import bgImage from '../../../assets/images/bg-site.png';
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
+import AddNiveau from "./AddNiveauHierarchique";
 
 type Privilege = {
     id: number;
@@ -73,6 +74,7 @@ const UserComponent = () => {
 
     const [currentSite, setCurrentSite] = useState<Site | null>(null);
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
+    const [showModalAddNiveau, setShowModalAddNiveau] = useState(false);
 
     useEffect(() => {
         api.get('/api/sites/current')
@@ -114,7 +116,7 @@ const UserComponent = () => {
                     .catch((error) => console.error("Erreur API:", error));
             }
         }
-    }, [user, currentSite]); // ✅ Ajoute currentSite ici aussi
+    }, [user, currentSite]); 
     
 
     const filteredUsers = users.filter(user => {
@@ -253,7 +255,7 @@ const UserComponent = () => {
                                         <th className="px-6 py-4 text-nowrap">
                                         {user && user.privileges && user.privileges.some(p => p.title === "super_admin" || p.title === "admin_site") ? (
                                             <>
-                                                <a href="#"
+                                                {/*<a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
                                                         setSelectedUser(item);
@@ -265,7 +267,7 @@ const UserComponent = () => {
                                                         backgroundColor: codeCouleur?.btnColor
                                                     }}
                                                     ></i>
-                                                </a>
+                                                </a>*/}
                                                 <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
@@ -296,9 +298,46 @@ const UserComponent = () => {
                                             langueActive?.indice === "en" ? item.departement.nomEn : ""}
                                         </td>
                                         <td className="px-6 py-4">
-                                            {langueActive?.indice === "fr" ? item.niveauHierarchique?.nom : 
-                                            langueActive?.indice === "en" ? item.niveauHierarchique?.nomEn : ""}
+                                            {item.niveauHierarchique?.id ? (
+                                                <>
+                                                <span>
+                                                    {langueActive?.indice === "fr"
+                                                    ? item.niveauHierarchique?.nom
+                                                    : langueActive?.indice === "en"
+                                                    ? item.niveauHierarchique?.nomEn
+                                                    : ""}
+                                                </span>
+                                                <div className="flex justify-center mt-1">
+                                                    <a
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setShowModalAddNiveau(true);
+                                                            setSelectedUser(item);
+                                                        }}
+                                                        href="#"
+                                                        style={{ color: codeCouleur?.btnColor }}
+                                                    >
+                                                    <i className="bi bi-pen-fill"></i>
+                                                    </a>
+                                                </div>
+                                                </>
+                                            ) : (
+                                                <div className="flex justify-center">
+                                                <a
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setShowModalAddNiveau(true);
+                                                    setSelectedUser(item);
+                                                }}
+                                                    href="#"
+                                                    style={{ color: codeCouleur?.btnColor }}
+                                                >
+                                                    <i className="bi bi-plus-circle-fill"></i>
+                                                </a>
+                                                </div>
+                                            )}
                                         </td>
+
                                         <td className="px-6 py-4">
                                             {item.privileges.length > 0 ? (
                                                 item.privileges.map((priv, index) => (
@@ -346,6 +385,16 @@ const UserComponent = () => {
                     privileges: selectedUser.privileges,
                 }}
                 />
+        )}
+        {showModalAddNiveau && selectedUser && (
+            <AddNiveau 
+                userId={selectedUser.id}
+                setShowModalAddNiveau={setShowModalAddNiveau}
+                idDepartement={selectedUser.departement.id}
+                initialData={{
+                    niveauHierarchique: selectedUser.niveauHierarchique,
+                }}
+            />
         )}
         </>
         

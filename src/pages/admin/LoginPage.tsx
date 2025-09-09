@@ -27,6 +27,8 @@ const LoginPage = () => {
   const { langueActive, setLangueActive } = useLangueActive();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -231,13 +233,23 @@ const LoginPage = () => {
           />
 
           <label>{t("login.password")} :</label>
-          <input
-            type="password"
-            placeholder={t("login.pwdtext")}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder={t("login.pwdtext")}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full pr-10"
+            />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/3 transform -translate-y-1/2 cursor-pointer text-gray-600"
+            >
+              <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+            </span>
+          </div>
+
 
           {error && <div className="error">{error}</div>}
 

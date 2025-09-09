@@ -139,21 +139,17 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                 const niveau = res.data;
       
                 if (niveau.privilege) {
-                  // 👉 tu mets dans privilege (useState séparé)
-                  setPrivilege({
-                    id: niveau.privilege.id,
-                    title: niveau.privilege.title,
-                    libelleFr: niveau.privilege.libelleFr,
-                    libelleEn: niveau.privilege.libelleEn
-                  });
-                  setIsPrivilege(true);
-      
-                  // 👉 et tu mets aussi dans formData
-                  setFormData((prev) => ({
-                    ...prev,
-                    [name]: value,
-                    privileges: [`/api/privileges/${niveau.privilege.id}`]
-                  }));
+                  api.get(niveau.privilege) // ici niveau.privilege est l'IRI
+                    .then((resPriv) => {
+                      setPrivilege(resPriv.data);
+                      setIsPrivilege(true);
+                
+                      setFormData((prev) => ({
+                        ...prev,
+                        [name]: value,
+                        privileges: [niveau.privilege] // tu gardes l’IRI dans formData
+                      }));
+                    });
                 } else {
                   setPrivilege(null);
                   setFormData((prev) => ({
@@ -292,22 +288,6 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
                  
                   {field === "privileges" ? (
                     <input type="hidden" name="" />
-                    /*<select
-                        name="privileges"
-                        multiple
-                        value={formData.privileges}
-                        onChange={handleChange}
-                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
-                        required
-                    >
-                        <option value="" disabled>{t("selecetpriv")}</option>
-                        {privilegeListe.map((priv) => (
-                        <option key={priv.id} value={`/api/privileges/${priv.id}`} className="mt-3">
-                            {priv.title} ({langueActive?.indice === "fr" ? priv.libelleFr : langueActive?.indice === "en" ? priv.libelleEn : ""})
-                        </option>
-                        ))}
-                    </select>*/
-                    
                     ): 
                   (field === "site" ? (
                     <select
@@ -362,10 +342,12 @@ const AddUser: React.FC<AddUserProps> = ({ setShowModal }) => {
 
                         </select>
                       {isPrivilege && (
-                        <p className="mt-3 text-gray-400">{t("privilege")} : 
+                        <p className="mt-3 text-gray-400"><span>{t("privilege")} : </span>  
+                          <span> 
                           {langueActive?.indice === "fr" ? privilege?.libelleFr : 
                           langueActive?.indice === "en" ? privilege?.libelleEn : ""} 
                           ({privilege?.title})
+                          </span>
                         </p>
                       )}
                         

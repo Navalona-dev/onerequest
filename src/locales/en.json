@@ -222,8 +222,8 @@
     "haveNotAccess": "You do not have permission to access this interface.",
     "departement": "Department",
     "niveauhierarchique": "Hierarchy Levels",
-    "selectNiveau": "Select Hierarchy Level"
-
+    "selectNiveau": "Select Hierarchy Level",
+    "nhAssociate": "Hierarchy Level associate"
 
   }
   
