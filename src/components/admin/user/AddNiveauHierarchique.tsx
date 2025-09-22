@@ -183,13 +183,9 @@ const AddNiveau: React.FC<AddNiveauProps> = ({ setShowModalAddNiveau, userId, id
               // Si le backend renvoie un message clair, on l’affiche
               if (backendMessage) {
                 errorMessage = backendMessage;
-              } else if (status == 400) {
-                errorMessage = langueActive?.indice === "fr" ? "Un compte avec cet email existe déjà." : 
-                langueActive?.indice === "en" ? "An account with this email already exists." : "";
-              }
-              else if (status === 404) {
-                errorMessage = langueActive?.indice === "fr" ? "Utilisateur introuvable." : 
-                langueActive?.indice === "en" ? "User not found" : "";
+              } else if (status === 404) {
+                errorMessage = langueActive?.indice === "fr" ? "Niveau hierarchique introuvable." : 
+                langueActive?.indice === "en" ? "Hierarchicaly level not found" : "";
               } else if (status === 401) {
                 errorMessage = langueActive?.indice === "fr" ? "Non autorisé. Veuillez vous reconnecter." : 
                 langueActive?.indice === "en" ? "Unauthorized. Please log in again." : "";
@@ -200,7 +196,6 @@ const AddNiveau: React.FC<AddNiveauProps> = ({ setShowModalAddNiveau, userId, id
               // Tu peux rajouter d'autres cas ici si besoin
             } else {
               // Pas de réponse du serveur (ex: problème de réseau)
-              //errorMessage = "Un compte avec cet email existe déjà.";
             }
           
             await Swal.fire({
@@ -248,7 +243,7 @@ const AddNiveau: React.FC<AddNiveauProps> = ({ setShowModalAddNiveau, userId, id
                                 className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
                                 required
                             >
-                                <option value="" disabled>{t("selectNiveau")}</option>
+                                <option value="">{t("selectNiveau")}</option>
                                 {niveaus.map((niv) => (
                                 <option key={niv.id} value={`/api/niveau_hierarchiques/${niv.id}`}>
                                     {langueActive?.indice === "fr" ? niv.nom : langueActive?.indice === "en" ? niv.nomEn : ""}

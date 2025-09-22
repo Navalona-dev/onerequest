@@ -223,7 +223,8 @@
     "departement": "Department",
     "niveauhierarchique": "Hierarchy Levels",
     "selectNiveau": "Select Hierarchy Level",
-    "nhAssociate": "Hierarchy Level associate"
+    "nhAssociate": "Hierarchy Level associate",
+    "depAssociate": "Department associate"
 
   }
   

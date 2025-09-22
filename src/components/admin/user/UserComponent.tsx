@@ -11,6 +11,7 @@ import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCo
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
 import AddNiveau from "./AddNiveauHierarchique";
+import AddDepartement from "./AddDepartement";
 
 type Privilege = {
     id: number;
@@ -75,6 +76,7 @@ const UserComponent = () => {
     const [currentSite, setCurrentSite] = useState<Site | null>(null);
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
     const [showModalAddNiveau, setShowModalAddNiveau] = useState(false);
+    const [showModalAddDep, setShowModalAddDep] = useState(false);
 
     useEffect(() => {
         api.get('/api/sites/current')
@@ -294,8 +296,42 @@ const UserComponent = () => {
                                             {item.site ? (item.site.nom) : null}
                                         </td>
                                         <td className="px-6 py-4">
-                                            {langueActive?.indice === "fr" ? item.departement.nom : 
-                                            langueActive?.indice === "en" ? item.departement.nomEn : ""}
+                                            {item.departement.id ? (
+                                                <>
+                                                    <span>
+                                                        {langueActive?.indice === "fr" ? item.departement.nom : 
+                                                        langueActive?.indice === "en" ? item.departement.nomEn : ""}
+                                                    </span>
+                                                    <div className="flex justify-center mt-1">
+                                                    <a 
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setShowModalAddDep(true);
+                                                            setSelectedUser(item);
+                                                        }}
+                                                        href="#"
+                                                        style={{ color: codeCouleur?.btnColor }}
+                                                    >
+                                                        <i className="bi bi-pen-fill"></i>
+                                                    </a>
+                                                </div>
+                                                </>
+                                            ) : (
+                                                <div className="flex justify-center">
+                                                    <a 
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setShowModalAddDep(true);
+                                                            setSelectedUser(item);
+                                                        }}
+                                                        href="#"
+                                                        style={{ color: codeCouleur?.btnColor }}
+                                                    >
+                                                        <i className="bi bi-plus-circle-fill"></i>
+                                                    </a>
+                                                </div>
+                                            )}
+                                            
                                         </td>
                                         <td className="px-6 py-4">
                                             {item.niveauHierarchique?.id ? (
@@ -393,6 +429,16 @@ const UserComponent = () => {
                 idDepartement={selectedUser.departement.id}
                 initialData={{
                     niveauHierarchique: selectedUser.niveauHierarchique,
+                }}
+            />
+        )}
+
+        {showModalAddDep && selectedUser && (
+            <AddDepartement 
+                userId={selectedUser.id}
+                setShowModalAddDep={setShowModalAddDep}
+                initialData={{
+                    departement: selectedUser.departement
                 }}
             />
         )}
