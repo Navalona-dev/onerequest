@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
@@ -14,9 +14,31 @@ interface AddRangProps {
 
 }
 
+type Site = {
+  id: number;
+  nom: string;
+}
+
+type Domaine = {
+  id: number;
+  libelle: string;
+  libelleEn: string;
+}
+
+type TypeDemande = {
+  id: number;
+  nom: string;
+  domaine: Domaine;
+  description: string;
+  isActive: boolean;
+  nomEn: string;
+  descriptionEn: string;
+}
+
 const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang, niveauId, depId }) => {
     const [formData, setFormData] = useState({
         rang: "",
+        type: "",
     });
 
     const {langueActive} = useLangueActive();
@@ -24,23 +46,41 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
     const {codeCouleur} = useGlobalActiveCodeCouleur();
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
-
+    const [typeDemande, setListeTypeDemande] = useState<TypeDemande[]>([]);
+    const [site, setSite] = useState<Site | null>(null);
 
     const fieldLabels: { [key: string]: string } = {
         rang: t("ordre"),
+        type: t("typeDemande")
       };
 
-      const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-      ) => {
-        const { name, value } = e.target;
-      
-        setFormData((prev) => ({
-            ...prev,
-            [name]: name === "rang" ? parseInt(value, 10) : value,
-          }));
-          
-      };
+      useEffect(() => {
+        api.get('/api/sites/current')
+        .then((response) => {
+            setSite(response.data);
+        })
+        .catch((error) => console.log("Erreur API", error));
+      }, []);
+
+      useEffect(() => {
+        if (!site?.id) return;
+        api.get(`/api/sites/${site?.id}/type-demandes`)
+        .then((response) => {
+            setListeTypeDemande(response.data)
+        } )
+        .catch((error) => console.log("Erreur API", error));
+    }, [site]);
+
+    const handleChange = (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
+      const { name, value } = e.target;
+    
+      setFormData((prev) => ({
+        ...prev,
+        [name]: name === "rang" ? parseInt(value, 10) : value,
+      }));
+    };
 
       const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -49,6 +89,7 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
             rang: parseInt(formData.rang, 10),
             niveauHierarchique: `/api/niveau_hierarchiques/${niveauId}`,
             departement: `/api/departements/${depId}`,
+            typeDemande: formData.type
           };
           
     
@@ -88,8 +129,8 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
               if (backendMessage) {
                 errorMessage = backendMessage;
               } else if (status == 400 || status == 422) {
-                errorMessage = langueActive?.indice === "fr" ? "Un rang niveau hierarchique pour ce departement existe déjà." : 
-                langueActive?.indice === "en" ? "An order of hierarchy level with this department already exists." : "";
+                errorMessage = langueActive?.indice === "fr" ? "Un rang de niveau hierarchique pour ce departement et ce type de demande existe déjà." : 
+                langueActive?.indice === "en" ? "An order of hierarchy level with this department and order type  already exists." : "";
               }
               else if (status === 404) {
                 errorMessage = langueActive?.indice === "fr" ? "Rang introuvable." : 
@@ -137,15 +178,32 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
                                     <sup className="text-red-500">*</sup>
                                    
                                 </label>
-                                <input
-                                    type="number"
-                                    name={field}
-                                    value={formData[field as keyof typeof formData]}
-                                    onChange={handleChange}
-                                    className={`w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent`}
-                                    required
-                                    autoComplete="off"
-                                />
+                                {field === "rang" ? (
+                                  <input
+                                  type="number"
+                                  name={field}
+                                  value={formData[field as keyof typeof formData]}
+                                  onChange={handleChange}
+                                  className={`w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent`}
+                                  required
+                                  autoComplete="off"
+                              />
+                                ) : (
+                                  <select
+                                        name="type"
+                                        value={formData.type}
+                                        onChange={handleChange}
+                                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                                        required
+                                    >
+                                        <option value="" disabled>{t("selecttypedemande")}</option>
+                                        {typeDemande.map((item) => (
+                                        <option key={item.id} value={`/api/type_demandes/${item.id}`} className="mt-3">
+                                            {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""}
+                                        </option>
+                                        ))}
+                                    </select>
+                                )}
                             </div>
                         )}
 

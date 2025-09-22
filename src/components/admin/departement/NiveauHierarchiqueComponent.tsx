@@ -51,6 +51,22 @@ type UserType = {
     isSuperAdmin: boolean;
   };
 
+  type Domaine = {
+    id: number;
+    libelle: string;
+    libelleEn: string;
+  }
+
+  type TypeDemande = {
+    id: number;
+    nom: string;
+    domaine: Domaine;
+    description: string;
+    isActive: boolean;
+    nomEn: string;
+    descriptionEn: string;
+  }
+
 const NiveauHierarchiqueComponent = () => {
     const {langueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
@@ -61,7 +77,7 @@ const NiveauHierarchiqueComponent = () => {
     const {codeCouleur} = useGlobalActiveCodeCouleur();
     const user = UserAdminConnected() as UserType | null;
 
-    const [rangs, setRangs] = useState<{ [niveauId: number]: { id: number; rang: number } }>({});
+    const [rangs, setRangs] = useState<{ [niveauId: number]: { id: number; rang: number, typeDemande: TypeDemande | null } }>({});
 
 
     const { idDepartement } = useParams();
@@ -76,7 +92,7 @@ const NiveauHierarchiqueComponent = () => {
 
     useEffect(() => {
         const fetchRangs = async () => {
-            const rangsTemp: { [niveauId: number]: { id: number; rang: number } } = {};
+            const rangsTemp: { [niveauId: number]: { id: number; rang: number, typeDemande: TypeDemande } } = {};
     
             await Promise.all(
                 niveaux.map(async (niveau) => {
@@ -86,7 +102,8 @@ const NiveauHierarchiqueComponent = () => {
 
                         rangsTemp[(niveau.id)] = {
                         id: rangData.id,      // <-- ID du rang
-                        rang: rangData.rang   // <-- Valeur du rang
+                        rang: rangData.rang,   // <-- Valeur du rang
+                        typeDemande: rangData.typeDemande
                         };
 
                     } catch (error) {
@@ -170,7 +187,7 @@ const NiveauHierarchiqueComponent = () => {
                                     Actions
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
-                                    {t('ordre')}
+                                   {t("typedemande")} {t("et")}  {t('ordre')}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
                                     {t("nomFr")}
@@ -235,41 +252,8 @@ const NiveauHierarchiqueComponent = () => {
                                             </>
                                         
                                         </th>
-                                        <td className="px-6 py-4 text-center text-nowrap">
-                                        {rangs[item.id] && rangs[item.id].id ? (
-                                            <>
-                                                <span className="mr-2">{rangs[item.id].rang}</span>
-                                                {user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
-                                                    <>
-                                                        <a href="#"
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                setSelectedNiveau(item);
-                                                                setShowModalUpdateRang(true);
-                                                            }}
-                                                            className="mr-2"
-                                                        >
-                                                            <i className="bi bi-pencil-fill"
-                                                            style={{
-                                                                color: codeCouleur?.textColor
-                                                            }}
-                                                            ></i>
-                                                        </a>
-                                                        <a href="#"
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            deleteNiveauHierarchiqueRang(rangs[item.id].id, langueActive?.indice as "fr" | "en")
-                                                        }}
-                                                        >
-                                                            <i className="bi bi-trash-fill text-red-500"
-                                                            title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}                                                        ></i>
-                                                        </a>
-                                                    </>
-                                                ) : null}
-                                                
-                                            </>
-                                        ) : (
-                                            user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
+                                        <td className="px-6 py-4 text-center">
+                                            <div>
                                                 <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
@@ -284,9 +268,83 @@ const NiveauHierarchiqueComponent = () => {
                                                         }}
                                                     ></i>
                                                 </a>
-                                            ) : null
+                                            </div>
+                                        <div>
+                                            {rangs[item.id] && rangs[item.id].id ? (
+                                                <>
+                                                    <div>
+                                                        
+                                                        {rangs[item.id].typeDemande && (
+                                                            <h6>
+                                                                <span className="mr-2"
+                                                                style={{
+                                                                    fontSize: "6px"
+                                                                }}
+                                                                >
+                                                                    <i className="bi bi-circle-fill"></i>
+                                                                </span>
+                                                                {langueActive?.indice === "fr"
+                                                                ? rangs[item.id].typeDemande?.nom
+                                                                : langueActive?.indice === "en"
+                                                                    ? rangs[item.id].typeDemande?.nomEn
+                                                                    : ""}
+                                                            </h6>
+                                                            )}
+                                                        <span className="mr-2">{rangs[item.id].rang}</span>
+                                                        {user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
+                                                            <>
+                                                                <a href="#"
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        setSelectedNiveau(item);
+                                                                        setShowModalUpdateRang(true);
+                                                                    }}
+                                                                    className="mr-2"
+                                                                >
+                                                                    <i className="bi bi-pencil-fill"
+                                                                    style={{
+                                                                        color: codeCouleur?.textColor
+                                                                    }}
+                                                                    ></i>
+                                                                </a>
+                                                                <a href="#"
+                                                                onClick={(e) => {
+                                                                    e.preventDefault();
+                                                                    deleteNiveauHierarchiqueRang(rangs[item.id].id, langueActive?.indice as "fr" | "en")
+                                                                }}
+                                                                >
+                                                                    <i className="bi bi-trash-fill text-red-500"
+                                                                    title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}                                                        ></i>
+                                                                </a>
+                                                            </>
+                                                        ) : null}
+                                                    </div>
+                                                    
+                                                </>
+                                        ) : (
+                                            <>
+                                             
+                                            {/*user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
+                                                <a href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setShowModalAddRang(true);
+                                                        setSelectedNiveau(item);
+                                                    }}
+                                                >
+                                                    <i 
+                                                        className="bi bi-plus-circle-fill"
+                                                        style={{
+                                                            color: codeCouleur?.textColor
+                                                        }}
+                                                    ></i>
+                                                </a>
+                                            ) : null*/}
+                                            </>
+                                           
                                             
                                         )}
+                                        </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             {item.nom}
