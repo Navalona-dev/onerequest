@@ -48,6 +48,8 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
     const [typeDemande, setListeTypeDemande] = useState<TypeDemande[]>([]);
     const [site, setSite] = useState<Site | null>(null);
+    const [demandesDejaLiees, setDemandesDejaLiees] = useState<string[]>([]);
+
 
     const fieldLabels: { [key: string]: string } = {
         rang: t("ordre"),
@@ -70,6 +72,24 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
         } )
         .catch((error) => console.log("Erreur API", error));
     }, [site]);
+
+    useEffect(() => {
+      if (!niveauId || !depId) return;
+    
+      api.get(`/api/niveau_hierarchique_rangs/niveau/${niveauId}/departement/${depId}`)
+        .then((response) => {
+          const rangs: any[] = response.data; // tableau de rangs
+          // on récupère tous les typeDemande déjà liés
+          const demandesLiees: string[] = rangs
+            .filter(rang => rang.typeDemande)
+            .map(rang => `/api/type_demandes/${rang.typeDemande.id}`);
+    
+          console.log("Demandes liées :", demandesLiees);
+          setDemandesDejaLiees(demandesLiees);
+        })
+        .catch((error) => console.log("Erreur récupération types déjà liés", error));
+    }, [niveauId, depId]);
+        
 
     const handleChange = (
       e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -197,11 +217,14 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAddRang
                                         required
                                     >
                                         <option value="" disabled>{t("selecttypedemande")}</option>
-                                        {typeDemande.map((item) => (
-                                        <option key={item.id} value={`/api/type_demandes/${item.id}`} className="mt-3">
-                                            {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""}
-                                        </option>
-                                        ))}
+                                        {typeDemande
+                                          .filter((item) => !demandesDejaLiees.includes(`/api/type_demandes/${item.id}`))
+                                          .map((item) => (
+                                            <option key={item.id} value={`/api/type_demandes/${item.id}`} className="mt-3">
+                                              {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""}
+                                            </option>
+                                          ))}
+
                                     </select>
                                 )}
                             </div>

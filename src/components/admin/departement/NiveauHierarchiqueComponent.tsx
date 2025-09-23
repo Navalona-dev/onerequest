@@ -17,9 +17,27 @@ import UpdateNiveauHierarchique from "./UpdateNiveauHierarchique";
 import deleteNiveauHierarchique from "../../../service/admin/DeleteNiveauHierarchique";
 import deleteNiveauHierarchiqueRang from "../../../service/admin/DeleteNiveauHierarchiqueRang";
 
+
+type Domaine = {
+    id: number;
+    libelle: string;
+    libelleEn: string;
+  }
+
+  type TypeDemande = {
+    id: number;
+    nom: string;
+    domaine: Domaine;
+    description: string;
+    isActive: boolean;
+    nomEn: string;
+    descriptionEn: string;
+  }
+
 type Rang = {
     id: number;
     rang: string;
+    typeDemande: TypeDemande;
 }
 
 type Site = {
@@ -51,21 +69,6 @@ type UserType = {
     isSuperAdmin: boolean;
   };
 
-  type Domaine = {
-    id: number;
-    libelle: string;
-    libelleEn: string;
-  }
-
-  type TypeDemande = {
-    id: number;
-    nom: string;
-    domaine: Domaine;
-    description: string;
-    isActive: boolean;
-    nomEn: string;
-    descriptionEn: string;
-  }
 
 const NiveauHierarchiqueComponent = () => {
     const {langueActive} = useLangueActive();
@@ -77,8 +80,7 @@ const NiveauHierarchiqueComponent = () => {
     const {codeCouleur} = useGlobalActiveCodeCouleur();
     const user = UserAdminConnected() as UserType | null;
 
-    const [rangs, setRangs] = useState<{ [niveauId: number]: { id: number; rang: number, typeDemande: TypeDemande | null } }>({});
-
+    const [rangsParNiveau, setRangsParNiveau] = useState<{ [niveauId: number]: Rang[] }>({});
 
     const { idDepartement } = useParams();
 
@@ -89,37 +91,7 @@ const NiveauHierarchiqueComponent = () => {
     const [selectedNiveau, setSelectedNiveau] = useState<NiveauHierarchique | null>(null);
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalUpdate, setShowModalUpdate] = useState(false);
-
-    useEffect(() => {
-        const fetchRangs = async () => {
-            const rangsTemp: { [niveauId: number]: { id: number; rang: number, typeDemande: TypeDemande } } = {};
-    
-            await Promise.all(
-                niveaux.map(async (niveau) => {
-                    try {
-                        const response = await api.get(`/api/niveau_hierarchiques/${niveau.id}/departement/${idDepartement}`);
-                        const rangData = response.data;
-
-                        rangsTemp[(niveau.id)] = {
-                        id: rangData.id,      // <-- ID du rang
-                        rang: rangData.rang,   // <-- Valeur du rang
-                        typeDemande: rangData.typeDemande
-                        };
-
-                    } catch (error) {
-                        console.error(`Erreur pour niveau ${niveau.id}:`, error);
-                    }
-                })
-            );
-    
-            setRangs(rangsTemp);
-        };
-    
-        if (niveaux.length > 0) {
-            fetchRangs();
-        }
-    }, [niveaux, idDepartement]);
-    
+    const [selectedRang, setSelectedRang] = useState<Rang | null>(null);
     
     useEffect(() => {
         api.get(`/api/departements/${idDepartement}/niveau-hierarchique`)
@@ -129,14 +101,27 @@ const NiveauHierarchiqueComponent = () => {
         .catch((error) => console.log("Erreur API", error));
     }, [idDepartement]);
 
-    const sortedNiveaux = [...niveaux].sort((a, b) => {
-        const rangA = rangs[a.id]?.rang ?? Infinity; 
-        const rangB = rangs[b.id]?.rang ?? Infinity;
-        return rangA - rangB;
-      });
-
-     //const dataToPaginate = niveaux;
-     const dataToPaginate = sortedNiveaux;
+    useEffect(() => {
+        if (idDepartement && niveaux.length > 0) {
+            const fetchAllRangs = async () => {
+                const result: { [niveauId: number]: Rang[] } = {};
+                for (const niveau of niveaux) {
+                    try {
+                        const response = await api.get(`/api/niveau_hierarchique_rangs/niveau/${niveau.id}/departement/${idDepartement}`);
+                        result[niveau.id] = response.data;
+                    } catch (err) {
+                        console.error(`Erreur pour niveau ${niveau.id} :`, err);
+                        result[niveau.id] = [];
+                    }
+                }
+                setRangsParNiveau(result);
+            };
+            fetchAllRangs();
+        }
+    }, [idDepartement, niveaux]);
+    
+    
+     const dataToPaginate = niveaux;
 
      const totalPages = Math.max(1, Math.ceil(dataToPaginate.length / usersPerPage));
      
@@ -253,7 +238,7 @@ const NiveauHierarchiqueComponent = () => {
                                         
                                         </th>
                                         <td className="px-6 py-4 text-center">
-                                            <div>
+                                            <div className="mb-2">
                                                 <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
@@ -270,11 +255,13 @@ const NiveauHierarchiqueComponent = () => {
                                                 </a>
                                             </div>
                                         <div>
-                                            {rangs[item.id] && rangs[item.id].id ? (
-                                                <>
-                                                    <div>
+                                            
+                                        {rangsParNiveau[item.id] && rangsParNiveau[item.id].length > 0 ? (
+                                            rangsParNiveau[item.id].map((rang, index) => (
+                                                
+                                                 <div key={rang.id} className="mb-5">
                                                         
-                                                        {rangs[item.id].typeDemande && (
+                                                        {rang.typeDemande && (
                                                             <h6>
                                                                 <span className="mr-2"
                                                                 style={{
@@ -284,19 +271,20 @@ const NiveauHierarchiqueComponent = () => {
                                                                     <i className="bi bi-circle-fill"></i>
                                                                 </span>
                                                                 {langueActive?.indice === "fr"
-                                                                ? rangs[item.id].typeDemande?.nom
+                                                                ? rang.typeDemande?.nom
                                                                 : langueActive?.indice === "en"
-                                                                    ? rangs[item.id].typeDemande?.nomEn
+                                                                    ? rang.typeDemande?.nomEn
                                                                     : ""}
                                                             </h6>
                                                             )}
-                                                        <span className="mr-2">{rangs[item.id].rang}</span>
+                                                        <span className="mr-2">{rang.rang}</span>
                                                         {user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
                                                             <>
                                                                 <a href="#"
                                                                     onClick={(e) => {
                                                                         e.preventDefault();
                                                                         setSelectedNiveau(item);
+                                                                        setSelectedRang(rang);
                                                                         setShowModalUpdateRang(true);
                                                                     }}
                                                                     className="mr-2"
@@ -310,7 +298,7 @@ const NiveauHierarchiqueComponent = () => {
                                                                 <a href="#"
                                                                 onClick={(e) => {
                                                                     e.preventDefault();
-                                                                    deleteNiveauHierarchiqueRang(rangs[item.id].id, langueActive?.indice as "fr" | "en")
+                                                                    deleteNiveauHierarchiqueRang(rang.id, langueActive?.indice as "fr" | "en")
                                                                 }}
                                                                 >
                                                                     <i className="bi bi-trash-fill text-red-500"
@@ -318,32 +306,10 @@ const NiveauHierarchiqueComponent = () => {
                                                                 </a>
                                                             </>
                                                         ) : null}
-                                                    </div>
-                                                    
-                                                </>
-                                        ) : (
-                                            <>
-                                             
-                                            {/*user && user.privileges && user.privileges.some(p => p.title === "super_admin") && user.isSuperAdmin === true ? (
-                                                <a href="#"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        setShowModalAddRang(true);
-                                                        setSelectedNiveau(item);
-                                                    }}
-                                                >
-                                                    <i 
-                                                        className="bi bi-plus-circle-fill"
-                                                        style={{
-                                                            color: codeCouleur?.textColor
-                                                        }}
-                                                    ></i>
-                                                </a>
-                                            ) : null*/}
-                                            </>
-                                           
-                                            
-                                        )}
+                                                </div>
+                                                
+                                            ))
+                                        ) : null}
                                         </div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -391,17 +357,18 @@ const NiveauHierarchiqueComponent = () => {
             />
         )}
 
-        {showModalUpdateRang && selectedNiveau && idDepartement && rangs[selectedNiveau.id] && (
+        {showModalUpdateRang && selectedNiveau && selectedRang && idDepartement && (
             <UpdateRangNiveauHierarchique
                 setShowModalUpdateRang={setShowModalUpdateRang}
-                idRang={rangs[selectedNiveau.id].id}
+                idRang={selectedRang.id}
                 niveauId={selectedNiveau.id}
                 depId={Number(idDepartement)}
                 initialData={{
-                    rang: rangs[selectedNiveau.id].rang
+                    rang: Number(selectedRang.rang)
                 }}
-             />
+            />
         )}
+
 
         {showModalAdd && idDepartement && (
             <AddNiveauHierarchique
