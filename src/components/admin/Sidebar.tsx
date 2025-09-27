@@ -73,6 +73,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
   const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
   const { t, i18n } = useTranslation();
   const {langueActive} = useLangueActive();
+  const [activeSubMenu, setActiveSubMenu] = useState<string>("");
 
   const handleMenuClick = (menu: string) => {
     setActiveMenu(menu);
@@ -85,16 +86,16 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
     } else {
       navigate(`/${menu}`);
     }
-     // Forcer le rechargement complet de la page
-     //window.location.reload();
+     
   };
-
-  //const bgColor = theme === "dark" ? "bg-[#0B1437] text-white" : theme === "light" ? "bg-white text-gray-900" : "bg-red-500 text-white";
 
   const hoverColor = theme === "dark" ? "hover:bg-[#1c2d55]" : "hover:bg-[#1c2d55]";
 
   useEffect(() => {
     const path = location.pathname;
+    const searchParams = new URLSearchParams(location.search);
+    const type = searchParams.get("type");
+
     if (path.includes("/admin")) {
       setActiveMenu("dashboard");
     } else if (path.includes("/document")) {
@@ -103,12 +104,14 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
       setActiveMenu("code-couleur");
     } else if (path.includes("/demande")) {
       setActiveMenu("demande");
+      setActiveSubMenu(type || "liste");
     }else if (path.includes("/site")) {
       setActiveMenu("site");
     }else if (path.includes("/user")) {
       setActiveMenu("user");
     }else if (path.includes("/type-demande")) {
-      setActiveMenu("type-demande");
+      setActiveMenu("type-demande"); 
+      setActiveSubMenu("");  
     }else if (path.includes("/departement")) {
       setActiveMenu("departement");
     }else if (path.includes("/niveau-hierarchiques")) {
@@ -119,7 +122,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
     else if (path.includes("/categorie-domaine-entreprise")) {
       setActiveMenu("categorie-domaine-entreprise");
     }
-  }, [location.pathname]);
+  }, [location.pathname, location.search]);
 
   useEffect(() => {
     api.get('/api/sites/current')
@@ -194,42 +197,6 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
 
             <li
               className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
-                activeMenu === "departement" ? "bg-[#1c2d55] text-white" : ""
-              } ${currentModule === "departement" ? "bg-[#1c2d55] text-white" : ""}`}
-              onClick={() => handleMenuClick("departement")}
-            >
-              <span className="icon-sidebar">
-              <i className="bi bi-house-fill"></i>
-              </span>
-              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.departements")}</span>
-            </li>
-
-            {/*<li
-              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
-                activeMenu === "niveau-hierarchiques" ? "bg-[#1c2d55] text-white" : ""
-              } ${currentModule === "niveau-hierarchiques" ? "bg-[#1c2d55] text-white" : ""}`}
-              onClick={() => handleMenuClick("niveau-hierarchiques")}
-            >
-              <span className="icon-sidebar">
-              <i className="bi bi-diagram-3-fill"></i>
-              </span>
-              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.niveauhierarchique")}</span>
-            </li>*/}
-
-            {/*<li
-              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
-                activeMenu === "categorie-domaine-entreprise" ? "bg-[#1c2d55] text-white" : ""
-              } ${currentModule === "categorie-domaine-entreprise" ? "bg-[#1c2d55] text-white" : ""}`}
-              onClick={() => handleMenuClick("categorie-domaine-entreprise")}
-            >
-              <span className="icon-sidebar">
-              <i className="bi bi-tags-fill"></i>
-              </span>
-              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.catentreprise")}</span>
-            </li>*/}
-
-            <li
-              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
                 activeMenu === "domaine-entreprise-liste" ? "bg-[#1c2d55] text-white" : ""
               } ${currentModule === "domaine-entreprise-liste" ? "bg-[#1c2d55] text-white" : ""}`}
               onClick={() => handleMenuClick("domaine-entreprise-liste")}
@@ -276,34 +243,48 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
                     isSidebarCollapsed ? 'absolute left-full top-0 ml-2 w-48 bg-[#0B1437] p-2 rounded shadow-lg z-50' : 'ml-8 mt-1'
                   } space-y-1 text-sm`}
                 >
-                 <li 
+                {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') && (
+                  <>
+                    <li 
                         className={`px-2 py-1 rounded ${hoverColor} cursor-pointer
                         ${activeMenu === "type-demande" ? "bg-[#1c2d55] text-white" : ""
-                        } ${currentModule === "type-demande" ? "bg-[#1c2d55] text-white" : ""}
+                        }
                         `}
                         onClick={() => {
-                          handleMenuClick("type-demande");
+                          navigate("/type-demande");
                           setDemandeOpen(true);
+
                         }}
                       >
                         <i className="mr-2 text-xs bi bi-circle"></i>
                         Types
                     </li>
+                    <li  
+                      className={`px-2 py-1 rounded ${hoverColor} cursor-pointer
+                        ${activeSubMenu === "liste" ? "bg-[#1c2d55] text-white" : ""}
+                      `}
+                      onClick={() => {
+                        navigate("/demande?type=liste");  
+                        setDemandeOpen(true);
+                      }}
+                    >
+                      <i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.liste")}
+                    </li>
+                  </>
+                )}
                   
                   <li  
-                      className={`px-2 py-1 rounded ${hoverColor} cursor-pointer
-                      ${activeMenu === "demande" ? "bg-[#1c2d55] text-white" : ""
-                        } ${currentModule === "demande" ? "bg-[#1c2d55] text-white" : ""}
+                    className={`px-2 py-1 rounded ${hoverColor} cursor-pointer
+                      ${activeSubMenu === "en-attente" ? "bg-[#1c2d55] text-white" : ""}
                     `}
                     onClick={() => {
-                      handleMenuClick("demande");
+                      navigate("/demande?type=en-attente"); 
                       setDemandeOpen(true);
                     }}
                   >
-                    <i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.liste")}
+                    <i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.enattente")}
                   </li>
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.refuse")}</li>
-                  <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.enattente")}</li>
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.accepte")}</li>
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.valide")}</li>
                 </ul>
@@ -322,6 +303,17 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <i className="bi bi-palette-fill"></i>
               </span>
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.codecouleur")}</span>
+            </li>
+            <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "departement" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "departement" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("departement")}
+            >
+              <span className="icon-sidebar">
+              <i className="bi bi-house-fill"></i>
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.departements")}</span>
             </li>
             <li
                 className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${

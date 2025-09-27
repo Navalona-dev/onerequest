@@ -7,9 +7,8 @@ import { store } from "../../../store";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import deleteDepartement from "../../../service/admin/DeleteDepartement";
 import { useParams } from 'react-router-dom';
-import AddNiveauHierarchique from "./AddNiveauHierarchique";
-import UpdateNiveauHierarchique from "./UpdateNiveauHierarchique";
-import deleteNiveauHierarchique from "../../../service/admin/DeleteNiveauHierarchique";
+import AddRangNiveauHierarchique from "./AddRangNiveauHierarchique";
+import { Link } from "react-router-dom";
 
 type Departement = {
     id: number;
@@ -26,7 +25,21 @@ type NiveauHierarchique = {
     departements: Departement[];
 }
 
-const NiveauHierarchiqueComponent = () => {
+type TypeDemande = {
+    id: number;
+    nom: string;
+    nomEn: string
+}
+
+type Rang = {
+    id: number;
+    rang: number;
+    niveau: NiveauHierarchique;
+    departement: Departement;
+    typeDemande: TypeDemande
+}
+
+const NiveauHierarchiqueRangComponent = () => {
     const {langueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
     const state = store.getState();
@@ -38,25 +51,28 @@ const NiveauHierarchiqueComponent = () => {
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalUpdate, setShowModalUpdate] = useState(false);
     const [selectNiveau, setSelectNiveau] = useState<NiveauHierarchique | null>(null);
+    const { id } = useParams();
 
-    const [niveaux, setListeNiveau] = useState<NiveauHierarchique[]>([]);
+    const idDepartement = sessionStorage.getItem('idDepartement');
+
+    const [rangs, setListeRang] = useState<Rang[]>([]);
     
     useEffect(() => {
-        api.get(`/api/niveau_hierarchiques`)
+        api.get(`/api/niveau_hierarchiques/${id}/rangs`)
         .then((response) => {
-            setListeNiveau(response.data);
+            setListeRang(response.data);
         })
         .catch((error) => console.log("Erreur API", error));
     }, []);
 
-     const dataToPaginate = niveaux;
+     const dataToPaginate = rangs;
 
      const totalPages = Math.max(1, Math.ceil(dataToPaginate.length / usersPerPage));
      
-     const indexOfLastNiveau = currentPage * usersPerPage;
-     const indexOfFirstNiveau = indexOfLastNiveau - usersPerPage;
+     const indexOfLastRang = currentPage * usersPerPage;
+     const indexOfFirstRang = indexOfLastRang - usersPerPage;
      
-     const currentDepartements = dataToPaginate.slice(indexOfFirstNiveau, indexOfLastNiveau);
+     const currentRangs = dataToPaginate.slice(indexOfFirstRang, indexOfLastRang);
 
      useEffect(() => {
         if (currentPage > totalPages) {
@@ -66,21 +82,26 @@ const NiveauHierarchiqueComponent = () => {
 
     return(
         <>
-        <div className="h-[69vh] overflow-y-auto my-3">
-            <div className="color-header px-4 flex justify-between items-center mb-3">
+        <div className="h-[69vh] overflow-y-auto my-6">
+            <div className="color-header px-4 flex justify-between items-center mb-5">
                 <h4 className="font-bold text-white">{t("listeNiveau")}</h4>
+                <div>
                     <button
-                    onClick={(e) => {
-                        e.preventDefault();
-                        setShowModalAdd(true);
-                    }}
-                    className="px-5 py-2 text-white rounded"
-                    >
-                    {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
-                </button>
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setShowModalAdd(true);
+                        }}
+                        className="px-5 py-1 text-white rounded mr-5"
+                        >
+                        {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
+                    </button>
+                    <Link to={`/${idDepartement}/niveau-hierarchique`} className="btn-list px-5 py-2 text-white rounded">
+                        {t("niveauhierarchique")}
+                    </Link>
+                </div>
                 
             </div>
-            <div className="mx-3 w-[153vh]">
+            <div className="mx-4 w-[153vh]">
                     <div className="w-[38vh] md:w-full sm:w-[38vh] h-[55vh] overflow-auto">
                         <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
@@ -89,32 +110,24 @@ const NiveauHierarchiqueComponent = () => {
                                         Actions
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        {t("nomFr")}
+                                        {t("order")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        {t("nomEn")}
+                                        {t("typeDemande")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        {t("descriptionFr")}
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-white">
-                                        {t("descriptionEn")}
+                                        {t("departement")}
                                     </th>
                                     
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentDepartements.length > 0 ? (
-                                    currentDepartements.map((item, index) => (
+                                {currentRangs.length > 0 ? (
+                                    currentRangs.map((item, index) => (
                                         <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
                                             <th className="px-6 py-4 text-nowrap">
                                                 <>
                                                 <a href="#"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        setSelectNiveau(item);
-                                                        setShowModalUpdate(true);
-                                                    }}
                                                     title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
                                                     <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
                                                     style={{
@@ -123,10 +136,6 @@ const NiveauHierarchiqueComponent = () => {
                                                     ></i>
                                                 </a>
                                                 <a href="#"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        deleteNiveauHierarchique(item.id, langueActive?.indice as "fr" | "en")
-                                                    }}
                                                     title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
                                                 </>
@@ -134,23 +143,22 @@ const NiveauHierarchiqueComponent = () => {
                                             </th>
                                             
                                             <td className="px-6 py-4">
-                                                {item.nom}
+                                                {item.rang}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {item.nomEn}
+                                                {langueActive?.indice === "fr" ? item.typeDemande.nom : 
+                                                langueActive?.indice === "en" ? item.typeDemande.nomEn : ""}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {item.description}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {item.descriptionEn}
+                                                {langueActive?.indice === "fr" ? item.departement.nom : 
+                                                langueActive?.indice === "en" ? item.departement.nomEn : ""}
                                             </td>
 
                                         </tr>
                                     ))
                                 ) : (
                                     <tr className="bg-[#1c2d55] text-center">
-                                        <td colSpan={5} className="px-6 py-4">{t("nodata")}</td>
+                                        <td colSpan={4} className="px-6 py-4">{t("nodata")}</td>
                                     </tr>
                                 )}
                                 
@@ -167,25 +175,18 @@ const NiveauHierarchiqueComponent = () => {
                     />
                 </div>
         </div>
+
         {showModalAdd && (
-            <AddNiveauHierarchique setShowModalAdd={setShowModalAdd} />
+            <AddRangNiveauHierarchique 
+                setShowModalAdd={setShowModalAdd} 
+                niveauId={Number(id)}
+                depId={Number(idDepartement)}
+            />
         )}
 
-        {showModalUpdate && selectNiveau && (
-            <UpdateNiveauHierarchique
-                setShowModalUpdate={setShowModalUpdate}
-                niveauId={selectNiveau.id}
-                initialData={{
-                    nom: selectNiveau.nom,
-                    nomEn: selectNiveau.nomEn,
-                    description: selectNiveau.description,
-                    descriptionEn: selectNiveau.descriptionEn,
-                    departements: selectNiveau.departements
-                }}
-             />
-        ) }
+
         </>
     )
 }
 
-export default NiveauHierarchiqueComponent;
+export default NiveauHierarchiqueRangComponent;

@@ -25,6 +25,7 @@ import DepartementPage from "./DepartementPage";
 import NiveauHierarchiqueByDepartementPage from "./NiveauHierarchiqueByDepartementPage";
 import NiveauHierarchiquePage from "./NiveauHierarchiquePage";
 import DomaineEntrepriseListe from "./DomaineEntrepriseListe";
+import RangNiveauHierarchiquePage from "./RangNiveauHierarchiquePage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -53,7 +54,8 @@ const ContentPage = () => {
             "privilege",
             "departement",
             "niveau-hierarchiques",
-            "domaine-entreprise-liste"
+            "domaine-entreprise-liste",
+            "rang"
         ].includes(path)) {
             setCurrentModule(path as any);
         } else if (/^\d+\/commune$/.test(path)) {
@@ -65,6 +67,9 @@ const ContentPage = () => {
         } else if (/^\d+\/niveau-hierarchique$/.test(path)) {
             
             setCurrentModule("niveau-hierarchique");
+        }else if (/^\d+\/rang$/.test(path)) {
+            
+            setCurrentModule("rang");
         }
         else {
             setCurrentModule("dashboard"); // fallback
@@ -106,6 +111,8 @@ const ContentPage = () => {
                 return <NiveauHierarchiquePage />;
             case "domaine-entreprise-liste":
                 return <DomaineEntrepriseListe />;
+            case "rang":
+                return <RangNiveauHierarchiquePage />;
             default:
                 return <Dashboard />;
         }

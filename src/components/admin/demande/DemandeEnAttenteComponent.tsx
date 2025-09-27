@@ -35,7 +35,7 @@ type Demande = {
     fichier: string;
 }
 
-const DemandeComponent = () => {
+const DemandeEnAttenteComponent = () => {
     const [demandes, setListeDemande] = useState<Demande[]>([]);
     const [currentSite, setCurrentSite] = useState<Site | null>(null);
 
@@ -170,7 +170,9 @@ const DemandeComponent = () => {
                         <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
                                 <tr className="text-nowrap border-b-2 border-gray-700 text-center ...">
-                                   
+                                    <th scope="col" className="px-6 py-3 text-white">
+                                        Actions
+                                    </th>
                                     <th scope="col" className="px-6 py-3 text-white">
                                         {t("demandeur")}
                                     </th>
@@ -196,7 +198,9 @@ const DemandeComponent = () => {
                                 {currentDemandes.length > 0 ? (
                                     currentDemandes.map((item, index) => (
                                         <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
-                                        
+                                            <th className="px-6 py-4 text-nowrap">
+                                            
+                                            </th>
                                             <td className="px-6 py-4 text-nowrap">
                                                 {item.demandeur?.nom} {item.demandeur?.prenom} <br />
                                                 <span 
@@ -256,4 +260,4 @@ const DemandeComponent = () => {
     )
 }
 
-export default DemandeComponent;
+export default DemandeEnAttenteComponent;
