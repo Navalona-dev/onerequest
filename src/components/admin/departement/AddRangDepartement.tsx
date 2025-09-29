@@ -48,6 +48,7 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
     const [site, setSite] = useState<Site | null>(null);
     const [typeDemande, setListeTypeDemande] = useState<TypeDemande[]>([]);
+    const [demandesDejaLiees, setDemandesDejaLiees] = useState<string[]>([]);
 
     const fieldLabels: { [key: string]: string } = {
         rang: t("ordre"),
@@ -70,6 +71,21 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
         } )
         .catch((error) => console.log("Erreur API", error));
     }, [site]);
+
+    useEffect(() => {
+      if (!depId) return;
+    
+      api.get(`/api/departement_rangs/departement/${depId}/rangs`)
+        .then((response) => {
+          const rangs: any[] = response.data; // tableau de rangs
+          // on récupère tous les typeDemande déjà liés
+          const demandesLiees: string[] = rangs
+            .filter(rang => rang.typeDemande)
+            .map(rang => `/api/type_demandes/${rang.typeDemande.id}`);
+          setDemandesDejaLiees(demandesLiees);
+        })
+        .catch((error) => console.log("Erreur récupération types déjà liés", error));
+    }, [depId]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -129,7 +145,7 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
               // Si le backend renvoie un message clair, on l’affiche
               if (backendMessage) {
                 errorMessage = backendMessage;
-              } else if (status == 400 || status == 422) {
+              } else if (status == 400) {
                 errorMessage = langueActive?.indice === "fr" ? "Un rang departement pour ce type de demande et ce site existe déjà." : 
                 langueActive?.indice === "en" ? "An order of department with this site and request type already exists." : "";
               }
@@ -198,11 +214,13 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
                                         required
                                     >
                                         <option value="" disabled>{t("selecttypedemande")}</option>
-                                        {typeDemande.map((item) => (
-                                        <option key={item.id} value={`/api/type_demandes/${item.id}`} className="mt-3">
-                                            {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""}
-                                        </option>
-                                        ))}
+                                        {typeDemande
+                                          .filter((item) => !demandesDejaLiees.includes(`/api/type_demandes/${item.id}`))
+                                          .map((item) => (
+                                            <option key={item.id} value={`/api/type_demandes/${item.id}`} className="mt-3">
+                                              {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""}
+                                            </option>
+                                          ))}
                                     </select>
                                 )}
                             </div>

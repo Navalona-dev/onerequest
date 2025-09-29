@@ -32,12 +32,6 @@ type TypeDemande = {
     descriptionEn: string;
 }
 
-type Rang = {
-    id : number;
-    rang: number;
-    typeDemande: TypeDemande;
-}
-
 type Departement = {
     id: number;
     nom: string;
@@ -45,6 +39,13 @@ type Departement = {
     nomEn: string;
     descriptionEn: string;
     departementRangs: Rang[] | [];
+}
+
+type Rang = {
+    id : number;
+    rang: number;
+    typeDemande: TypeDemande;
+    departement: Departement | null;
 }
 
 type Site = {
@@ -294,7 +295,17 @@ const DepartementComponent = () => {
 
                                                 
                                                 {rangsParDepartement[item.id] && rangsParDepartement[item.id].length > 0 ? (
-                                                    rangsParDepartement[item.id].map((rang, index) => (
+                                                    <>
+                                                        <Link to={`/${item.id}/rang?type=departement`}
+                                                            className="outline outline-1 px-3 py-2 rounded"
+                                                            style={{
+                                                                outlineColor: codeCouleur?.btnColor
+                                                            }}
+                                                        >
+                                                            Liste rangs
+                                                        </Link>
+                                                    </>
+                                                    /*rangsParDepartement[item.id].map((rang, index) => (
                                                         <p key={rang.id} className="mb-3">
                                                             <span className="mr-2">{ rang.rang}</span>
                                                             {user && user.privileges && (
@@ -327,7 +338,7 @@ const DepartementComponent = () => {
                                                             ) : null}
                                                             
                                                         </p>
-                                                    ))
+                                                    ))*/
                                                 ) : null}
 
                                             </td>
@@ -386,6 +397,7 @@ const DepartementComponent = () => {
             <UpdateRangDepartement
                 setShowModalUpdateRangDep={setShowModalUpdateRangDep}
                 idRang={selectedRang.id}
+                depId={Number(selectedRang.departement?.id)}
                 initialData={{
                     rang: selectedRang.rang,
                     type: selectedRang.typeDemande ?? null,

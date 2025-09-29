@@ -83,8 +83,6 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAdd, ni
           const demandesLiees: string[] = rangs
             .filter(rang => rang.typeDemande)
             .map(rang => `/api/type_demandes/${rang.typeDemande.id}`);
-    
-          console.log("Demandes liées :", demandesLiees);
           setDemandesDejaLiees(demandesLiees);
         })
         .catch((error) => console.log("Erreur récupération types déjà liés", error));
@@ -148,7 +146,7 @@ const AddRangNiveauHierarchique: React.FC<AddRangProps> = ({ setShowModalAdd, ni
               // Si le backend renvoie un message clair, on l’affiche
               if (backendMessage) {
                 errorMessage = backendMessage;
-              } else if (status == 400 || status == 422) {
+              } else if (status == 400) {
                 errorMessage = langueActive?.indice === "fr" ? "Un rang de niveau hierarchique pour ce departement et ce type de demande existe déjà." : 
                 langueActive?.indice === "en" ? "An order of hierarchy level with this department and order type  already exists." : "";
               }

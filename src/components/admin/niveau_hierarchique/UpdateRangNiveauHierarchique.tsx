@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
@@ -7,20 +7,44 @@ import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCo
 import { store } from "../../../store";
 import { AxiosError } from "axios";
 
+type Domaine = {
+  id: number;
+  libelle: string;
+  libelleEn: string;
+}
+
+type TypeDemande = {
+  id: number;
+  nom: string;
+  domaine: Domaine;
+  description: string;
+  isActive: boolean;
+  nomEn: string;
+  descriptionEn: string;
+}
+
+type Site = {
+  id: number;
+  nom: string;
+}
+
 interface UpdateRangProps {
-    setShowModalUpdateRang: React.Dispatch<React.SetStateAction<boolean>>;
+    setShowModalUpdate: React.Dispatch<React.SetStateAction<boolean>>;
     idRang: number;
     niveauId: number;
     depId: number;
     initialData: {
       rang: number;
+      typeDemande: TypeDemande | null;
+      
     }
 
 }
 
-const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalUpdateRang, idRang, niveauId, depId, initialData }) => {
+const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalUpdate, idRang, niveauId, depId, initialData }) => {
     const [formData, setFormData] = useState({
         rang: initialData.rang,
+        typeDemande: initialData.typeDemande ? `/api/type_demandes/${initialData.typeDemande.id}` : ""
     });
 
     const {langueActive} = useLangueActive();
@@ -28,23 +52,59 @@ const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalU
     const {codeCouleur} = useGlobalActiveCodeCouleur();
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
-
+    const [typeDemande, setListeTypeDemande] = useState<TypeDemande[]>([]);
+    const [site, setSite] = useState<Site | null>(null);
+    const [demandesDejaLiees, setDemandesDejaLiees] = useState<string[]>([]);
 
     const fieldLabels: { [key: string]: string } = {
         rang: t("ordre"),
+        type: t("typeDemande")
       };
 
+      useEffect(() => {
+        api.get('/api/sites/current')
+        .then((response) => {
+            setSite(response.data);
+        })
+        .catch((error) => console.log("Erreur API", error));
+      }, []);
+
+      useEffect(() => {
+        if (!site?.id) return;
+        api.get(`/api/sites/${site?.id}/type-demandes`)
+        .then((response) => {
+            setListeTypeDemande(response.data)
+        } )
+        .catch((error) => console.log("Erreur API", error));
+    }, [site]);
+
       const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
       ) => {
         const { name, value } = e.target;
       
         setFormData((prev) => ({
-            ...prev,
-            [name]: name === "rang" ? parseInt(value, 10) : value,
-          }));
-          
+          ...prev,
+          [name]: name === "rang" ? parseInt(value, 10) : value,
+        }));
       };
+
+      useEffect(() => {
+        if (!niveauId || !depId) return;
+      
+        api.get(`/api/niveau_hierarchique_rangs/niveau/${niveauId}/departement/${depId}`)
+          .then((response) => {
+            const rangs: any[] = response.data; // tableau de rangs
+            // on récupère tous les typeDemande déjà liés
+            const demandesLiees: string[] = rangs
+              .filter(rang => rang.typeDemande)
+              .map(rang => `/api/type_demandes/${rang.typeDemande.id}`);
+      
+            console.log("Demandes liées :", demandesLiees);
+            setDemandesDejaLiees(demandesLiees);
+          })
+          .catch((error) => console.log("Erreur récupération types déjà liés", error));
+      }, [niveauId, depId]);
 
       const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -77,7 +137,7 @@ const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalU
             background: "#1c2d55",
             color: "#fff",
           }).then(() => {
-            setShowModalUpdateRang(false);
+            setShowModalUpdate(false);
             window.location.reload();
           });
           
@@ -96,10 +156,9 @@ const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalU
               if (backendMessage) {
                 errorMessage = backendMessage;
               } else if (status == 400 || status == 422) {
-                errorMessage = langueActive?.indice === "fr" ? "Un rang niveau hierarchique pour ce departement existe déjà." : 
-                langueActive?.indice === "en" ? "An order of hierarchy level with this department already exists." : "";
-              }
-              else if (status === 404) {
+                errorMessage = langueActive?.indice === "fr" ? "Un rang de niveau hierarchique pour ce departement et ce type de demande existe déjà." : 
+                langueActive?.indice === "en" ? "An order of hierarchy level with this department and order type  already exists." : "";
+              } else if (status === 404) {
                 errorMessage = langueActive?.indice === "fr" ? "Rang introuvable." : 
                 langueActive?.indice === "en" ? "Order not found" : "";
               } else if (status === 401) {
@@ -145,15 +204,44 @@ const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalU
                                     <sup className="text-red-500">*</sup>
                                    
                                 </label>
-                                <input
-                                    type="number"
-                                    name={field}
-                                    value={formData[field as keyof typeof formData]}
-                                    onChange={handleChange}
-                                    className={`w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent`}
-                                    required
-                                    autoComplete="off"
-                                />
+                                {field === "rang" ? (
+                                  <input
+                                  type="number"
+                                  name={field}
+                                  value={formData[field as keyof typeof formData]}
+                                  onChange={handleChange}
+                                  className={`w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent`}
+                                  required
+                                  autoComplete="off"
+                              />
+                                ) : (
+                                  <select
+                                        name="type"
+                                        value={formData.typeDemande}
+                                        onChange={handleChange}
+                                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                                        required
+                                    >
+                                        <option value="" disabled>{t("selecttypedemande")}</option>
+                                        {typeDemande
+                                          .filter((item) => {
+                                            const apiId = `/api/type_demandes/${item.id}`;
+                                            // Garder si pas déjà lié OU si c’est celui du rang en modification
+                                            return (
+                                              !demandesDejaLiees.includes(apiId) ||
+                                              apiId === formData.typeDemande
+                                            );
+                                          })
+                                          .map((item) => (
+                                            <option key={item.id} value={`/api/type_demandes/${item.id}`} className="mt-3">
+                                              {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""}
+                                            </option>
+                                          ))}
+
+
+                                    </select>
+                                )}
+                                
                             </div>
                         )}
 
@@ -168,7 +256,7 @@ const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalU
                     </form>
             
                     <button
-                        onClick={() => setShowModalUpdateRang(false)}
+                        onClick={() => setShowModalUpdate(false)}
                         className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-lg py-1 px-2 rounded"
                         aria-label="Close modal"
                         >

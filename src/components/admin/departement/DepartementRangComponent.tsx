@@ -7,11 +7,28 @@ import { store } from "../../../store";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import deleteDepartement from "../../../service/admin/DeleteDepartement";
 import { useParams } from 'react-router-dom';
-import AddRangNiveauHierarchique from "./AddRangNiveauHierarchique";
 import { Link } from "react-router-dom";
-import UpdateRangNiveauHierarchique from "./UpdateRangNiveauHierarchique";
 import deleteNiveauHierarchiqueRang from "../../../service/admin/DeleteNiveauHierarchiqueRang";
+import AddRangDepartement from "./AddRangDepartement";
+import UpdateRangDepartement from "./UpdateRangDepartement";
+import deleteRangDepartement from "../../../service/admin/DeleteRangDepartement";
 
+type Commune = {
+    id: number;
+    nom: string
+}
+
+type Region = {
+    id: number;
+    nom: string;
+}
+
+type Site = {
+    id: number;
+    nom: string
+    region: Region |null;
+    commune: Commune | null;
+}
 type Departement = {
     id: number;
     nom: string;
@@ -41,6 +58,7 @@ type Domaine = {
     isActive: boolean;
     nomEn: string;
     descriptionEn: string;
+    site: Site | null;
   }
 
 type Rang = {
@@ -49,9 +67,10 @@ type Rang = {
     niveau: NiveauHierarchique;
     departement: Departement;
     typeDemande: TypeDemande | null;
+    site: Site | null;
 }
 
-const NiveauHierarchiqueRangComponent = () => {
+const DepartementRangComponent = () => {
     const {langueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
     const state = store.getState();
@@ -60,7 +79,7 @@ const NiveauHierarchiqueRangComponent = () => {
     const usersPerPage = 2;
     const {codeCouleur} = useGlobalActiveCodeCouleur();
 
-    const [showModalAdd, setShowModalAdd] = useState(false);
+    const [showModalAdd, setShowModalAddRangDep] = useState(false);
     const [showModalUpdate, setShowModalUpdate] = useState(false);
     const { id } = useParams();
     const [selectedRang, setSelectedRang] = useState<Rang | null>(null);
@@ -70,7 +89,7 @@ const NiveauHierarchiqueRangComponent = () => {
     const [rangs, setListeRang] = useState<Rang[]>([]);
     
     useEffect(() => {
-        api.get(`/api/niveau_hierarchiques/${id}/rangs`)
+        api.get(`/api/departement_rangs/departement/${id}/rangs`)
         .then((response) => {
             setListeRang(response.data);
         })
@@ -101,14 +120,14 @@ const NiveauHierarchiqueRangComponent = () => {
                     <button
                         onClick={(e) => {
                             e.preventDefault();
-                            setShowModalAdd(true);
+                            setShowModalAddRangDep(true);
                         }}
                         className="px-5 py-1 text-white rounded mr-5"
                         >
                         {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                     </button>
-                    <Link to={`/${idDepartement}/niveau-hierarchique`} className="btn-list px-5 py-2 text-white rounded">
-                        {t("niveauhierarchique")}
+                    <Link to={`/departement`} className="btn-list px-5 py-2 text-white rounded">
+                        {t("departement")}
                     </Link>
                 </div>
                 
@@ -128,9 +147,8 @@ const NiveauHierarchiqueRangComponent = () => {
                                         {t("typeDemande")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
-                                        {t("departement")}
+                                        Site
                                     </th>
-                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -154,7 +172,7 @@ const NiveauHierarchiqueRangComponent = () => {
                                                 <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
-                                                        deleteNiveauHierarchiqueRang(item.id, langueActive?.indice as "fr" | "en")
+                                                        deleteRangDepartement(item.id, langueActive?.indice as "fr" | "en");
                                                     }}
                                                     title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
@@ -170,15 +188,13 @@ const NiveauHierarchiqueRangComponent = () => {
                                                 langueActive?.indice === "en" ? item.typeDemande?.nomEn : ""}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {langueActive?.indice === "fr" ? item.departement.nom : 
-                                                langueActive?.indice === "en" ? item.departement.nomEn : ""}
+                                                <span>{item.site?.nom} ({item.site?.region?.nom} / {item.site?.commune?.nom})</span>
                                             </td>
-
                                         </tr>
                                     ))
                                 ) : (
                                     <tr className="bg-[#1c2d55] text-center">
-                                        <td colSpan={4} className="px-6 py-4">{t("nodata")}</td>
+                                        <td colSpan={3} className="px-6 py-4">{t("nodata")}</td>
                                     </tr>
                                 )}
                                 
@@ -197,30 +213,26 @@ const NiveauHierarchiqueRangComponent = () => {
         </div>
 
         {showModalAdd && (
-            <AddRangNiveauHierarchique 
-                setShowModalAdd={setShowModalAdd} 
-                niveauId={Number(id)}
-                depId={Number(idDepartement)}
+            <AddRangDepartement 
+                setShowModalAddRangDep={setShowModalAddRangDep}
+                depId={Number(id)}
             />
         )}
 
-        {showModalUpdate && selectedRang && (
-            <UpdateRangNiveauHierarchique
-                setShowModalUpdate={setShowModalUpdate}
-                idRang={Number(selectedRang.id)}  
-                niveauId={Number(id)}
-                depId={Number(idDepartement)}
+        {showModalUpdate && selectedRang && 
+            <UpdateRangDepartement 
+                idRang={selectedRang.id}
+                depId={selectedRang.id}
+                setShowModalUpdateRangDep={setShowModalUpdate}
                 initialData={{
-                    rang: Number(selectedRang.rang),
-                    typeDemande: selectedRang.typeDemande 
+                    rang: selectedRang.rang,
+                    type: selectedRang.typeDemande ?? null
                 }}
             />
-        )}
-
-
+        }
 
         </>
     )
 }
 
-export default NiveauHierarchiqueRangComponent;
+export default DepartementRangComponent;

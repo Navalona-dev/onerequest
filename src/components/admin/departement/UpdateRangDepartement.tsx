@@ -31,13 +31,14 @@ type TypeDemande = {
 interface UpdateDepartementProps {
     setShowModalUpdateRangDep: React.Dispatch<React.SetStateAction<boolean>>;
     idRang: number;
+    depId: number;
     initialData: {
       rang: number;
       type: TypeDemande | null;
     };
   }
 
-const UpdateRangDepartement: React.FC<UpdateDepartementProps> = ({ setShowModalUpdateRangDep,idRang , initialData }) => {
+const UpdateRangDepartement: React.FC<UpdateDepartementProps> = ({ setShowModalUpdateRangDep,idRang , depId, initialData }) => {
     const [formData, setFormData] = useState({
         rang: initialData.rang,
         type: initialData.type ? `/api/type_demandes/${initialData.type.id}` : "",
@@ -50,6 +51,7 @@ const UpdateRangDepartement: React.FC<UpdateDepartementProps> = ({ setShowModalU
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
     const [site, setSite] = useState<Site | null>(null);
     const [typeDemande, setListeTypeDemande] = useState<TypeDemande[]>([]);
+    const [demandesDejaLiees, setDemandesDejaLiees] = useState<string[]>([]);
 
     const fieldLabels: { [key: string]: string } = {
         rang: t("ordre"),
@@ -72,6 +74,21 @@ const UpdateRangDepartement: React.FC<UpdateDepartementProps> = ({ setShowModalU
         } )
         .catch((error) => console.log("Erreur API", error));
     }, [site]);
+
+    useEffect(() => {
+      if (!depId) return;
+    
+      api.get(`/api/departement_rangs/departement/${depId}/rangs`)
+        .then((response) => {
+          const rangs: any[] = response.data; // tableau de rangs
+          // on récupère tous les typeDemande déjà liés
+          const demandesLiees: string[] = rangs
+            .filter(rang => rang.typeDemande)
+            .map(rang => `/api/type_demandes/${rang.typeDemande.id}`);
+          setDemandesDejaLiees(demandesLiees);
+        })
+        .catch((error) => console.log("Erreur récupération types déjà liés", error));
+    }, [depId]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -197,20 +214,31 @@ const UpdateRangDepartement: React.FC<UpdateDepartementProps> = ({ setShowModalU
                                         autoComplete="off"
                                     />
                                 ) : (
-                                    <select
-                                        name="type"
-                                        value={formData.type}
-                                        onChange={handleChange}
-                                        className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
-                                        required
-                                    >
-                                        <option value="" disabled>{t("selecttypedemande")}</option>
-                                        {typeDemande.map((item) => (
-                                        <option key={item.id} value={`/api/type_demandes/${item.id}`} className="mt-3">
+                                  <select
+                                      name="type"
+                                      value={formData.type}
+                                      onChange={handleChange}
+                                      className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                                      required
+                                  >
+                                      <option value="" disabled>{t("selecttypedemande")}</option>
+                                      {typeDemande
+                                        .filter((item) => {
+                                          const apiId = `/api/type_demandes/${item.id}`;
+                                          // Garder si pas déjà lié OU si c’est celui du rang en modification
+                                          return (
+                                            !demandesDejaLiees.includes(apiId) ||
+                                            apiId === formData.type
+                                          );
+                                        })
+                                        .map((item) => (
+                                          <option key={item.id} value={`/api/type_demandes/${item.id}`} className="mt-3">
                                             {langueActive?.indice === "fr" ? item.nom : langueActive?.indice === "en" ? item.nomEn : ""}
-                                        </option>
+                                          </option>
                                         ))}
-                                    </select>
+
+
+                                  </select>
                                 )}
                             </div>
                         )}

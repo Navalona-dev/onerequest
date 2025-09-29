@@ -25,7 +25,7 @@ import DepartementPage from "./DepartementPage";
 import NiveauHierarchiqueByDepartementPage from "./NiveauHierarchiqueByDepartementPage";
 import NiveauHierarchiquePage from "./NiveauHierarchiquePage";
 import DomaineEntrepriseListe from "./DomaineEntrepriseListe";
-import RangNiveauHierarchiquePage from "./RangNiveauHierarchiquePage";
+import RangPage from "./RangPage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -112,7 +112,7 @@ const ContentPage = () => {
             case "domaine-entreprise-liste":
                 return <DomaineEntrepriseListe />;
             case "rang":
-                return <RangNiveauHierarchiquePage />;
+                return <RangPage />;
             default:
                 return <Dashboard />;
         }
