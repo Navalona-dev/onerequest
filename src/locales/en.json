@@ -225,7 +225,10 @@
     "selectNiveau": "Select Hierarchy Level",
     "nhAssociate": "Hierarchy Level associate",
     "depAssociate": "Department associate",
-    "et": "and"
+    "et": "and",
+    "accesRefuse": "Access Denied",
+    "accessRefuseTitle": "You do not have permission to access this page.",
+    "retour": "Back to Home"
 
   }
   

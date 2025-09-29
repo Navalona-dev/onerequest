@@ -58,28 +58,37 @@ function App() {
 
                 <Route path="/admin/login" element={<LoginPage />} />
                 <Route path="/admin/logout" element={<LogoutAdmin />} />
+
                 <Route element={<PrivateRouteAdmin />}>
+                  <Route path="/no-access" element={<ContentPage />} />
                   <Route path="/admin" element={<ContentPage />} />
                   <Route path="/document" element={<ContentPage />} />
                   <Route path="/report" element={<ContentPage />} />
                   <Route path="/demande" element={<ContentPage />} />
-                  <Route path="/code-couleur" element={<ContentPage />} />
-                  <Route path="/site" element={<ContentPage />} />
-                  <Route path="/user" element={<ContentPage />} />
-                  <Route path="/region" element={<ContentPage />} />
-                  <Route path="/type-demande" element={<ContentPage />} />
-                  <Route path="/demande" element={<ContentPage />} />
-                  <Route path="/privilege" element={<ContentPage />} />
-                  <Route path="/niveau-hierarchiques" element={<ContentPage />} />
-                  <Route path="/departement" element={<ContentPage />} />
-                  <Route path="/categorie-domaine-entreprise" element={<ContentPage />} />
-                  <Route path="/domaine-entreprise-liste" element={<ContentPage />} />
-                  <Route path="/:idRegion/commune" element={<ContentPage />} />
-                  <Route path="/:idDepartement/niveau-hierarchique" element={<ContentPage />} />
-                  <Route path="/:idCategorieDomaine/domaine-entreprise" element={<ContentPage />} />
-                  <Route path="/:id/rang" element={<ContentPage />} />
+                </Route>
+
+                <Route element={<PrivateRouteAdmin requiredPrivilege="super_admin"/>}>
+                    <Route path="/type-demande" element={<ContentPage />} />
+                    <Route path="/:id/rang" element={<ContentPage />} />
+                    <Route path="/niveau-hierarchiques" element={<ContentPage />} />
+                    <Route path="/:idDepartement/niveau-hierarchique" element={<ContentPage />} />
+                    <Route path="/user" element={<ContentPage />} />
 
                 </Route>
+
+                <Route element={<PrivateRouteAdmin requiredPrivilege="super_admin" requireIsSuperAdmin={true} />}>
+                  <Route path="/departement" element={<ContentPage />} />
+                  <Route path="/code-couleur" element={<ContentPage />} />
+                  <Route path="/site" element={<ContentPage />} />
+                  <Route path="/privilege" element={<ContentPage />} />
+                  <Route path="/:idRegion/commune" element={<ContentPage />} />
+                  <Route path="/region" element={<ContentPage />} />
+                  <Route path="/categorie-domaine-entreprise" element={<ContentPage />} />
+                  <Route path="/domaine-entreprise-liste" element={<ContentPage />} />
+                  <Route path="/:idCategorieDomaine/domaine-entreprise" element={<ContentPage />} />
+
+                </Route>
+
               </Routes>
             </ModuleProvider>
           </LayoutContentProvider>

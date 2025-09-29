@@ -45,6 +45,25 @@ type Site = {
   commune: Commune | null;
 };
 
+type Rang = {
+  id: number;
+  rang: number;
+}
+
+type Departement = {
+  id: number;
+  nom: string;
+  nomEn: string;
+  rangs: Rang[];
+}
+
+type Niveau = {
+  id: number;
+  nom: string;
+  nomEn: string;
+  rangs: Rang[];
+}
+
 type UserType = {
   id: number;
   nom: string;
@@ -53,6 +72,8 @@ type UserType = {
   site: Site;
   message: string;
   isSuperAdmin: boolean;
+  departement: Departement | null;
+  niveauHierarchique: Niveau | null
 };
 
 
@@ -74,6 +95,26 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
   const { t, i18n } = useTranslation();
   const {langueActive} = useLangueActive();
   const [activeSubMenu, setActiveSubMenu] = useState<string>("");
+
+  // Récupération des rangs du département
+  const departementRangs = user?.departement?.rangs ?? [];
+  const firstDepartementRang = departementRangs.length > 0 
+      ? Math.min(...departementRangs.map(r => r.rang))
+      : null;
+
+  // Récupération des rangs du niveau hiérarchique
+  const niveauRangs = user?.niveauHierarchique?.rangs ?? [];
+  const firstNiveauRang = niveauRangs.length > 0
+      ? Math.min(...niveauRangs.map(r => r.rang))
+      : null;
+
+  // Rang de l'utilisateur
+  const userRangDepartement = user?.departement?.rangs?.find(r => r.id === user.departement?.id)?.rang ?? null;
+  const userRangNiveau = user?.niveauHierarchique?.rangs?.find(r => r.id === user.niveauHierarchique?.id)?.rang ?? null;
+
+  const canAccessEnAttente = 
+  (firstDepartementRang !== null && userRangDepartement === firstDepartementRang) ||
+  (firstNiveauRang !== null && userRangNiveau === firstNiveauRang);
 
   const handleMenuClick = (menu: string) => {
     setActiveMenu(menu);
@@ -195,17 +236,7 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
               <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Documents</span>
             </li>
 
-            <li
-              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
-                activeMenu === "domaine-entreprise-liste" ? "bg-[#1c2d55] text-white" : ""
-              } ${currentModule === "domaine-entreprise-liste" ? "bg-[#1c2d55] text-white" : ""}`}
-              onClick={() => handleMenuClick("domaine-entreprise-liste")}
-            >
-              <span className="icon-sidebar">
-              <i className="bi bi-tags-fill"></i>
-              </span>
-              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.domaineEntreprise")}</span>
-            </li>
+           
 
             {/* Dropdown */}
             <li
@@ -273,17 +304,20 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
                   </>
                 )}
                   
-                  <li  
-                    className={`px-2 py-1 rounded ${hoverColor} cursor-pointer
-                      ${activeSubMenu === "en-attente" ? "bg-[#1c2d55] text-white" : ""}
-                    `}
-                    onClick={() => {
-                      navigate("/demande?type=en-attente"); 
-                      setDemandeOpen(true);
-                    }}
-                  >
-                    <i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.enattente")}
-                  </li>
+                  {canAccessEnAttente && (
+                    <li  
+                      className={`px-2 py-1 rounded ${hoverColor} cursor-pointer
+                        ${activeSubMenu === "en-attente" ? "bg-[#1c2d55] text-white" : ""}
+                      `}
+                      onClick={() => {
+                        navigate("/demande?type=en-attente"); 
+                        setDemandeOpen(true);
+                      }}
+                    >
+                      <i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.enattente")}
+                    </li>
+                  )}
+
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.refuse")}</li>
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.accepte")}</li>
                   <li className={`px-2 py-1 rounded ${hoverColor} cursor-pointer`}><i className="mr-2 text-xs bi bi-circle"></i>{t("sidebar.valide")}</li>
@@ -293,6 +327,17 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
 
             {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') && user.isSuperAdmin === true ? (
             <>
+             <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "domaine-entreprise-liste" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "domaine-entreprise-liste" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("domaine-entreprise-liste")}
+            >
+              <span className="icon-sidebar">
+              <i className="bi bi-tags-fill"></i>
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.domaineEntreprise")}</span>
+            </li>
             <li
               className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
                 activeMenu === "code-couleur" ? "bg-[#1c2d55] text-white" : ""
@@ -326,24 +371,6 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
                 </span>
                 <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>Sites</span>
               </li>
-            </>
-              
-            ) : (
-              null
-            )}
-            
-            <li
-              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
-                activeMenu === "user" ? "bg-[#1c2d55] text-white" : ""
-              } ${currentModule === "user" ? "bg-[#1c2d55] text-white" : ""}`}
-              onClick={() => handleMenuClick("user")}
-            >
-              <span className="icon-sidebar">
-              <i className="bi bi-people-fill"></i>
-              </span>
-              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.user")}</span>
-            </li>
-            {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') && user.isSuperAdmin === true ? (
               <li
                 className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
                   activeMenu === "privilege" ? "bg-[#1c2d55] text-white" : ""
@@ -355,6 +382,25 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
                 </span>
                 <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.privileges")}</span>
               </li>
+            </>
+              
+            ) : (
+              null
+            )}
+            
+            {user && user.privileges && user.privileges.some(p => p.title === 'super_admin') ? (
+             
+              <li
+              className={`flex items-center gap-2 px-3 py-2 rounded ${hoverColor} cursor-pointer ${
+                activeMenu === "user" ? "bg-[#1c2d55] text-white" : ""
+              } ${currentModule === "user" ? "bg-[#1c2d55] text-white" : ""}`}
+              onClick={() => handleMenuClick("user")}
+            >
+              <span className="icon-sidebar">
+              <i className="bi bi-people-fill"></i>
+              </span>
+              <span className={`${isSidebarCollapsed ? 'hidden' : 'inline'}`}>{t("sidebar.user")}</span>
+            </li>
             ) : null}
             
           </ul>

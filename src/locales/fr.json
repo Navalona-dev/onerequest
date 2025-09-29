@@ -223,6 +223,9 @@
     "selectNiveau": "Sélectionner un niveau hierarchique",
     "nhAssociate": "Associé niveau hierarchique",
     "depAssociate": "Associé département",
-    "et": "et"
+    "et": "et",
+    "accesRefuse": "Accès refusé",
+    "accessRefuseTitle": "Vous n'avez pas les droits pour accéder à cette page.",
+    "retour": "Retour à l'accueil"
   }
   

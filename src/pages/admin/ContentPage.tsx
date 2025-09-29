@@ -26,6 +26,7 @@ import NiveauHierarchiqueByDepartementPage from "./NiveauHierarchiqueByDeparteme
 import NiveauHierarchiquePage from "./NiveauHierarchiquePage";
 import DomaineEntrepriseListe from "./DomaineEntrepriseListe";
 import RangPage from "./RangPage";
+import NoAccessPage from "./NoAccessPage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -37,8 +38,8 @@ const ContentPage = () => {
     const {codeCouleur, loading} = useGlobalActiveCodeCouleur();
 
     useEffect(() => {
-        const path = location.pathname.replace(/^\/+/, ""); // enlève les slashes initiaux
-    
+       const path = location.pathname.replace(/^\/+/, ""); // enlève les slashes initiaux
+       
         if ([
             "dashboard", 
             "document", 
@@ -55,7 +56,8 @@ const ContentPage = () => {
             "departement",
             "niveau-hierarchiques",
             "domaine-entreprise-liste",
-            "rang"
+            "rang",
+            "no-access"
         ].includes(path)) {
             setCurrentModule(path as any);
         } else if (/^\d+\/commune$/.test(path)) {
@@ -113,6 +115,8 @@ const ContentPage = () => {
                 return <DomaineEntrepriseListe />;
             case "rang":
                 return <RangPage />;
+            case "no-access":
+                return <NoAccessPage />
             default:
                 return <Dashboard />;
         }
