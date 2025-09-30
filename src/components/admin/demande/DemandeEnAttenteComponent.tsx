@@ -24,6 +24,12 @@ type TypeDemande = {
     nomEn: string;
 }
 
+type Departement = {
+    id: number;
+    nom: string;
+    nomEn: string;
+}
+
 type Demande = {
     id: number;
     objet: string;
@@ -33,6 +39,8 @@ type Demande = {
     type: TypeDemande | null;
     demandeur: Demandeur | null;
     fichier: string;
+    departement: Departement | null;
+    reference: string;
 }
 
 const DemandeEnAttenteComponent = () => {
@@ -166,12 +174,15 @@ const DemandeEnAttenteComponent = () => {
                 </div>
 
                 <div className="mx-5">
-                    <div className="w-[38vh] md:w-full sm:w-[38vh] h-[55vh] overflow-auto">
+                    <div className="w-[40vh] md:w-[152vh] sm:w-[40vh] h-[55vh] overflow-auto">
                         <table className="w-full border border-gray-700 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-[#1c2d55]">
-                                <tr className="text-nowrap border-b-2 border-gray-700 text-center ...">
+                                <tr className="border-b-2 border-gray-700 text-center ...">
                                     <th scope="col" className="px-6 py-3 text-white">
                                         Actions
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-white">
+                                        Ref
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
                                         {t("demandeur")}
@@ -181,6 +192,9 @@ const DemandeEnAttenteComponent = () => {
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
                                         Statut
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-white">
+                                        {t("departement")}
                                     </th>
                                     <th scope="col" className="px-6 py-3 text-white">
                                         {t("fichier")}
@@ -202,6 +216,9 @@ const DemandeEnAttenteComponent = () => {
                                             
                                             </th>
                                             <td className="px-6 py-4 text-nowrap">
+                                                {item.reference}
+                                            </td>
+                                            <td className="px-6 py-4">
                                                 {item.demandeur?.nom} {item.demandeur?.prenom} <br />
                                                 <span 
                                                     style={{
@@ -215,6 +232,9 @@ const DemandeEnAttenteComponent = () => {
                                             </td>
                                             <td className="px-6 py-4 text-nowrap">
                                                 {langueActive?.indice === "fr" ? item.statut : langueActive?.indice === "en" ? item.statutEn : ""}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {langueActive?.indice === "fr" ? item.departement?.nom : langueActive?.indice === "en" ? item.departement?.nomEn : ""}
                                             </td>
                                             <td className="px-6 py-4 text-center">
                                                 <a 
@@ -238,7 +258,7 @@ const DemandeEnAttenteComponent = () => {
                                     ))
                                 ) : (
                                     <tr className="bg-[#1c2d55] text-center">
-                                        <td colSpan={7} className="px-6 py-4">{t("nodata")}</td>
+                                        <td colSpan={9} className="px-6 py-4">{t("nodata")}</td>
                                     </tr>
                                 )}
                                 

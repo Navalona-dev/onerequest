@@ -226,6 +226,11 @@
     "et": "et",
     "accesRefuse": "Accès refusé",
     "accessRefuseTitle": "Vous n'avez pas les droits pour accéder à cette page.",
-    "retour": "Retour à l'accueil"
+    "retour": "Retour à l'accueil",
+    "nomRequis": "Le nom est requis.",
+    "emailRequis": "L'email est requis.",
+    "pwdRequis": "Le mot de passe est requis.",
+    "pwdNoConforme": "Les mots de passe ne correspondent pas.",
+    "mailUse": "Cet email est déjà utilisé"
   }
   

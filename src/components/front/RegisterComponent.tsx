@@ -28,6 +28,17 @@ const RegisterForm = () => {
   const {langueActive} = useLangueActive();
   const { t, i18n } = useTranslation();
 
+  const [showPassword, setShowPassword] = useState<{ [key: string]: boolean }>({
+    password: false,
+    confirmPassword: false,
+  });
+
+  
+  const toggleShowPassword = (field: "password" | "confirmPassword") => {
+    setShowPassword(prev => ({ ...prev, [field]: !prev[field] }));
+  };
+  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -47,12 +58,11 @@ const RegisterForm = () => {
   
     const newErrors: { [key: string]: string } = {};
   
-    if (!formData.nom) newErrors.nom = "Le nom est requis.";
+    if (!formData.nom) newErrors.nom = t("nomRequis");
     //if (!formData.prenom) newErrors.prenom = "Le prénom est requis.";
-    if (!formData.email) newErrors.email = "L'email est requis.";
-    if (!formData.password) newErrors.password = "Le mot de passe est requis.";
-    if (formData.password !== formData.confirmPassword)
-      newErrors.confirmPassword = "Les mots de passe ne correspondent pas.";
+    if (!formData.email) newErrors.email = t("emailRequis");
+    if (!formData.password) newErrors.password = t("pwdRequis");
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = t("pwdNoConforme");
   
     setErrors(newErrors);
   
@@ -137,7 +147,7 @@ const RegisterForm = () => {
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">{t("register.title")}</h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           {Object.keys(formData).map((field) =>
-            <div key={field}>
+            <div key={field} className="relative">
               <label htmlFor="">
                 {fieldLabels[field] || field}
                 {(field === "prenom" || field === "phone" || field === "adresse") ? (
@@ -149,8 +159,8 @@ const RegisterForm = () => {
               <br />
               <span className="text-red-500 text-sm">{errors[field]}</span>
               <input 
-                className="mt-2 w-full p-2 rounded bg-gray-100 border-gray-100 text-gray-500 focus:outline-none focus:ring-0 focus:border-transparent "
-                type={`${field === "password" ? "password" : field === "confirmPassword" ? "password" : field === "email" ? "email" : "text"}`} 
+                className="mt-2 w-full p-2 rounded bg-gray-100 border-gray-100 text-gray-500 focus:outline-none focus:ring-0 focus:border-transparent"
+                type={showPassword[field as keyof typeof showPassword] ? "text" : field === "password" || field === "confirmPassword" ? "password" : field === "email" ? "email" : "text"}
                 placeholder={fieldLabels[field] || field} 
                 name={field}
                 value={formData[field as keyof typeof formData]}
@@ -158,6 +168,21 @@ const RegisterForm = () => {
                 autoComplete="off"
                 required={field === "nom" || field === "password" || field === "confirmPassword" || field === "email"}
               />
+
+              {(field === "password" || field === "confirmPassword") && (
+                  <button 
+                    type="button"
+                    onClick={() => toggleShowPassword(field as "password" | "confirmPassword")}
+                    className="absolute bg-gray-100 hover:bg-gray-100 right-3 top-3/4 transform -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword[field as keyof typeof showPassword] ? (
+                      <i className="bi bi-eye-slash-fill"></i>
+                    ) : (
+                      <i className="bi bi-eye-fill"></i>
+                    )}
+                  </button>
+                )}
+
             </div>
             
           )}

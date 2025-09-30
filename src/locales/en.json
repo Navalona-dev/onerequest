@@ -228,7 +228,12 @@
     "et": "and",
     "accesRefuse": "Access Denied",
     "accessRefuseTitle": "You do not have permission to access this page.",
-    "retour": "Back to Home"
+    "retour": "Back to Home",
+    "nomRequis": "Name is required.",
+    "emailRequis": "Email is required.",
+    "pwdRequis": "Password is required.",
+    "pwdNoConforme": "Passwords do not match.",
+    "mailUse": "This email is already in use."
 
   }
   
