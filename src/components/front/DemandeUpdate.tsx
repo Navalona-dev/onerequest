@@ -131,7 +131,7 @@ const DemandeUpdate: React.FC = () => {
 
         if (!email || !token) return;
 
-        const userRes = await api.get(`/api/users/${email}/get-user-admin-connected`, {
+        const userRes = await api.get(`/api/users/${email}/get-demandeur-connected`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

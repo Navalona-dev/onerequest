@@ -93,7 +93,7 @@ const Footer = () => {
                     className="section-title text-xl uppercase mb-4 font-semibold">Services</h6>
                     <ul className="space-y-2">
                         {services.map((item, index) => (
-                            <li className="hover:text-white transition"> {langueActive?.indice === "fr" ? item.titleFr : langueActive?.indice === "en" ? item.titleEn : ""} </li>
+                            <li className="hover:text-white transition" key={item.id}> {langueActive?.indice === "fr" ? item.titleFr : langueActive?.indice === "en" ? item.titleEn : ""} </li>
                         ))}
                     </ul>
                 </div>

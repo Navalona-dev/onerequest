@@ -50,18 +50,41 @@ type Rang = {
   rang: number;
 }
 
-type Departement = {
+type Niveau = {
   id: number;
   nom: string;
   nomEn: string;
   rangs: Rang[];
 }
 
-type Niveau = {
+type User = {
+  id: number;
+  nom: string;
+  prenom: string;
+  email: string;
+}
+
+type Departement = {
   id: number;
   nom: string;
   nomEn: string;
   rangs: Rang[];
+  niveauHierarchiques: Niveau[];
+  users: User[];
+}
+
+type TypeDemande = {
+  id: number;
+  nom: string;
+  nomEn: string;
+}
+
+type AllRangNiveau = {
+  id: number;
+  rang: number;
+  typeDemande: TypeDemande | null;
+  niveauHierarchique: Niveau | null;
+  departement: Departement | null;
 }
 
 type UserType = {
@@ -96,26 +119,24 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
   const {langueActive} = useLangueActive();
   const [activeSubMenu, setActiveSubMenu] = useState<string>("");
 
-  // Récupération des rangs du département
-  const departementRangs = user?.departement?.rangs ?? [];
-  const firstDepartementRang = departementRangs.length > 0 
-      ? Math.min(...departementRangs.map(r => r.rang))
-      : null;
+  const departement = user?.departement;
+  const allNiveauByDepartement = departement?.niveauHierarchiques;
+  const [rangsMinimum, setListeRangMinimum] = useState<AllRangNiveau []>([]);
 
-  // Récupération des rangs du niveau hiérarchique
-  const niveauRangs = user?.niveauHierarchique?.rangs ?? [];
-  const firstNiveauRang = niveauRangs.length > 0
-      ? Math.min(...niveauRangs.map(r => r.rang))
-      : null;
+  useEffect(() => {
+    if(!user) return;
+    api.get(`/api/users/${user.id}/rangs`)
+    .then((response) => {
+      setListeRangMinimum(response.data.minimumRangs)
+    })
+    .catch((error) => console.log("Erreur API", error))
+  }, [user]);
 
-  // Rang de l'utilisateur
-  const userRangDepartement = user?.departement?.rangs?.find(r => r.id === user.departement?.id)?.rang ?? null;
-  const userRangNiveau = user?.niveauHierarchique?.rangs?.find(r => r.id === user.niveauHierarchique?.id)?.rang ?? null;
-
-  const canAccessEnAttente = 
-  (firstDepartementRang !== null && userRangDepartement === firstDepartementRang) ||
-  (firstNiveauRang !== null && userRangNiveau === firstNiveauRang);
-
+  const canAccessEnAttente = user?.niveauHierarchique?.rangs?.some(userRang =>
+    rangsMinimum.some(rang => rang.id === userRang.id)
+  ) ?? false;
+  
+ 
   const handleMenuClick = (menu: string) => {
     setActiveMenu(menu);
     setCurrentModule(menu as any);

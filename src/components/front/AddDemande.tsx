@@ -89,7 +89,7 @@ const AddDemande: React.FC = () => {
 
         if (!email || !token) return;
 
-        const userRes = await api.get(`/api/users/${email}/get-user-admin-connected`, {
+        const userRes = await api.get(`/api/users/${email}/get-demandeur-connected`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -326,7 +326,7 @@ const AddDemande: React.FC = () => {
                       <h5><strong>{t("demande.dossiertitle")} : </strong></h5>
                       {dossiers.length > 0 ? (
                         dossiers.map((dossier, index) => (
-                          <p className="mt-2" key={index}><i className="bi bi-record-circle-fill mr-1 text-xs"></i>
+                          <p className="mt-2" key={dossier.id}><i className="bi bi-record-circle-fill mr-1 text-xs"></i>
                             {langueActive?.indice === "fr" ? dossier.title : langueActive?.indice === "en" ? dossier.titleEn  : ""}
                           </p>
                         ))

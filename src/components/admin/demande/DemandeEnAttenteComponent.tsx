@@ -4,6 +4,7 @@ import Pagination from "../Pagination";
 import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCouleur";
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
+import UserAdminConnected from "../../../hooks/UserAdminConnected";
 
 type Site = {
     id: number;
@@ -43,6 +44,13 @@ type Demande = {
     reference: string;
 }
 
+type User = {
+    id: number;
+    nom: string;
+    prenom: string;
+    email: string
+}
+
 const DemandeEnAttenteComponent = () => {
     const [demandes, setListeDemande] = useState<Demande[]>([]);
     const [currentSite, setCurrentSite] = useState<Site | null>(null);
@@ -59,7 +67,9 @@ const DemandeEnAttenteComponent = () => {
     const [statuts, setStatuts] = useState<{ statut: { [key: number]: string }; statutEn: { [key: number]: string } }>({
         statut: {},
         statutEn: {}
-    });    
+    });   
+    
+    const user = UserAdminConnected() as User | null;
 
     useEffect(() => {
         api.get('/api/demandes/statut')
@@ -87,14 +97,14 @@ const DemandeEnAttenteComponent = () => {
     }, []);
 
     useEffect(() => {
-        if (!currentSite) return; 
-        api.get(`/api/sites/${currentSite.id}/demandes`)
+        if (!user) return; 
+        api.get(`/api/demandes/${user.id}/en-attente`)
         .then((response) => {
             console.log('Demande', response.data);
             setListeDemande(response.data)
         })
         .catch((error) => console.log("Erreur API", error));
-    }, [currentSite]);
+    }, [user]);
 
     const filteredDemandes = demandes.filter(user => {
         const statutMatch = !searchStatut || user.statut.toLowerCase().includes(searchStatut.toLowerCase());

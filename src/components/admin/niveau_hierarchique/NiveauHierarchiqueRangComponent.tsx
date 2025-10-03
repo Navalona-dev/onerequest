@@ -68,14 +68,24 @@ const NiveauHierarchiqueRangComponent = () => {
     const idDepartement = sessionStorage.getItem('idDepartement');
 
     const [rangs, setListeRang] = useState<Rang[]>([]);
+    const [niveau, setNiveau] = useState<NiveauHierarchique | null>(null);
     
     useEffect(() => {
-        api.get(`/api/niveau_hierarchiques/${id}/rangs`)
+        api.get(`/api/niveau_hierarchiques/${id}/departement/${idDepartement}/rangs`)
         .then((response) => {
             setListeRang(response.data);
         })
         .catch((error) => console.log("Erreur API", error));
     }, []);
+
+    useEffect(() => {
+        if(!id) return;
+        api.get(`/api/niveau_hierarchiques/${id}`)
+        .then((response) => {
+            setNiveau(response.data);
+        })
+        .catch((error) => console.log("Erreur API", error));
+    },[id]);
 
      const dataToPaginate = rangs;
 
@@ -96,7 +106,13 @@ const NiveauHierarchiqueRangComponent = () => {
         <>
         <div className="h-[69vh] overflow-y-auto my-6">
             <div className="color-header px-4 flex justify-between items-center mb-5">
-                <h4 className="font-bold text-white">{t("listeNiveau")}</h4>
+                <h4 className="font-bold text-white" style={{lineHeight: "2"}}>
+                    {t("listeNiveau")} <br />
+                   <span>
+                    "{langueActive?.indice === "fr" ? niveau?.nom : 
+                        langueActive?.indice === "en" ? niveau?.nomEn : ""}"
+                   </span>
+                </h4>
                 <div>
                     <button
                         onClick={(e) => {
