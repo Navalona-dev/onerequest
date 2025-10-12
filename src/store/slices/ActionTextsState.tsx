@@ -50,6 +50,10 @@ const initialState: ActionTextsState = {
     fr: { actionWord: "dissocier", pastActionWord: "dissocié", upperText: "Dissocier" },
     en: { actionWord: "dissociate", pastActionWord: "dissociated", upperText: "Dissociate" },
   },
+  send: {
+    en: { actionWord: "send", pastActionWord: "send", upperText: "Send" },
+    fr: { actionWord: "envoyer", pastActionWord: "envoyer", upperText: "Envoyer" },
+  },
 };
 
 const actionTextsSlice = createSlice({

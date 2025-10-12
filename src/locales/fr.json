@@ -231,6 +231,10 @@
     "emailRequis": "L'email est requis.",
     "pwdRequis": "Le mot de passe est requis.",
     "pwdNoConforme": "Les mots de passe ne correspondent pas.",
-    "mailUse": "Cet email est déjà utilisé"
+    "mailUse": "Cet email est déjà utilisé",
+    "sendDemandeDepartement": "Envoyer au departement",
+    "traiter": "Traiter",
+    "sendSite": "Envoyer au site",
+    "sendDepartementTitle": "Transferer au departement "
   }
   

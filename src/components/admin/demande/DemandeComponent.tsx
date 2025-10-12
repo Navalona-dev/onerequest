@@ -82,7 +82,6 @@ const DemandeComponent = () => {
         if (!currentSite) return; 
         api.get(`/api/sites/${currentSite.id}/demandes`)
         .then((response) => {
-            console.log('Demande', response.data);
             setListeDemande(response.data)
         })
         .catch((error) => console.log("Erreur API", error));

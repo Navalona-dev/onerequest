@@ -5,6 +5,7 @@ import { useGlobalActiveCodeCouleur } from "../../../hooks/UseGlobalActiveCodeCo
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
+import SendDepartementModal from "./SendDepartementModal";
 
 type Site = {
     id: number;
@@ -68,6 +69,8 @@ const DemandeEnAttenteComponent = () => {
         statut: {},
         statutEn: {}
     });   
+    const [showModalSendDepartement, setShowModalSendDepartement] = useState(false);
+    const [selectedDemande, setSelectedDemande] = useState<Demande | null>(null);
     
     const user = UserAdminConnected() as User | null;
 
@@ -100,7 +103,6 @@ const DemandeEnAttenteComponent = () => {
         if (!user) return; 
         api.get(`/api/demandes/${user.id}/en-attente`)
         .then((response) => {
-            console.log('Demande', response.data);
             setListeDemande(response.data)
         })
         .catch((error) => console.log("Erreur API", error));
@@ -223,7 +225,34 @@ const DemandeEnAttenteComponent = () => {
                                     currentDemandes.map((item, index) => (
                                         <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
                                             <th className="px-6 py-4 text-nowrap">
-                                            
+                                                <a href="#" 
+                                                    title={t("sendDemandeDepartement")}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setSelectedDemande(item);
+                                                        setShowModalSendDepartement(true);
+                                                    }}
+                                                >
+                                                    <i className="bi bi-house-fill px-2 py-1.5 text-white rounded-3xl mr-3"
+                                                     style={{
+                                                        backgroundColor: codeCouleur?.btnColor
+                                                    }}
+                                                    ></i>
+                                                </a>
+                                                <a href="#" title={t("sendSite")}>
+                                                    <i className="bi bi-geo-alt-fill px-2 py-1.5 text-white rounded-3xl mr-3"
+                                                    style={{
+                                                        backgroundColor: codeCouleur?.btnColor
+                                                    }}
+                                                    ></i>
+                                                </a>
+                                                <a href="#" title={t("traiter")}>
+                                                    <i className="bi bi-file-earmark-text px-2 py-1.5 text-white rounded-3xl"
+                                                    style={{
+                                                        backgroundColor: codeCouleur?.btnColor
+                                                    }}
+                                                    ></i>
+                                                </a>
                                             </th>
                                             <td className="px-6 py-4 text-nowrap">
                                                 {item.reference}
@@ -286,6 +315,14 @@ const DemandeEnAttenteComponent = () => {
                     />
                 </div>
             </div>
+
+            {showModalSendDepartement && selectedDemande && (
+                <SendDepartementModal 
+                    demandeId={selectedDemande.id}
+                    setShowModalSendDepartement={setShowModalSendDepartement}
+                    
+                />
+            )}
         </>
     )
 }

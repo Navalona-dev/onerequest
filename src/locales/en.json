@@ -233,7 +233,11 @@
     "emailRequis": "Email is required.",
     "pwdRequis": "Password is required.",
     "pwdNoConforme": "Passwords do not match.",
-    "mailUse": "This email is already in use."
+    "mailUse": "This email is already in use.",
+    "sendDemandeDepartement": "Send to Department",
+    "traiter": "Process",
+    "sendSite": "Send to site",
+    "sendDepartementTitle": "Transfer to Department"
 
   }
   

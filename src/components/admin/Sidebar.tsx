@@ -219,7 +219,9 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
         <h1 className={`text-2xl font-bold mb-5 ${isSidebarCollapsed ? 'hidden' : 'inline'}`}>ONEREQUEST</h1>
         {user ? (
           user.site ? (
-            <h4 className="my-3">{user.site.nom} ({user.site.region?.nom} / {user.site.commune?.nom}) </h4>
+            <h4 className="my-3">
+               {user.site.nom} ({user.site.region?.nom} / {user.site.commune?.nom})
+            </h4>
           ) : (
             currentSite ? (
               <h4 className="my-3">{currentSite.nom} ({currentSite.region?.nom} / {currentSite.commune?.nom})</h4>
