@@ -44,7 +44,7 @@ interface UpdateRangProps {
 const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalUpdate, idRang, niveauId, depId, initialData }) => {
     const [formData, setFormData] = useState({
         rang: initialData.rang,
-        typeDemande: initialData.typeDemande ? `/api/type_demandes/${initialData.typeDemande.id}` : ""
+        //typeDemande: initialData.typeDemande ? `/api/type_demandes/${initialData.typeDemande.id}` : ""
     });
 
     const {langueActive} = useLangueActive();
@@ -58,7 +58,7 @@ const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalU
 
     const fieldLabels: { [key: string]: string } = {
         rang: t("ordre"),
-        type: t("typeDemande")
+        //type: t("typeDemande")
       };
 
       useEffect(() => {
@@ -215,7 +215,7 @@ const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalU
                                   autoComplete="off"
                               />
                                 ) : (
-                                  <select
+                                  /*<select
                                         name="type"
                                         value={formData.typeDemande}
                                         onChange={handleChange}
@@ -239,7 +239,8 @@ const UpdateRangNiveauHierarchique: React.FC<UpdateRangProps> = ({ setShowModalU
                                           ))}
 
 
-                                    </select>
+                                    </select>*/
+                                    null
                                 )}
                                 
                             </div>

@@ -237,7 +237,10 @@
     "sendDemandeDepartement": "Send to Department",
     "traiter": "Process",
     "sendSite": "Send to site",
-    "sendDepartementTitle": "Transfer to Department"
+    "sendDepartementTitle": "Transfer to Department",
+    "sendSiteTitle": "Transfer to site ",
+    "listeRangDepartement": "Department order list",
+    "commentaire": "Comment"
 
   }
   

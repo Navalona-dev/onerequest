@@ -70,6 +70,7 @@ type Rang = {
     site: Site | null;
 }
 
+
 const DepartementRangComponent = () => {
     const {langueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
@@ -87,14 +88,24 @@ const DepartementRangComponent = () => {
     const idDepartement = sessionStorage.getItem('idDepartement');
 
     const [rangs, setListeRang] = useState<Rang[]>([]);
+    const [site, setSite] = useState<Site | null>(null);
+
+    useEffect(() => {
+        api.get('/api/sites/current')
+        .then((response) => {
+            setSite(response.data);
+        })
+        .catch((error) => console.log("Erreur API", error));
+      }, []);
     
     useEffect(() => {
-        api.get(`/api/departement_rangs/departement/${id}/rangs`)
+        if(!id || !site) return;
+        api.get(`/api/departement_rangs/departement/${id}/site/${site?.id}/rangs`)
         .then((response) => {
             setListeRang(response.data);
         })
         .catch((error) => console.log("Erreur API", error));
-    }, []);
+    }, [id, site]);
 
      const dataToPaginate = rangs;
 
@@ -115,7 +126,7 @@ const DepartementRangComponent = () => {
         <>
         <div className="h-[69vh] overflow-y-auto my-6">
             <div className="color-header px-4 flex justify-between items-center mb-5">
-                <h4 className="font-bold text-white">{t("listeNiveau")}</h4>
+                <h4 className="font-bold text-white">{t("listeRangDepartement")}</h4>
                 <div>
                     <button
                         onClick={(e) => {

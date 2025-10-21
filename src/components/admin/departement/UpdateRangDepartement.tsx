@@ -76,9 +76,9 @@ const UpdateRangDepartement: React.FC<UpdateDepartementProps> = ({ setShowModalU
     }, [site]);
 
     useEffect(() => {
-      if (!depId) return;
+      if (!depId || !site) return;
     
-      api.get(`/api/departement_rangs/departement/${depId}/rangs`)
+      api.get(`/api/departement_rangs/departement/${depId}/site/${site?.id}/rangs`)
         .then((response) => {
           const rangs: any[] = response.data; // tableau de rangs
           // on récupère tous les typeDemande déjà liés
@@ -88,7 +88,7 @@ const UpdateRangDepartement: React.FC<UpdateDepartementProps> = ({ setShowModalU
           setDemandesDejaLiees(demandesLiees);
         })
         .catch((error) => console.log("Erreur récupération types déjà liés", error));
-    }, [depId]);
+    }, [depId, site]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -156,7 +156,14 @@ const UpdateRangDepartement: React.FC<UpdateDepartementProps> = ({ setShowModalU
               } else if (status == 400 || status == 422) {
                 errorMessage = langueActive?.indice === "fr" ? "Un rang departement pour ce type de demande et ce site existe déjà." : 
                 langueActive?.indice === "en" ? "An order of department with this site and request type already exists." : "";
-              }
+              } else if(status === 409) {
+                errorMessage = langueActive?.indice === "fr" 
+                    ? "Ce département possède déjà des demandes existantes." 
+                    : langueActive?.indice === "en" 
+                        ? "This department already has existing requests." 
+                        : "";
+            }
+            
               else if (status === 404) {
                 errorMessage = langueActive?.indice === "fr" ? "Rang introuvable." : 
                 langueActive?.indice === "en" ? "Order not found" : "";

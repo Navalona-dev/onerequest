@@ -235,6 +235,9 @@
     "sendDemandeDepartement": "Envoyer au departement",
     "traiter": "Traiter",
     "sendSite": "Envoyer au site",
-    "sendDepartementTitle": "Transferer au departement "
+    "sendDepartementTitle": "Transferer au departement ",
+    "sendSiteTitle": "Transferer au site ",
+    "listeRangDepartement": "Liste rang departement",
+    "commentaire": "Commentaire"
   }
   

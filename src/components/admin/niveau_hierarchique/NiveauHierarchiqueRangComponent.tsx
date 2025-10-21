@@ -155,7 +155,7 @@ const NiveauHierarchiqueRangComponent = () => {
                                         <tr key={item.id} className={`${index % 2 === 0 ? "" : "bg-[#1c2d55]"}`}>
                                             <th className="px-6 py-4 text-nowrap">
                                                 <>
-                                                <a href="#"
+                                                {/*<a href="#"
                                                     title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
                                                     <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
                                                     style={{
@@ -166,7 +166,7 @@ const NiveauHierarchiqueRangComponent = () => {
                                                         setShowModalUpdate(true);
                                                       }}
                                                     ></i>
-                                                </a>
+                                                </a>*/}
                                                 <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
@@ -179,7 +179,20 @@ const NiveauHierarchiqueRangComponent = () => {
                                             </th>
                                             
                                             <td className="px-6 py-4">
-                                                {item.rang}
+                                                {item.rang} 
+                                                <a href="#"
+                                                    title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}>
+                                                    <i className="bi bi-pencil-square px-2 py-1.5 text-white rounded-3xl mr-3"
+                                                    style={{
+                                                        color: codeCouleur?.btnColor,
+                                                        fontWeight: "bold"
+                                                    }}
+                                                    onClick={() => {
+                                                        setSelectedRang(item);
+                                                        setShowModalUpdate(true);
+                                                      }}
+                                                    ></i>
+                                                </a>
                                             </td>
                                             <td className="px-6 py-4">
                                                 {langueActive?.indice === "fr" ? item.typeDemande?.nom : 

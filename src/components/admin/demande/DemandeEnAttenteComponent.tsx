@@ -6,6 +6,7 @@ import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
 import SendDepartementModal from "./SendDepartementModal";
+import SendSiteModal from "./SendSiteModal";
 
 type Site = {
     id: number;
@@ -70,6 +71,7 @@ const DemandeEnAttenteComponent = () => {
         statutEn: {}
     });   
     const [showModalSendDepartement, setShowModalSendDepartement] = useState(false);
+    const [showModalSendSite, setShowModalSendSite] = useState(false);
     const [selectedDemande, setSelectedDemande] = useState<Demande | null>(null);
     
     const user = UserAdminConnected() as User | null;
@@ -239,7 +241,13 @@ const DemandeEnAttenteComponent = () => {
                                                     }}
                                                     ></i>
                                                 </a>
-                                                <a href="#" title={t("sendSite")}>
+                                                <a href="#" title={t("sendSite")}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setSelectedDemande(item);
+                                                    setShowModalSendSite(true);
+                                                }}
+                                                >
                                                     <i className="bi bi-geo-alt-fill px-2 py-1.5 text-white rounded-3xl mr-3"
                                                     style={{
                                                         backgroundColor: codeCouleur?.btnColor
@@ -320,6 +328,14 @@ const DemandeEnAttenteComponent = () => {
                 <SendDepartementModal 
                     demandeId={selectedDemande.id}
                     setShowModalSendDepartement={setShowModalSendDepartement}
+                    
+                />
+            )}
+
+            {showModalSendSite && selectedDemande && (
+                <SendSiteModal 
+                    demandeId={selectedDemande.id}
+                    setShowModalSendSite={setShowModalSendSite}
                     
                 />
             )}

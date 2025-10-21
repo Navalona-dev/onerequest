@@ -120,7 +120,6 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
   const [activeSubMenu, setActiveSubMenu] = useState<string>("");
 
   const departement = user?.departement;
-  const allNiveauByDepartement = departement?.niveauHierarchiques;
   const [rangsMinimum, setListeRangMinimum] = useState<AllRangNiveau []>([]);
 
   useEffect(() => {

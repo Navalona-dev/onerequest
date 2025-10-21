@@ -64,18 +64,19 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
       }, []);
 
       useEffect(() => {
-        if (!site?.id) return;
+        if (!site) return;
+        
         api.get(`/api/sites/${site?.id}/type-demandes`)
         .then((response) => {
+          console.log(response.data);
             setListeTypeDemande(response.data)
         } )
         .catch((error) => console.log("Erreur API", error));
     }, [site]);
 
     useEffect(() => {
-      if (!depId) return;
-    
-      api.get(`/api/departement_rangs/departement/${depId}/rangs`)
+      if (!depId || !site) return;
+      api.get(`/api/departement_rangs/departement/${depId}/site/${site?.id}/rangs`)
         .then((response) => {
           const rangs: any[] = response.data; // tableau de rangs
           // on récupère tous les typeDemande déjà liés
@@ -85,7 +86,7 @@ const AddRangDepartement: React.FC<AddRangProps> = ({ setShowModalAddRangDep, de
           setDemandesDejaLiees(demandesLiees);
         })
         .catch((error) => console.log("Erreur récupération types déjà liés", error));
-    }, [depId]);
+    }, [depId, site]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>

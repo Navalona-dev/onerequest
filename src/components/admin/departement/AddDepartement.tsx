@@ -70,7 +70,7 @@ type Departement = {
     
 
     useEffect(() => {
-      api.get('/api/departements')
+      api.get('/api/departements/liste')
       .then((response) => {
         setListeDepartement(response.data);
       })
