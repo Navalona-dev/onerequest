@@ -65,6 +65,7 @@ function App() {
                   <Route path="/document" element={<ContentPage />} />
                   <Route path="/report" element={<ContentPage />} />
                   <Route path="/demande" element={<ContentPage />} />
+                  <Route path="/:idDemande/traitement" element={<ContentPage />} />
                 </Route>
 
                 <Route element={<PrivateRouteAdmin requiredPrivilege="super_admin"/>}>

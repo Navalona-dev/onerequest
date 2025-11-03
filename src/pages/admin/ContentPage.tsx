@@ -27,6 +27,7 @@ import NiveauHierarchiquePage from "./NiveauHierarchiquePage";
 import DomaineEntrepriseListe from "./DomaineEntrepriseListe";
 import RangPage from "./RangPage";
 import NoAccessPage from "./NoAccessPage";
+import TraitementPage from "./TraitementPage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -57,7 +58,8 @@ const ContentPage = () => {
             "niveau-hierarchiques",
             "domaine-entreprise-liste",
             "rang",
-            "no-access"
+            "no-access",
+            "traitement"
         ].includes(path)) {
             setCurrentModule(path as any);
         } else if (/^\d+\/commune$/.test(path)) {
@@ -72,6 +74,9 @@ const ContentPage = () => {
         }else if (/^\d+\/rang$/.test(path)) {
             
             setCurrentModule("rang");
+        }else if (/^\d+\/traitement$/.test(path)) {
+            
+            setCurrentModule("traitement");
         }
         else {
             setCurrentModule("dashboard"); // fallback
@@ -117,6 +122,8 @@ const ContentPage = () => {
                 return <RangPage />;
             case "no-access":
                 return <NoAccessPage />
+            case "traitement":
+                return <TraitementPage />
             default:
                 return <Dashboard />;
         }

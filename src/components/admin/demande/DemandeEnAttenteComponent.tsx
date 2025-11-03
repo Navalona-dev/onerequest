@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
 import SendDepartementModal from "./SendDepartementModal";
 import SendSiteModal from "./SendSiteModal";
+import { Link } from "react-router-dom";
 
 type Site = {
     id: number;
@@ -253,14 +254,21 @@ const DemandeEnAttenteComponent = () => {
                                                         backgroundColor: codeCouleur?.btnColor
                                                     }}
                                                     ></i>
-                                                </a>
+                                                </a> <br /> <br />
                                                 <a href="#" title={t("traiter")}>
-                                                    <i className="bi bi-file-earmark-text px-2 py-1.5 text-white rounded-3xl"
+                                                    <i className="bi bi-file-earmark-text px-2 py-1.5 text-white rounded-3xl mr-3"
                                                     style={{
                                                         backgroundColor: codeCouleur?.btnColor
                                                     }}
                                                     ></i>
                                                 </a>
+                                                <Link to={`/${item.id}/traitement`} title={t("listeTraitement")}>
+                                                    <i className="bi bi-folder-fill px-2 py-1.5 text-white rounded-3xl"
+                                                    style={{
+                                                        backgroundColor: codeCouleur?.btnColor
+                                                    }}
+                                                    ></i>
+                                                </Link>
                                             </th>
                                             <td className="px-6 py-4 text-nowrap">
                                                 {item.reference}
