@@ -48,7 +48,11 @@ const TraitementByDemande = () => {
 
     useEffect(() => {
         api.get('/api/traitements')
-    })
+        .then((response) => {
+            setTraitement(response.data);
+        })
+        .catch((error) => console.log("Erreur API", error))
+    }, []);
     return(
         <>
         </>
