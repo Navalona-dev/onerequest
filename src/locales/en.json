@@ -241,7 +241,13 @@
     "sendSiteTitle": "Transfer to site ",
     "listeRangDepartement": "Department order list",
     "commentaire": "Comment",
-    "listeTraitement": "List of Treatments"
+    "listeTraitement": "List of Treatments",
+    "responsable": "Person in charge",
+    "demandeMenu": "Request",
+    "demandeNum": "request n°",
+    "selectType": "Select a type",
+    "selectStatut": "Select a statut",
+    "etape": "Step"
 
   }
   

@@ -239,6 +239,13 @@
     "sendSiteTitle": "Transferer au site ",
     "listeRangDepartement": "Liste rang departement",
     "commentaire": "Commentaire",
-    "listeTraitement": "Liste traitement"
+    "listeTraitement": "Liste traitement",
+    "responsable": "Responsable",
+    "demandeMenu": "Demande",
+    "demandeNum": "demande n°",
+    "selectType": "Séléctionner un type",
+    "selectStatut": "Sélectionner un statut",
+    "etape": "Étape"
+
   }
   

@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { error } from "console";
 import UserAdminConnected from "../../../hooks/UserAdminConnected";
 import dissocieTypeDemande from "../../../service/admin/DissocieTypeDemande";
+import { Link } from "react-router-dom";
 
 type Domaine = {
     id: number;
@@ -47,6 +48,7 @@ type TypeDemande = {
     nomEn: string;
     descriptionEn: string;
     sites: Site[];
+    countEtape: number;
 }
 
 type UserType = {
@@ -191,7 +193,7 @@ const TypeDemandeComponent = () => {
                                                     setShowModalUpdate(true);
                                                 }}
                                                     title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}><i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
-                                                </a>
+                                                </a> 
                                                 <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
@@ -199,16 +201,27 @@ const TypeDemandeComponent = () => {
                                                     }}
                                                     title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
+                                                <br /><br /><br />
                                             </>
                                         ) : null}
                                          {user && user.privileges && user.privileges.some(p => p.title === 'super_admin' || p.title === 'admin_site') ? (
-                                            <a href="#"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                dissocieTypeDemande(item.id, langueActive?.indice as "fr" | "en", Number(site?.id))
-                                            }}
-                                                title={langueActive?.indice === "fr" ? dissocie.fr.upperText : langueActive?.indice === "en" ? dissocie.en.upperText : ""}><i className="bi bi-archive-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
-                                            </a>
+                                           <>
+                                                <a href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        dissocieTypeDemande(item.id, langueActive?.indice as "fr" | "en", Number(site?.id))
+                                                    }}
+                                                        title={langueActive?.indice === "fr" ? dissocie.fr.upperText : langueActive?.indice === "en" ? dissocie.en.upperText : ""}><i className="bi bi-archive-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                </a>
+                                                <Link to={`/${item.id}/etape-type-demande`} title={t("etape")} className="relative inline-block">
+                                                    <i className="bi bi-list-ol bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
+                                                    {/* Badge pour le nombre d'étapes */}
+                                                    <span className="absolute -top-3 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                                                        {item.countEtape}
+                                                    </span>
+                                                </Link>
+
+                                            </>
                                          ) : null}
                                         </th>
                                         <td className="px-6 py-4">

@@ -268,17 +268,16 @@ const Sidebar = ({ onCloseMobileSidebar }: SidebarProps) => {
             >
               <div
                 className={`flex items-center justify-between gap-2 px-3 py-2 rounded cursor-pointer ${hoverColor} ${
-                  activeMenu === "demande" ? "bg-[#1c2d55] text-white" : ""
-                } ${currentModule === "demande" ? "bg-[#1c2d55] text-white" : ""}`}
+                  demandeOpen ? "bg-[#1c2d55] text-white" : ""
+                }`}
                 onClick={() => {
-                  setActiveMenu("demande");
-                  setCurrentModule("demande" as any);
                   if (!isSidebarCollapsed) {
+                    // 🟢 On ouvre/ferme juste le menu
                     setDemandeOpen(!demandeOpen);
                   }
                 }}
-                
               >
+
                 <div className="flex items-center gap-2">
                   <span className="icon-sidebar">
                   <i className="bi bi-lock-fill"></i>

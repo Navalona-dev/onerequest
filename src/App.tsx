@@ -74,6 +74,7 @@ function App() {
                     <Route path="/niveau-hierarchiques" element={<ContentPage />} />
                     <Route path="/:idDepartement/niveau-hierarchique" element={<ContentPage />} />
                     <Route path="/user" element={<ContentPage />} />
+                    <Route path="/:idTypeDemande/etape-type-demande" element={<ContentPage />} />
 
                 </Route>
 

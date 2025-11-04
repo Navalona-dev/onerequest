@@ -28,6 +28,7 @@ import DomaineEntrepriseListe from "./DomaineEntrepriseListe";
 import RangPage from "./RangPage";
 import NoAccessPage from "./NoAccessPage";
 import TraitementPage from "./TraitementPage";
+import EtapeTypeDemandePage from "./EtapeTypeDemandePage";
 
 const ContentPage = () => {
     const { layoutContent } = useLayoutContent();
@@ -59,7 +60,8 @@ const ContentPage = () => {
             "domaine-entreprise-liste",
             "rang",
             "no-access",
-            "traitement"
+            "traitement",
+            "etape-type-demande"
         ].includes(path)) {
             setCurrentModule(path as any);
         } else if (/^\d+\/commune$/.test(path)) {
@@ -77,6 +79,9 @@ const ContentPage = () => {
         }else if (/^\d+\/traitement$/.test(path)) {
             
             setCurrentModule("traitement");
+        } else if (/^\d+\/etape-type-demande$/.test(path)) {
+            
+            setCurrentModule("etape-type-demande");
         }
         else {
             setCurrentModule("dashboard"); // fallback
@@ -124,6 +129,8 @@ const ContentPage = () => {
                 return <NoAccessPage />
             case "traitement":
                 return <TraitementPage />
+            case "etape-type-demande":
+                return <EtapeTypeDemandePage />
             default:
                 return <Dashboard />;
         }
