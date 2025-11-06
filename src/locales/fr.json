@@ -245,7 +245,12 @@
     "demandeNum": "demande n°",
     "selectType": "Séléctionner un type",
     "selectStatut": "Sélectionner un statut",
-    "etape": "Étape"
+    "etape": "Étape",
+    "statutInitial": "Statut initial",
+    "dateDeCreation": "Date de création",
+    "listeEtapeTypeDemande": "Liste étape",
+    "titreFr": "Titre en français",
+    "titreEn": "Titre en anglais"
 
   }
   

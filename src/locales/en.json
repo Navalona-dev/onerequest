@@ -247,7 +247,12 @@
     "demandeNum": "request n°",
     "selectType": "Select a type",
     "selectStatut": "Select a statut",
-    "etape": "Step"
+    "etape": "Step",
+    "statutInitial": "Initial status",
+    "dateDeCreation": "Created date",
+    "listeEtapeTypeDemande": "Step List",
+    "titreFr": "Title in french",
+    "titreEn": "Title in english"
 
   }
   
