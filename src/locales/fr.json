@@ -250,7 +250,8 @@
     "dateDeCreation": "Date de création",
     "listeEtapeTypeDemande": "Liste étape",
     "titreFr": "Titre en français",
-    "titreEn": "Titre en anglais"
+    "titreEn": "Titre en anglais",
+    "addEtapeTypeDemande": "Créer nouveau étape type de demande"
 
   }
   

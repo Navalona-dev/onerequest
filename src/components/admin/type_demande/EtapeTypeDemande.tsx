@@ -4,8 +4,11 @@ import { store } from "../../../store";
 import Pagination from "../Pagination";
 import { useLangueActive } from "../../../hooks/useLangueActive";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AddEtapeTypeDemande from "./AddEtapeTypeDemande";
+import UpdateEtapeTypeDemande from "./UpdateEtapeTypeDemande";
+import { error } from "console";
+import deleteTypeDemandeEtape from "../../../service/admin/DeleteTypeDemandeEtape";
 
 type TypeDemande = {
     id: number,
@@ -30,6 +33,12 @@ type Site = {
     region: Region | null;
 }
 
+type NiveauHierarchique = {
+    id: number;
+    nom: string;
+    nomEn: string;
+}
+
 type EtapeTypeDemande = {
     id: number;
     statutInitial: string;
@@ -39,13 +48,16 @@ type EtapeTypeDemande = {
     typeDemande: TypeDemande | null;
     ordre: string;
     titleEn: string;
+    statutFr: string;
+    statutEn: string;
+    niveauHierarchique: NiveauHierarchique | null;
 }
 
 const EtapeTypeDemandeComponent = () => {
     const state = store.getState();
     const { create, delete: deleteAction, edit, activate, deactivate, dissocie } = state.actionTexts;
     const [currentPage, setCurrentPage] = useState(1);
-    const typesPerPage = 5;
+    const typesPerPage = 3;
     const {langueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
     const [etapes, setEtape] = useState<EtapeTypeDemande[]>([]);
@@ -56,14 +68,16 @@ const EtapeTypeDemandeComponent = () => {
 
     const dataToPaginate = etapes;
 
-      const totalPages = Math.max(1, Math.ceil(dataToPaginate.length / typesPerPage));
-      
-      const indexOfLastEtape = currentPage * typesPerPage;
-      const indexOfFirstEtape = indexOfLastEtape - typesPerPage;
-      
-      const currentEtapes = dataToPaginate.slice(indexOfFirstEtape, indexOfLastEtape);
+    const totalPages = Math.max(1, Math.ceil(dataToPaginate.length / typesPerPage));
+    
+    const indexOfLastEtape = currentPage * typesPerPage;
+    const indexOfFirstEtape = indexOfLastEtape - typesPerPage;
+    
+    const currentEtapes = dataToPaginate.slice(indexOfFirstEtape, indexOfLastEtape);
 
-      const [showModalAdd, setShowModalAdd] = useState(false);
+    const [showModalAdd, setShowModalAdd] = useState(false);
+    const [showModalUpdate, setShowModalUpdate] = useState(false);
+    const [site, setSite] = useState<Site | null>(null);
 
       useEffect(() => {
         if(!idTypeDemande) return;
@@ -76,13 +90,21 @@ const EtapeTypeDemandeComponent = () => {
       }, [idTypeDemande]);
 
       useEffect(() => {
-        if(!idTypeDemande) return;
-        api.get(`/api/type_demandes/${idTypeDemande}/etapes`)
+        api.get('/api/sites/current')
+        .then((response) => {
+            setSite(response.data);
+        })
+        .catch((error) => console.log("Erreur API", error));
+      }, []);
+
+      useEffect(() => {
+        if(!idTypeDemande || !site) return;
+        api.get(`/api/type_demandes/${idTypeDemande}/site/${site?.id}/etapes`)
         .then((response) => {
             setEtape(response.data);
         })
         .catch((error) => console.log("Erreur API", error));
-      }, [idTypeDemande]);
+      }, [idTypeDemande, site]);
 
       useEffect(() => {
         if (currentPage > totalPages) {
@@ -98,15 +120,20 @@ const EtapeTypeDemandeComponent = () => {
                         {t("listeEtapeTypeDemande")} 
                         <span>  "{langueActive?.indice === "fr" ? typeDemande?.nom : langueActive?.indice === "en" ? typeDemande?.nomEn : ""}"</span>
                     </h4>
+                    <div>
                         <button
                             onClick={(e) => {
                                 e.preventDefault();
                                 setShowModalAdd(true);
                             }}
-                                className="px-5 py-2 text-white rounded"
+                                className="px-5 py-1.5 mr-3 text-white rounded"
                                 >
                                 {langueActive?.indice === "fr" ? create.fr.upperText : langueActive?.indice === "en" ? create.en.upperText : ""}
                         </button>
+                        <Link to={`/type-demande`} className="btn-list px-5 py-2 text-white rounded">
+                            {t("listetypedemande")}
+                        </Link>
+                    </div>
                     
                     
                 </div>
@@ -124,7 +151,10 @@ const EtapeTypeDemandeComponent = () => {
                                     {t("titre")}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
-                                    {t("statutInitial")}
+                                    {t("niveauhierarchique")}
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-white">
+                                    Statut
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-white">
                                     {t("dateDeCreation")}
@@ -141,12 +171,15 @@ const EtapeTypeDemandeComponent = () => {
                                                 <a href="#"
                                                 onClick={(e) => {
                                                     e.preventDefault();
+                                                    setSelectedEtape(item);
+                                                    setShowModalUpdate(true);
                                                 }}
                                                     title={langueActive?.indice === "fr" ? edit.fr.upperText : langueActive?.indice === "en" ? edit.en.upperText : ""}><i className="bi bi-pencil-square bg-blue-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a> 
                                                 <a href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();
+                                                        deleteTypeDemandeEtape(item.id, langueActive?.indice as "fr" | "en");
                                                     }}
                                                     title={langueActive?.indice === "fr" ? deleteAction.fr.upperText : langueActive?.indice === "en" ? deleteAction.en.upperText : ""}><i className="bi bi-trash-fill bg-red-500 px-2 py-1.5 text-white rounded-3xl mr-3"></i>
                                                 </a>
@@ -160,17 +193,28 @@ const EtapeTypeDemandeComponent = () => {
                                             {langueActive?.indice === "fr" ? item.title : langueActive?.indice === "en" ? item.titleEn : ""}
                                         </td>
                                         <td className="px-6 py-4">
-                                            {item.statutInitial}
+                                            {langueActive?.indice === "fr" ? item.niveauHierarchique?.nom : langueActive?.indice === "en" ? item.niveauHierarchique?.nomEn : ""}
                                         </td>
                                         <td className="px-6 py-4">
-                                            {item.createdAt}
+                                            {langueActive?.indice === "fr" ? item.statutFr : langueActive?.indice === "en" ? item.statutEn : ""}
                                         </td>
+                                        <td className="px-6 py-4">
+                                            {new Date(item.createdAt).toLocaleDateString(
+                                                langueActive?.indice === "fr" ? "fr-FR" : "en-CA",
+                                                {
+                                                day: "2-digit",
+                                                month: "2-digit",
+                                                year: "numeric"
+                                                }
+                                            )}
+                                        </td>
+
 
                                     </tr>
                                 ))
                             ) : (
                                 <tr className="bg-[#1c2d55] text-center">
-                                    <td colSpan={5} className="px-6 py-4">{t("nodata")}</td>
+                                    <td colSpan={6} className="px-6 py-4">{t("nodata")}</td>
                                 </tr>
                             )}
                             
@@ -190,6 +234,21 @@ const EtapeTypeDemandeComponent = () => {
             {showModalAdd && (
                 <AddEtapeTypeDemande 
                     setShowModal={setShowModalAdd}
+                    idTypeDemande={Number(idTypeDemande)}
+                />
+            )}
+
+            {showModalUpdate && selectedEtape && (
+                <UpdateEtapeTypeDemande 
+                    setShowModal={setShowModalUpdate}
+                    idEtapeTypeDemande={selectedEtape.id}
+                    idTypeDemande={Number(idTypeDemande)}
+                    initialData={{
+                        ordre: selectedEtape.ordre,
+                        title: selectedEtape.title,
+                        titleEn: selectedEtape.titleEn,
+                        niveauHierarchique: selectedEtape.niveauHierarchique
+                    }}
                 />
             )}
         </>

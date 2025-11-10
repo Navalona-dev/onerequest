@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 
 interface AddEtapeTypeDemandeProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  idTypeDemande: number
 }
 
 type Region = {
@@ -38,12 +39,19 @@ type TypeDemande = {
   descriptionEn: string;
 }
 
-const AddEtapeTypeDemande: React.FC<AddEtapeTypeDemandeProps> = ({ setShowModal }) => {
-    const [formData, setFormData] = useState({
-        ordre: "",
-        title: "",
-        titleEn: "",
-    });
+type NiveauHierarchique = {
+  id: number;
+  nom: string;
+  nomEn: string;
+}
+
+const AddEtapeTypeDemande: React.FC<AddEtapeTypeDemandeProps> = ({ setShowModal, idTypeDemande }) => {
+  const [formData, setFormData] = useState({
+    ordre: "",
+    title: "",
+    titleEn: "",
+    niveauHierarchique: "" 
+  });
 
     const {langueActive} = useLangueActive();
     const { t, i18n } = useTranslation();
@@ -51,16 +59,42 @@ const AddEtapeTypeDemande: React.FC<AddEtapeTypeDemandeProps> = ({ setShowModal 
     const { create, delete: deleteAction, edit, activate, deactivate, save } = state.actionTexts;
     const [siteListe, setListeSite] = useState<Site[]>([]);
     const {codeCouleur} = useGlobalActiveCodeCouleur();
-    const [isFindTypeDemande, setIsFindTypeDemande] = useState(false);
     const [site, setSite] = useState<Site | null>(null);
-    const [selectedTypeDemandes, setSelectedTypeDemandes] = useState<number[]>([]);
-    const [typeDemandes, setListeTypeDemande] = useState<TypeDemande[]>([])
+    const [typeDemande, setTypeDemande] = useState<TypeDemande | null>(null);
+    const [niveaux, setListeNiveau] = useState<NiveauHierarchique[]>([]);
 
     const fieldLabels: { [key: string]: string } = {
         title: t("titreFr"),
         titleEn: t("titreEn"),
         ordre: t("ordre"),
+        niveauHierarchique: t("niveauhierarchique")
       };
+
+      useEffect(() => {
+        if(!idTypeDemande) return;
+
+        api.get(`/api/type_demandes/${idTypeDemande}`)
+        .then((response) => {
+          setTypeDemande(response.data);
+        })
+        .catch((error) => console.log("Erreur API", error));
+      }, [idTypeDemande])
+
+      useEffect(() => {
+        api.get('/api/sites/current')
+        .then((response) => {
+          setSite(response.data);
+        })
+        .catch((error) => console.log("Erreur API", error));
+      }, []);
+
+      useEffect(() => {
+        api.get('/api/niveau_hierarchiques/get-liste-active')
+        .then((response) => {
+          setListeNiveau(response.data);
+        })
+        .catch((error) => console.log("Erreur API", error));
+      }, []);
 
     const handleChange = (
       e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -78,8 +112,19 @@ const AddEtapeTypeDemande: React.FC<AddEtapeTypeDemandeProps> = ({ setShowModal 
       
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const payload: any = {};
+
+        payload.title = formData.title;
+        payload.titleEn = formData.titleEn;
+        payload.ordre = formData.ordre;
+        payload.site = `/api/sites/${site?.id}`;
+        payload.typeDemande = `/api/type_demandes/${idTypeDemande}`;
+        payload.niveauHierarchique = formData.niveauHierarchique;
     
         try {
+
+          await api.post("/api/type_demande_etapes", payload);
     
           Swal.fire({
             icon: "success",
@@ -114,6 +159,8 @@ const AddEtapeTypeDemande: React.FC<AddEtapeTypeDemandeProps> = ({ setShowModal 
               if (backendMessage) {
                 errorMessage = backendMessage;
               } else if (status == 400) {
+                errorMessage = langueActive?.indice === "fr" ? "L'ordre existe déjà pour ce site et ce type de demande." : 
+                langueActive?.indice === "en" ? "The order already exists for this site and this type of request." : "";
               }
               else if (status === 404) {
                 errorMessage = langueActive?.indice === "fr" ? "Étape type de demande introuvable." : 
@@ -170,6 +217,23 @@ const AddEtapeTypeDemande: React.FC<AddEtapeTypeDemandeProps> = ({ setShowModal 
                                     className="w-full p-2 rounded bg-[#1c2d55] border-[#1c2d55] text-white focus:outline-none focus:ring-0 focus:border-transparent mb-5"
                                     required
                                 />
+                              ) : field === "niveauHierarchique" ? (
+                                <select
+                                    id="niveauHierarchiques"
+                                    name="niveauHierarchique"
+                                    value={formData.niveauHierarchique}
+                                    onChange={handleChange}
+                                    className="w-full p-2 rounded text-white bg-[#1c2d55] border-[#1c2d55] focus:outline-none focus:ring-0 focus:border-transparent"
+                                    required
+                                >
+                                    <option value="" disabled>{t("selectNiveau")}</option>
+                                    {niveaux.map((niv) => (
+                                    <option key={niv.id} value={`/api/niveau_hierarchiques/${niv.id}`}>
+                                        {langueActive?.indice === "fr" ? niv.nom : langueActive?.indice === "en" ? niv.nomEn : ""}
+                                    </option>
+                                    ))}
+
+                                </select>
                               ) : ( 
                               <input
                                   type="text"

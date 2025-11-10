@@ -252,7 +252,9 @@
     "dateDeCreation": "Created date",
     "listeEtapeTypeDemande": "Step List",
     "titreFr": "Title in french",
-    "titreEn": "Title in english"
+    "titreEn": "Title in english",
+    "addEtapeTypeDemande": "Add step request type"
+
 
   }
   
